@@ -1,6 +1,10 @@
 import sys
 import cv2
 import numpy as np
+import openpifpaf
+from PIL import Image
+from typing import List, Tuple
+import matplotlib.pyplot as plt
 
 
 # PCに繋がっているUSBカメラから撮る場合はこれ
@@ -18,19 +22,26 @@ if capture.isOpened():
 
 while 1:
 
- ret, frame = capture.read()
- # print("frame1 =",frame)
+    ret, frame = capture.read()
+    # print("frame1 =",frame)
 
- if ret == False :
-  print( "frame is None" )
-  break
+    if ret == False :
+        print( "frame is None" )
+        break
 
- cv2.imshow('Camera 1',frame)
+    predictor = openpifpaf.Predictor(checkpoint='shufflenetv2k16')
+    predictions, gt_anns, meta = predictor.numpy_image(frame)
 
- # ESCキーを押すと終了
- if cv2.waitKey(100) == 0x1b:
-  print('ESC pressed. Exiting ...')
-  break
+    annotation_painter = openpifpaf.show.AnnotationPainter()
+    with openpifpaf.show.image_canvas(frame) as ax:
+        annotation_painter.annotations(ax, predictions)
+        plt.imshow(frame)
+        plt.show()
+
+    # ESCキーを押すと終了
+    if cv2.waitKey(100) == 0x1b:
+        print('ESC pressed. Exiting ...')
+        break
 
 capture.release()
 cv2.destroyAllWindows()
