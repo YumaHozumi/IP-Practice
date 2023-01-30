@@ -8,13 +8,14 @@ from typing import List, Tuple
 def draw_landmarks(image: np.ndarray, landmarks: List) -> np.ndarray:
     annotated_image = image.copy()
     data: np.ndarray = landmarks[0].data
+    """
+    landmarks[0] 検出した一人目の
+    landmarks[0].data[0] keypoint番号0(鼻)の
+    landmarks[0].data[0][0] x座標
+    landmarks[0].data[0][1] y座標
+    landmarks[0].data[0][2] 正確さ的なやつ
+    """
     # ランドマークとして検出されている点を囲む矩形を描画する
-    # max_point = np.max(data, axis=0)
-    # min_point = np.min(data, axis=0)
-    # x1: int = int(max_point[0])
-    # y1: int = int(max_point[1])
-    # x2: int = int(min_point[0])
-    # y2: int = int(min_point[1])
     body_rectangle: List[float] = landmarks[0].json_data()["bbox"]
     base_x, base_y, width, height = body_rectangle
 
