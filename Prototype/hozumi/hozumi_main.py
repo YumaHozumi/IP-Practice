@@ -8,13 +8,6 @@ from typing import List, Tuple
 def draw_landmarks(image: np.ndarray, landmarks: List) -> np.ndarray:
     annotated_image = image.copy()
     data: np.ndarray = landmarks[0].data
-    """
-    landmarks[0] 検出した一人目の
-    landmarks[0].data[0] keypoint番号0(鼻)の
-    landmarks[0].data[0][0] x座標
-    landmarks[0].data[0][1] y座標
-    landmarks[0].data[0][2] 正確さ的なやつ
-    """
     # ランドマークとして検出されている点を囲む矩形を描画する
     body_rectangle: List[float] = landmarks[0].json_data()["bbox"]
     base_x, base_y, width, height = body_rectangle
@@ -23,11 +16,8 @@ def draw_landmarks(image: np.ndarray, landmarks: List) -> np.ndarray:
     y1 = int(base_y - 10)
     x2 = int(base_x+width)
     y2 = int(base_x+height)
-    print("x1:" + str(x1))
-    print("y1:" + str(y1))
-    print("x2:" + str(x2))
-    print("y2:" + str(x2))
-    cv2.rectangle(annotated_image, (x1*4,y1*4), (x2*4, y2*4), (255, 255, 255))
+    # 解像度1/4にしたので、4倍して位置を調整
+    cv2.rectangle(annotated_image, (x1*4,y1*4), (x2*4, y2*4), (255, 255, 255)) 
     return annotated_image
 
     
