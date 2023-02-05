@@ -1,7 +1,7 @@
 import cv2
 from typing import Tuple, List
 import numpy as np
-
+from settings import SCALE_UP
 
 def get_draw_info(pt1: np.ndarray, pt2: np.ndarray) -> List[Tuple[int, int]]:
     """座標点のxy座標を取得
@@ -13,7 +13,6 @@ def get_draw_info(pt1: np.ndarray, pt2: np.ndarray) -> List[Tuple[int, int]]:
     Returns:
         List[Tuple[int, int]]: それぞれのxy座標をタプルでまとめたリスト
     """    
-    SCALE_UP: int = 4
     pt1_x = int(pt1[0] * SCALE_UP)
     pt1_y = int(pt1[1] * SCALE_UP)
     pt2_x = int(pt2[0] * SCALE_UP)
@@ -53,8 +52,27 @@ def create_connected(landmarks: np.ndarray, index: int) -> List[Tuple[np.ndarray
     left_shoulder = landmarks[index].data[5]
     left_elbow = landmarks[index].data[7]
     left_hand = landmarks[index].data[9]
-    connected.append((left_hand, left_elbow))
-    connected.append((left_elbow, left_shoulder))
+    connected.extend([(left_hand, left_elbow), (left_elbow, left_shoulder)])
+
+    right_shoulder = landmarks[index].data[6]
+    right_elbow = landmarks[index].data[8]
+    right_hand = landmarks[index].data[10]
+    connected.extend([(right_hand, right_elbow), (right_elbow, right_shoulder),
+                      (left_shoulder, right_shoulder)])
+    
+    left_hip = landmarks[index].data[11]
+    left_knee = landmarks[index].data[13]
+    left_ankle = landmarks[index].data[15]
+    connected.extend([(left_hip, left_knee), (left_knee, left_ankle)])
+
+    right_hip = landmarks[index].data[12]
+    right_knee = landmarks[index].data[14]
+    right_ankle = landmarks[index].data[16]
+    connected.extend([(right_hip, right_knee), (right_knee, right_ankle),
+                      (left_hip, right_hip),(left_shoulder, left_hip),
+                      (right_shoulder, right_hip)])
+    
+
     return connected
 
 
