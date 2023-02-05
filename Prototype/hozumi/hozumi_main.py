@@ -4,8 +4,11 @@ import numpy as np
 import openpifpaf
 from PIL import Image
 from typing import List, Tuple
+from functions import draw_line, create_connected
 
 def draw_landmarks(image: np.ndarray, landmarks: List) -> np.ndarray:
+    SCALE = 4
+
     annotated_image = image.copy()
     data: np.ndarray = landmarks[0].data
     # ランドマークとして検出されている点を囲む矩形を描画する
@@ -17,10 +20,15 @@ def draw_landmarks(image: np.ndarray, landmarks: List) -> np.ndarray:
     x2 = int(base_x+width)
     y2 = int(base_x+height)
     # 解像度1/4にしたので、4倍して位置を調整
-    cv2.rectangle(annotated_image, (x1*4,y1*4), (x2*4, y2*4), (255, 255, 255)) 
+    cv2.rectangle(annotated_image, (x1*SCALE,y1*SCALE), (x2*SCALE, y2*SCALE), (255, 255, 255))
+
+    connected_keypoints = create_connected(landmarks, index=0)
+    for (pt1, pt2) in connected_keypoints:
+        annotated_image = draw_line(annotated_image, pt1, pt2)
+    
     return annotated_image
 
-    
+
 
 # PCに繋がっているUSBカメラから撮る場合はこれ
 capture = cv2.VideoCapture(0)
