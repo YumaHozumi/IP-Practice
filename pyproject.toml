@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "ip-practice"
+version = "0.1.0"
+description = ""
+authors = ["YumaHozumi <cpucmptrpython72@gmail.com>"]
+readme = "README.md"
+packages = [{include = "ip_practice"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+torch = "^1.13"
+opencv-python = "4.7.0.68"
+openpifpaf = "0.13.8"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
