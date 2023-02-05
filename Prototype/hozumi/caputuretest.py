@@ -4,7 +4,6 @@ import numpy as np
 import openpifpaf
 from PIL import Image
 from typing import List, Tuple
-import matplotlib.pyplot as plt
 
 
 # PCに繋がっているUSBカメラから撮る場合はこれ
@@ -29,14 +28,15 @@ while 1:
         print( "frame is None" )
         break
 
-    predictor = openpifpaf.Predictor(checkpoint='shufflenetv2k16')
-    predictions, gt_anns, meta = predictor.numpy_image(frame)
+    # predictor = openpifpaf.Predictor(checkpoint='shufflenetv2k16')
+    # predictions, gt_anns, meta = predictor.numpy_image(frame)
 
-    annotation_painter = openpifpaf.show.AnnotationPainter()
-    with openpifpaf.show.image_canvas(frame) as ax:
-        annotation_painter.annotations(ax, predictions)
-        plt.imshow(frame)
-        plt.show()
+    # annotation_painter = openpifpaf.show.AnnotationPainter()
+    # with openpifpaf.show.image_canvas(frame) as ax:
+    #     annotation_painter.annotations(ax, predictions)
+    #     plt.imshow(frame)
+    #     plt.show()
+    cv2.imshow('Camera 1',frame)
 
     # ESCキーを押すと終了
     if cv2.waitKey(100) == 0x1b:

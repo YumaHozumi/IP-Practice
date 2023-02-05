@@ -7,7 +7,10 @@ readme = "README.md"
 packages = [{include = "ip_practice"}]
 
 [tool.poetry.dependencies]
-python = "^3.9.1"
+python = "^3.9"
+torch = "^1.13"
+openpifpaf = "0.13.8"
+opencv-python = "4.6.0.66"
 
 
 [build-system]
