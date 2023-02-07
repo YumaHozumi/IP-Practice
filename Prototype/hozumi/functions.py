@@ -37,7 +37,7 @@ def draw_line(image: np.ndarray, pt1: np.ndarray, pt2: np.ndarray) -> np.ndarray
     cv2.line(image, pt1_coordinate, pt2_coordinate, red, thickness=3)
     return image
 
-def create_connected(landmarks: np.ndarray, index: int) -> List[Tuple[np.ndarray, np.ndarray]]:
+def create_connected(landmarks: List, index: int) -> List[Tuple[np.ndarray, np.ndarray]]:
     """関節点のつながりをまとめた情報をつくる
 
     Args:
