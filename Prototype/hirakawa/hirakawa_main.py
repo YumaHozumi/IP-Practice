@@ -8,30 +8,6 @@ from functions import draw_line, create_connected
 from draw_function import draw_landmarks, draw_rectangle
 from settings import SCALE_UP
 
-"""
-def draw_landmarks(image: np.ndarray, landmarks: List) -> np.ndarray:
-
-    annotated_image = image.copy()
-    # ランドマークとして検出されている点を囲む矩形を描画する
-    # body_rectangle: List[float] = landmarks[0].json_data()["bbox"]
-    # base_x, base_y, width, height = body_rectangle
-
-    # x1 = int(base_x)
-    # y1 = int(base_y - 10)
-    # x2 = int(base_x+width)
-    # y2 = int(base_x+height)
-    # # 解像度1/4にしたので、4倍して位置を調整
-    # cv2.rectangle(annotated_image, (x1*SCALE,y1*SCALE), (x2*SCALE, y2*SCALE), (255, 255, 255))
-
-    connected_keypoints = create_connected(landmarks, index=0)
-    for (pt1, pt2) in connected_keypoints:
-        if((0 in pt1) or (0 in pt2)): continue # 座標をうまく取得できなかったとき
-
-        annotated_image = draw_line(annotated_image, pt1, pt2)
-    
-    return annotated_image
-"""
-
 
 # PCに繋がっているUSBカメラから撮る場合はこれ
 capture = cv2.VideoCapture(0)
@@ -73,7 +49,7 @@ while capture.isOpened():
     #骨格を表示
     #annotated_image: np.ndarray = draw_landmarks(frame, predictions)
     #predictions[0].data[0] : (x,y,c)
-    
+
     #外接矩形を表示
     annotated_image: np.ndarray = draw_rectangle(frame, predictions)
 
