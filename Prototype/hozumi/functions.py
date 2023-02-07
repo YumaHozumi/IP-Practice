@@ -1,5 +1,5 @@
 import cv2
-from typing import Tuple, List
+from typing import Tuple, List, Dict
 import numpy as np
 from settings import SCALE_UP
 
@@ -34,10 +34,10 @@ def draw_line(image: np.ndarray, pt1: np.ndarray, pt2: np.ndarray) -> np.ndarray
     """    
     red: Tuple[int, int, int] = (0, 0, 255)
     pt1_coordinate, pt2_coordinate = get_draw_info(pt1, pt2)
-    cv2.line(image, pt1_coordinate, pt2_coordinate, red)
+    cv2.line(image, pt1_coordinate, pt2_coordinate, red, thickness=3)
     return image
 
-def create_connected(landmarks: np.ndarray, index: int) -> List[Tuple[np.ndarray, np.ndarray]]:
+def create_connected(landmarks: List, index: int) -> List[Tuple[np.ndarray, np.ndarray]]:
     """関節点のつながりをまとめた情報をつくる
 
     Args:
@@ -46,36 +46,67 @@ def create_connected(landmarks: np.ndarray, index: int) -> List[Tuple[np.ndarray
 
     Returns:
         List[Tuple[np.ndarray, np.ndarray]]: 関節点のつながり
-    """    
+    """
     connected: List[Tuple[np.ndarray, np.ndarray]] = []
 
     left_shoulder = landmarks[index].data[5]
     left_elbow = landmarks[index].data[7]
     left_hand = landmarks[index].data[9]
-    connected.extend([(left_hand, left_elbow), (left_elbow, left_shoulder)])
 
     right_shoulder = landmarks[index].data[6]
     right_elbow = landmarks[index].data[8]
     right_hand = landmarks[index].data[10]
-    connected.extend([(right_hand, right_elbow), (right_elbow, right_shoulder),
-                      (left_shoulder, right_shoulder)])
     
     left_hip = landmarks[index].data[11]
     left_knee = landmarks[index].data[13]
     left_ankle = landmarks[index].data[15]
-    connected.extend([(left_hip, left_knee), (left_knee, left_ankle)])
 
     right_hip = landmarks[index].data[12]
     right_knee = landmarks[index].data[14]
     right_ankle = landmarks[index].data[16]
-    connected.extend([(right_hip, right_knee), (right_knee, right_ankle),
-                      (left_hip, right_hip),(left_shoulder, left_hip),
-                      (right_shoulder, right_hip)])
-    
+    connected.extend([(left_hand, left_elbow), (left_elbow, left_shoulder),
+                        (right_hip, right_knee), (right_knee, right_ankle),
+                        (left_hip, right_hip),(left_shoulder, left_hip),
+                        (right_shoulder, right_hip), (right_hand, right_elbow), 
+                        (right_elbow, right_shoulder), (left_shoulder, right_shoulder),
+                        (left_hip, left_knee), (left_knee, left_ankle)])
 
     return connected
 
+def created_three_connected(landmarks: np.ndarray, index: int
+                        ) -> List[Tuple[np.ndarray, np.ndarray, np.ndarray]]:
+    connected: List[Tuple[np.ndarray, np.ndarray, np.ndarray]] = []
 
+    left_shoulder = landmarks[index].data[5]
+    left_elbow = landmarks[index].data[7]
+    left_hand = landmarks[index].data[9]
 
+    right_shoulder = landmarks[index].data[6]
+    right_elbow = landmarks[index].data[8]
+    right_hand = landmarks[index].data[10]
+    
+    left_hip = landmarks[index].data[11]
+    left_knee = landmarks[index].data[13]
+    left_ankle = landmarks[index].data[15]
+
+    right_hip = landmarks[index].data[12]
+    right_knee = landmarks[index].data[14]
+    right_ankle = landmarks[index].data[16]
+
+    connected.extend([(left_elbow, left_hand, left_shoulder), 
+                      (right_elbow, right_hand, right_shoulder),
+                      (left_hip, left_knee, left_ankle),
+                      (right_hip, right_knee, right_ankle)])
+    return connected
+
+def calculate_cos(pt1: np.ndarray, pt2: np.ndarray, pt3: np.ndarray) -> float:
+    vec1: np.ndarray = pt2 - pt1
+    vec2: np.ndarray = pt3 - pt1
+    
+    cos: float = np.dot(vec1, vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2))
+    # print(cos)
+    rad: float = np.arccos(cos)
+    degree: float = np.rad2deg(rad)
+    return degree
 
 
