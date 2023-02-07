@@ -5,7 +5,7 @@ import openpifpaf
 from PIL import Image
 from typing import List, Tuple
 from functions import create_connected
-from draw_function import draw_line, draw_landmarks, draw_rectangle, draw_id
+from draw_function import draw_line, draw_landmarks,draw_vectors, draw_rectangle, draw_id
 from settings import SCALE_UP
 
 
@@ -50,8 +50,11 @@ while capture.isOpened():
     #annotated_image: np.ndarray = draw_landmarks(frame, predictions)
     #predictions[0].data[0] : (x,y,c)
 
+    #骨格(ベクトル)を表示
+    annotated_image: np.ndarray = draw_vectors(frame, predictions)
+
     #外接矩形を表示
-    annotated_image: np.ndarray = draw_rectangle(frame, predictions)
+    #annotated_image: np.ndarray = draw_rectangle(frame, predictions)
 
     height = frame.shape[0]
     width = frame.shape[1]
