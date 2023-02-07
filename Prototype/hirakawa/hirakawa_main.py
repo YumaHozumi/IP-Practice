@@ -5,7 +5,7 @@ import openpifpaf
 from PIL import Image
 from typing import List, Tuple
 from functions import draw_line, create_connected
-from draw_function import draw_landmarks, draw_rectangle
+from draw_function import draw_landmarks, draw_rectangle, draw_id
 from settings import SCALE_UP
 
 
@@ -56,6 +56,10 @@ while capture.isOpened():
     height = frame.shape[0]
     width = frame.shape[1]
     annotated_image = cv2.flip(annotated_image, 1)
+
+    #idの描画
+    annotated_image = draw_id(annotated_image, predictions, width)
+
     bigger_frame = cv2.resize(annotated_image, (int(width) * 2, int(height) * 2))
     cv2.imshow('Camera 1',bigger_frame)
     #cv2.moveWindow("Camera 1", 200,40)
