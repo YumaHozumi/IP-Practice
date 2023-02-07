@@ -5,8 +5,10 @@ import openpifpaf
 from PIL import Image
 from typing import List, Tuple
 from functions import draw_line, create_connected
+from draw_function import draw_landmarks, draw_rectangle
 from settings import SCALE_UP
 
+"""
 def draw_landmarks(image: np.ndarray, landmarks: List) -> np.ndarray:
 
     annotated_image = image.copy()
@@ -28,7 +30,7 @@ def draw_landmarks(image: np.ndarray, landmarks: List) -> np.ndarray:
         annotated_image = draw_line(annotated_image, pt1, pt2)
     
     return annotated_image
-
+"""
 
 
 # PCに繋がっているUSBカメラから撮る場合はこれ
@@ -68,8 +70,12 @@ while capture.isOpened():
     """
     if len(predictions) == 0: continue
 
-    annotated_image: np.ndarray = draw_landmarks(frame, predictions)
+    #骨格を表示
+    #annotated_image: np.ndarray = draw_landmarks(frame, predictions)
     #predictions[0].data[0] : (x,y,c)
+    
+    #外接矩形を表示
+    annotated_image: np.ndarray = draw_rectangle(frame, predictions)
 
     height = frame.shape[0]
     width = frame.shape[1]
