@@ -21,13 +21,13 @@ def get_draw_info(pt1: np.ndarray, pt2: np.ndarray) -> List[Tuple[int, int]]:
     return [(pt1_x, pt1_y), (pt2_x, pt2_y)]
 
 
-
+"""
 def draw_line(image: np.ndarray, pt1: np.ndarray, pt2: np.ndarray) -> np.ndarray:
     red: Tuple[int, int, int] = (0, 0, 255)
     pt1_coordinate, pt2_coordinate = get_draw_info(pt1, pt2)
     cv2.line(image, pt1_coordinate, pt2_coordinate, red, thickness=3)
     return image
-
+"""
 
 
 def create_connected(landmarks: np.ndarray, index: int) -> List[Tuple[np.ndarray, np.ndarray]]:
