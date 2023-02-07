@@ -34,7 +34,7 @@ def draw_line(image: np.ndarray, pt1: np.ndarray, pt2: np.ndarray) -> np.ndarray
     """    
     red: Tuple[int, int, int] = (0, 0, 255)
     pt1_coordinate, pt2_coordinate = get_draw_info(pt1, pt2)
-    cv2.line(image, pt1_coordinate, pt2_coordinate, red)
+    cv2.line(image, pt1_coordinate, pt2_coordinate, red, thickness=3)
     return image
 
 def create_connected(landmarks: np.ndarray, index: int) -> List[Tuple[np.ndarray, np.ndarray]]:
@@ -103,11 +103,10 @@ def calculate_cos(pt1: np.ndarray, pt2: np.ndarray, pt3: np.ndarray) -> float:
     vec1: np.ndarray = pt2 - pt1
     vec2: np.ndarray = pt3 - pt1
     
-    cos = np.dot(vec1, vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2))
+    cos: float = np.dot(vec1, vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2))
     # print(cos)
     rad: float = np.arccos(cos)
     degree: float = np.rad2deg(rad)
-    print(degree)
-    return 1.0
+    return degree
 
 

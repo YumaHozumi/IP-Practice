@@ -33,10 +33,10 @@ def calc(landmarks: np.ndarray, index: int):
     index = 0
     for (pt1, pt2, pt3) in connected:
         if((0 in pt1) or (0 in pt2) or (0 in pt3)): continue
-        # print("index: ", end="")
-        # print(index)
+        print("index: ", end="")
+        print(index)
         index += 1
-        calculate_cos(pt1, pt2, pt3)
+        print(calculate_cos(pt1, pt2, pt3))
 
 # PCに繋がっているUSBカメラから撮る場合はこれ
 capture = cv2.VideoCapture(0)
