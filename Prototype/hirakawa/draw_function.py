@@ -1,10 +1,28 @@
 import cv2
 import numpy as np
 from typing import List, Tuple
-from functions import get_draw_info, draw_line, create_connected
+from functions import get_draw_info, create_connected
 from settings import SCALE_UP
 
 
+def draw_line(image: np.ndarray, pt1: np.ndarray, pt2: np.ndarray) -> np.ndarray:
+    """2つの点を線で結ぶ
+
+    Args:
+        image (np.ndarray): 点を描画する画像
+        pt1 (np.ndarray): 1つ目の点
+        pt2 (np.ndarray): 2つ目の点
+
+    Returns:
+        np.ndarray: 描画後の画像
+    """    
+    red: Tuple[int, int, int] = (0, 0, 255)
+    pt1_coordinate, pt2_coordinate = get_draw_info(pt1, pt2)
+    cv2.line(image, pt1_coordinate, pt2_coordinate, red, thickness=3)
+    return image
+
+
+#骨格を表示する
 def draw_landmarks(image: np.ndarray, landmarks: List) -> np.ndarray:
 
     annotated_image = image.copy()
@@ -19,6 +37,7 @@ def draw_landmarks(image: np.ndarray, landmarks: List) -> np.ndarray:
     return annotated_image
 
 
+#矩形を表示する
 def draw_rectangle(image: np.ndarray, landmarks: List) -> np.ndarray:
     annotated_image = image.copy()
     """
