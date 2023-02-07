@@ -4,7 +4,7 @@ import numpy as np
 import openpifpaf
 from PIL import Image
 from typing import List, Tuple
-from functions import draw_line, create_connected
+from functions import draw_line, create_connected, calculate_cos, created_three_connected
 from settings import SCALE_UP
 
 def draw_landmarks(image: np.ndarray, landmarks: List) -> np.ndarray:
@@ -24,12 +24,19 @@ def draw_landmarks(image: np.ndarray, landmarks: List) -> np.ndarray:
     connected_keypoints = create_connected(landmarks, index=0)
     for (pt1, pt2) in connected_keypoints:
         if((0 in pt1) or (0 in pt2)): continue # 座標をうまく取得できなかったとき
-
         annotated_image = draw_line(annotated_image, pt1, pt2)
     
     return annotated_image
 
-
+def calc(landmarks: np.ndarray, index: int):
+    connected: List[Tuple[np.ndarray, np.ndarray, np.ndarray]] = created_three_connected(landmarks, index)
+    index = 0
+    for (pt1, pt2, pt3) in connected:
+        if((0 in pt1) or (0 in pt2) or (0 in pt3)): continue
+        print("index: ", end="")
+        print(index)
+        index += 1
+        print(calculate_cos(pt1, pt2, pt3))
 
 # PCに繋がっているUSBカメラから撮る場合はこれ
 capture = cv2.VideoCapture(0)
@@ -67,7 +74,6 @@ while capture.isOpened():
     インデックス：関節座標点
     """
     if len(predictions) == 0: continue
-
     annotated_image: np.ndarray = draw_landmarks(frame, predictions)
     #predictions[0].data[0] : (x,y,c)
 
@@ -77,7 +83,7 @@ while capture.isOpened():
     bigger_frame = cv2.resize(annotated_image, (int(width) * 2, int(height) * 2))
     cv2.imshow('Camera 1',bigger_frame)
     #cv2.moveWindow("Camera 1", 200,40)
-
+    calc(predictions, 0)
     # ESCキーを押すと終了
     if cv2.waitKey(100) == 0x1b:
         print('ESC pressed. Exiting ...')
