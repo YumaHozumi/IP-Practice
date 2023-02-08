@@ -5,7 +5,9 @@ import openpifpaf
 from PIL import Image
 from typing import List, Tuple
 from functions import create_connected
-from draw_function import draw_line,draw_landmarks, draw_rectangle, draw_id
+from vector_functions import correct_vectors, convert_simpleVectors, normalize_vectors
+from draw_function import draw_line,draw_landmarks, draw_rectangle, draw_id, draw_vectors
+from calculation import compare_pose
 from settings import SCALE_UP
 
 
@@ -46,14 +48,24 @@ while capture.isOpened():
     """
     if len(predictions) == 0: continue
 
-    """
-    predictionの中身の確認
-    """
-    print(predictions)
-
     #骨格を表示
     annotated_image: np.ndarray = draw_landmarks(frame, predictions)
     #predictions[0].data[0] : (x,y,c)
+
+    #骨格(ベクトル)を表示
+    vectors = correct_vectors(predictions, 0)
+    annotated_image: np.ndarray = draw_vectors(frame, vectors)
+    person_vectors: np.ndarray = np.asarray(vectors)
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+    #print(person_vectors)
+    print(convert_simpleVectors(person_vectors))
+    print("--------------------------------")
+    #print(convert_simpleVectors(person_vectors))
+    print(normalize_vectors(convert_simpleVectors(person_vectors)))
+
+    print(compare_pose(person_vectors, person_vectors))
+
+
 
     #外接矩形を表示
     #annotated_image: np.ndarray = draw_rectangle(frame, predictions)
