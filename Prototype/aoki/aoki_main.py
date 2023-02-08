@@ -49,7 +49,7 @@ while capture.isOpened():
 
     #骨格を表示
     annotated_image: np.ndarray = draw_landmarks(frame, predictions)
-    predictions[0].data[0] : (x,y,c)
+    #predictions[0].data[0] : (x,y,c)
 
     #骨格(ベクトル)を表示
     annotated_image = frame.copy()
