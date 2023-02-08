@@ -7,7 +7,7 @@ from typing import List, Tuple
 from functions import create_connected
 from vector_functions import correct_vectors
 from draw_function import draw_line, draw_landmarks,draw_vectors, draw_rectangle, draw_id
-from settings import SCALE_UP
+from settings import SCALE_UP, weight
 
 
 # PCに繋がっているUSBカメラから撮る場合はこれ
