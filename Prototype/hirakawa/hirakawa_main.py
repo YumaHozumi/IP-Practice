@@ -5,6 +5,7 @@ import openpifpaf
 from PIL import Image
 from typing import List, Tuple
 from functions import create_connected
+from vector_functions import correct_vectors
 from draw_function import draw_line, draw_landmarks,draw_vectors, draw_rectangle, draw_id
 from settings import SCALE_UP
 
@@ -51,7 +52,13 @@ while capture.isOpened():
     #predictions[0].data[0] : (x,y,c)
 
     #骨格(ベクトル)を表示
-    annotated_image: np.ndarray = draw_vectors(frame, predictions)
+    annotated_image = frame.copy()
+
+    for person_id in range(len(predictions)):
+        vectors = correct_vectors(predictions, person_id)
+        annotated_image = draw_vectors(annotated_image, vectors)
+        person_vectors = np.asarray(vectors)
+
 
     #外接矩形を表示
     #annotated_image: np.ndarray = draw_rectangle(frame, predictions)

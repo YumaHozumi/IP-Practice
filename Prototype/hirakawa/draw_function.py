@@ -38,6 +38,19 @@ def draw_landmarks(image: np.ndarray, landmarks: List) -> np.ndarray:
     return annotated_image
 
 #骨格を表示する(correct_vectors使用版)
+def draw_vectors(image: np.ndarray, vectors: List) -> np.ndarray:
+
+    annotated_image = image.copy()
+
+    for (pt1, pt2) in vectors:
+            if((0 in pt1) or (0 in pt2)): continue # 座標をうまく取得できなかったとき
+
+            annotated_image = draw_line(annotated_image, pt1, pt2)    
+    
+    return annotated_image
+
+"""
+#骨格を表示する(correct_vectors使用版)
 def draw_vectors(image: np.ndarray, landmarks: List) -> np.ndarray:
 
     annotated_image = image.copy()
@@ -50,6 +63,8 @@ def draw_vectors(image: np.ndarray, landmarks: List) -> np.ndarray:
             annotated_image = draw_line(annotated_image, pt1, pt2)
     
     return annotated_image
+"""
+
 
 
 #矩形を表示する
