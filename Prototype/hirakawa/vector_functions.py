@@ -94,7 +94,49 @@ def correct_vectors(landmarks: np.ndarray, index: int) -> List[Tuple[np.ndarray]
 
     return connected
 
+def convert_simpleVectors(person_vectors: np.ndarray) -> np.ndarray:
+    """
+    始点・終点の座標から(0,0)を始点とする簡単なベクトルに変換
 
+    Args:
+        person_vectors: ある一人の抽出した部位ベクトル
+    """
+    simpleVectors: np.ndarray = np.zeros((len(person_vectors), 3))
+    for vector_num in range(len(person_vectors)):
+        start_vec, end_vec = person_vectors[vector_num]
+        #始点と終点がともに検出された場合ベクトルを計算
+        if(not (start_vec[2] == 0 or end_vec[2] == 0)):
+            #x,y方向の変化量を求める
+            simpleVectors[vector_num][0] = end_vec[0] - start_vec[0]
+            simpleVectors[vector_num][1] = end_vec[1] - start_vec[1]
 
+            #Confidenceの値を1(検出できた)に統一
+            simpleVectors[vector_num][2] = 1
 
+        #始点か終点のどちらかが未検出なら全部ゼロになる
+        
+    return simpleVectors
+
+def normalize_vectors(simple_vectors: np.ndarray) -> np.ndarray:
+    """
+    ベクトルの長さを1に変換する
+
+    Args:
+        simple_vectors: 変化量を表したベクトル(基本convert_simpleVectorsの戻り値)
+    """
+
+    xy_vectors = simple_vectors[:, :2] #xy成分だけ取り出す
+    #print(xy_vectors)
+
+    #ベクトルを長さ1に正規化
+    normalized_vectors: np.ndarray = np.zeros_like(simple_vectors)
+    for vector_num in range(len(simple_vectors)):
+        #始点と終点がともに検出された場合ベクトルを正規化
+        if(not (simple_vectors[vector_num][2] == 0)):
+            vector_length = np.linalg.norm(xy_vectors[vector_num])
+            normalized_vectors[vector_num][0] =  simple_vectors[vector_num][0] / vector_length
+            normalized_vectors[vector_num][1] =  simple_vectors[vector_num][1] / vector_length
+            normalized_vectors[vector_num][2] =  simple_vectors[vector_num][2]
+
+    return normalized_vectors
 

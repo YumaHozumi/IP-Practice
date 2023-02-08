@@ -57,7 +57,7 @@ while capture.isOpened():
     for person_id in range(len(predictions)):
         vectors = correct_vectors(predictions, person_id)
         annotated_image = draw_vectors(annotated_image, vectors)
-        person_vectors = np.asarray(vectors)
+        person_vectors: np.ndarray = np.asarray(vectors)
 
 
     #外接矩形を表示

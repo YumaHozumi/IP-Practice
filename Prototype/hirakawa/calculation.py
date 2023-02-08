@@ -1,5 +1,8 @@
 import numpy as np
 
+def normalize_vector():
+    return 0
+
 """
 二人の部位ごとのベクトルの内積を取る
 vec1:一人目のベクトル集合
