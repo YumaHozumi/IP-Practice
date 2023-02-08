@@ -6,7 +6,7 @@ from PIL import Image
 from typing import List, Tuple
 from functions import create_connected
 from vector_functions import correct_vectors
-from draw_function import draw_line, draw_landmarks,draw_vectors, draw_rectangle, draw_id
+from draw_function import draw_line, draw_landmarks,draw_vectors, draw_rectangle, draw_id, draw_similarity
 from calculation import compare_pose
 from settings import SCALE_UP, weight
 
@@ -63,14 +63,13 @@ while capture.isOpened():
         annotated_image = draw_vectors(annotated_image, vectors)
         people_vectors[person_id] = np.asarray(vectors)
 
-    print(people_vectors.shape)
+    #print(people_vectors.shape)
     
     #一人で検証する用
     #print(compare_pose(people_vectors[0], people_vectors[0]))
 
 
-    if(len(predictions) >= 2):
-        print(compare_pose(people_vectors[0], people_vectors[1]) * 100)
+    
 
     #外接矩形を表示
     #annotated_image: np.ndarray = draw_rectangle(frame, predictions)
@@ -81,6 +80,13 @@ while capture.isOpened():
 
     #idの描画
     annotated_image = draw_id(annotated_image, predictions, width)
+    
+    #similarityの描画
+    if(len(predictions) >= 2):
+        similarity = compare_pose(people_vectors[0], people_vectors[1]) * 100
+        print(similarity)
+        #similarityの描画
+        annotated_image = draw_similarity(annotated_image, predictions, 0, 1, similarity)
 
     bigger_frame = cv2.resize(annotated_image, (int(width) * 2, int(height) * 2))
     cv2.imshow('Camera 1',bigger_frame)
