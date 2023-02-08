@@ -1,6 +1,6 @@
 import numpy as np
 from vector_functions import convert_simpleVectors, normalize_vectors
-from settings import weight, score_whole
+from settings import weight, score_perfect
 
 def normalize_vector():
     return 0
@@ -38,12 +38,14 @@ def calculate_score(xy_vectors_1: np.ndarray, xy_vectors_2: np.ndarray, label: n
     print(use_cos)
     print(exp_cos)
 
-    #検出できたベクトルのみスコアを加算していく
-    sum_points = 0
-    for point_num in range(len(exp_cos)):
-        if(not (label[point_num] == 0)):
-            sum_points += exp_cos[point_num]
+    #検出できたベクトルのみスコアをカウントする
+    sum_points = np.sum(exp_cos * label)
+    print(sum_points)
 
+    #完全一致の場合のスコアを算出
+    score_whole = np.sum(score_perfect * label)
+    #未検出のベクトルにペナルティを入れる場合は下を使う
+    #score_whole = np.sum(score_perfect)
 
     return sum_points / score_whole
 

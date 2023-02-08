@@ -7,4 +7,4 @@ SCALE_UP = 3.5
 weight = np.ones(13)
 
 #完全一致の場合のスコア
-score_whole = np.sum(np.exp(weight * np.ones(13)))
+score_perfect: np.ndarray = np.exp(weight * np.ones(13))

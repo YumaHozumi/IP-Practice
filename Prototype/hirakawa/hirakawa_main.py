@@ -7,6 +7,7 @@ from typing import List, Tuple
 from functions import create_connected
 from vector_functions import correct_vectors
 from draw_function import draw_line, draw_landmarks,draw_vectors, draw_rectangle, draw_id
+from calculation import compare_pose
 from settings import SCALE_UP, weight
 
 
@@ -54,11 +55,22 @@ while capture.isOpened():
     #骨格(ベクトル)を表示
     annotated_image = frame.copy()
 
+
+    people_vectors: np.ndarray = np.zeros((len(predictions), 13, 2, 3))
+
     for person_id in range(len(predictions)):
         vectors = correct_vectors(predictions, person_id)
         annotated_image = draw_vectors(annotated_image, vectors)
-        person_vectors: np.ndarray = np.asarray(vectors)
+        people_vectors[person_id] = np.asarray(vectors)
 
+    print(people_vectors.shape)
+    
+    #一人で検証する用
+    #print(compare_pose(people_vectors[0], people_vectors[0]))
+
+
+    if(len(predictions) >= 2):
+        print(compare_pose(people_vectors[0], people_vectors[1]) * 100)
 
     #外接矩形を表示
     #annotated_image: np.ndarray = draw_rectangle(frame, predictions)
