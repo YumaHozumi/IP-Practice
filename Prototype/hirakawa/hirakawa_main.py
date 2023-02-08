@@ -84,7 +84,7 @@ while capture.isOpened():
     #similarityの描画
     if(len(predictions) >= 2):
         similarity = compare_pose(people_vectors[0], people_vectors[1]) * 100
-        print(similarity)
+        #print(similarity)
         #similarityの描画
         annotated_image = draw_similarity(annotated_image, predictions, 0, 1, similarity)
 
