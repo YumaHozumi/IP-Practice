@@ -1,0 +1,2 @@
+class TimerSettingError(Exception):
+    pass
