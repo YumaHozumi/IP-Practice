@@ -1,2 +1,3 @@
 class TimerSettingError(Exception):
-    pass
+    def __str__(self) -> str:
+        return "タイマーをstartしてからendしてください"
