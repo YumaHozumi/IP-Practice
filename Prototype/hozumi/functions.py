@@ -1,7 +1,8 @@
 import cv2
-from typing import Tuple, List, Dict
+from typing import Tuple, List
 import numpy as np
 from settings import SCALE_UP
+
 
 def get_draw_info(pt1: np.ndarray, pt2: np.ndarray) -> List[Tuple[int, int]]:
     """座標点のxy座標を取得
@@ -100,6 +101,16 @@ def created_three_connected(landmarks: np.ndarray, index: int
     return connected
 
 def calculate_cos(pt1: np.ndarray, pt2: np.ndarray, pt3: np.ndarray) -> float:
+    """cosを計算して角度を求める
+
+    Args:
+        pt1 (np.ndarray): 1つ目の点
+        pt2 (np.ndarray): 2つ目の点
+        pt3 (np.ndarray): 3つ目の点
+
+    Returns:
+        float: 角度
+    """
     vec1: np.ndarray = pt2 - pt1
     vec2: np.ndarray = pt3 - pt1
     
@@ -110,3 +121,6 @@ def calculate_cos(pt1: np.ndarray, pt2: np.ndarray, pt3: np.ndarray) -> float:
     return degree
 
 
+
+    
+    
