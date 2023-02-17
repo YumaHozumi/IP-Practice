@@ -1,6 +1,6 @@
 import numpy as np
 from vector_functions import convert_simpleVectors, normalize_vectors
-from settings import weight, score_perfect, strict_weight, scale_weight, bias, score_weight
+from settings import score_perfect, strict_weight, scale_weight, bias, score_weight
 
 def compare_pose(vec1: np.ndarray, vec2: np.ndarray):
     normalized_vec1 = normalize_vectors(convert_simpleVectors(vec1))

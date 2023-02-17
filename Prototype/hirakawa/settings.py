@@ -3,9 +3,6 @@ import numpy as np
 #画面の縮尺
 SCALE_UP = 3.5
 
-#重みベクトル
-weight = np.ones(13)
-
 
 """
 スコア計算用パラメータ
@@ -22,10 +19,6 @@ strict_weight = (np.array(strict_weight)).T
 scale_weight = strict_weight[0] / np.exp(strict_weight[1])
 bias = strict_weight[2]
 
-#print(strict_weight.shape)
-print(scale_weight)
-print(bias)
-
 
 #影響度を調整するパラメータ
 largest = 3.0 #影響度最大
@@ -35,8 +28,6 @@ small = 0.5 #影響度最小
 score_weight: np.ndarray = [small, larger, largest, larger, largest, default_impact, 
                             larger, larger, larger, larger, default_impact, small, small]
 score_weight = np.array(score_weight)
-
-#print(score_weight.shape)
 
 #完全一致の場合のスコア
 score_perfect: np.ndarray = score_weight * (scale_weight * np.exp(strict_weight[1]) + bias)

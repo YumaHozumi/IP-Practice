@@ -8,7 +8,7 @@ from functions import create_connected
 from vector_functions import correct_vectors
 from draw_function import draw_line, draw_landmarks,draw_vectors, draw_rectangle, draw_id, draw_similarity
 from calculation import compare_pose
-from settings import SCALE_UP, weight
+from settings import SCALE_UP
 
 
 # PCに繋がっているUSBカメラから撮る場合はこれ
