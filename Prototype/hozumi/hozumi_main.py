@@ -6,6 +6,8 @@ from PIL import Image
 from typing import List, Tuple
 from functions import draw_line, create_connected, calculate_cos, created_three_connected
 from settings import SCALE_UP, TIMER
+from calculation import compare_pose
+from vector_functions import correct_vectors
 
 def draw_landmarks(image: np.ndarray, landmarks: List) -> np.ndarray:
 
@@ -58,7 +60,7 @@ while capture.isOpened():
     frame：RGBの値を持っている3次元の配列データ ex) サイズ (480, 640, 3) 高さ、幅、色チャネル
     """
     # タイマーの計測開始
-    TIMER.start()
+    # TIMER.start()
 
     read_video: Tuple[bool, np.ndarray] = capture.read()
     success, frame = read_video
@@ -80,6 +82,17 @@ while capture.isOpened():
     annotated_image: np.ndarray = draw_landmarks(frame, predictions)
     #predictions[0].data[0] : (x,y,c)
 
+    people_vectors: np.ndarray = np.zeros((len(predictions), 13, 2, 3))
+
+    for person_id in range(len(predictions)):
+        vectors = correct_vectors(predictions, person_id)
+        people_vectors[person_id] = np.asarray(vectors)
+
+    if len(people_vectors) >= 1:
+        similarity = compare_pose(people_vectors[0], people_vectors[0]) * 100
+        print(f"類似度：{similarity}")
+        print("---------------------------")
+
     height = frame.shape[0]
     width = frame.shape[1]
     annotated_image = cv2.flip(annotated_image, 1)
@@ -88,8 +101,8 @@ while capture.isOpened():
     #cv2.moveWindow("Camera 1", 200,40)
     calc(predictions, 0)
 
-    TIMER.end()
-    TIMER.calc_speed()
+    # TIMER.end()
+    # TIMER.calc_speed()
 
     # ESCキーを押すと終了
     if cv2.waitKey(100) == 0x1b:
