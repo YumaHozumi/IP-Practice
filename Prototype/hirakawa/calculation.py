@@ -1,6 +1,6 @@
 import numpy as np
 from vector_functions import convert_simpleVectors, normalize_vectors
-from settings import weight, score_perfect
+from settings import weight, score_perfect, strict_weight, scale_weight, bias, score_weight
 
 def compare_pose(vec1: np.ndarray, vec2: np.ndarray):
     normalized_vec1 = normalize_vectors(convert_simpleVectors(vec1))
@@ -32,12 +32,13 @@ def calculate_score(xy_vectors_1: np.ndarray, xy_vectors_2: np.ndarray, label: n
     cos: np.ndarray = calculate_cos(xy_vectors_1, xy_vectors_2) 
 
     #コサイン値に重みづけ
-    use_cos = cos * weight
+    use_cos = cos * strict_weight[1]
     #指数関数化
     exp_cos = np.exp(use_cos)
+    vector_points = score_weight * (scale_weight * exp_cos + bias)
 
     #検出できたベクトルのみスコアをカウントする
-    sum_points = np.sum(exp_cos * label)
+    sum_points = np.sum(vector_points * label)
 
     """
     動作検証用
