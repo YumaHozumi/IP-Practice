@@ -41,7 +41,7 @@ class Timer:
         if not self.__flag:
             raise TimerSettingError()
         
-        result: float = time.time() - self.__start
+        result: float = self.__end - self.__start
         self.__init_time()
         print(result)
         print("-----end timer-----\n")
