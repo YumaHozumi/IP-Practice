@@ -58,6 +58,7 @@ while capture.isOpened():
 
     people_vectors: np.ndarray = np.zeros((len(predictions), 13, 2, 3))
 
+    
     for person_id in range(len(predictions)):
         vectors = correct_vectors(predictions, person_id)
         annotated_image = draw_vectors(annotated_image, vectors)
@@ -67,8 +68,6 @@ while capture.isOpened():
     
     #一人で検証する用
     #print(compare_pose(people_vectors[0], people_vectors[0]))
-
-
     
 
     #外接矩形を表示
