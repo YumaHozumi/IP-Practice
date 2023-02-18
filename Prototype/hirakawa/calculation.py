@@ -63,11 +63,11 @@ def calculate_score(xy_vectors_1: np.ndarray, xy_vectors_2: np.ndarray, label: n
 
     #テスト用
     #print(not_detect_score)
-    print(sum_penalty_score)
+    #print(sum_penalty_score)
     # print(f"label:{label}")
     # print(f"score_perfect：{score_perfect}")
-    print(f"分子：{sum_points}")
-    print(f"分母：{score_whole}")
+    #print(f"分子：{sum_points}")
+    #print(f"分母：{score_whole}")
 
     return sum_points / score_whole
 
@@ -92,7 +92,7 @@ def calc_penalty(label: np.ndarray) -> float:
     not_detect_sum: int = np.sum(label == 0)
 
     #テスト用
-    print(f"not：{not_detect_sum}")
+    #print(f"not：{not_detect_sum}")
 
     # シグモイド関数を利用してみる
     #penalty: float = sigmoid(not_detect_sum)
