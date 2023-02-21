@@ -114,7 +114,7 @@ def calc_multiSimilarity(people_vectors: np.ndarray) -> float:
             if(i < j):
                 sum_similarity += compare_pose(people_vectors[i], people_vectors[j])
                 num_pares += 1
-                print(num_pares) #テスト用(組み合わせ数を表示)
+                #print(num_pares) #テスト用(組み合わせ数を表示)
 
     #平均類似度を返す
     return (sum_similarity / num_pares)
