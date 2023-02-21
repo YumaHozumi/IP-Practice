@@ -130,3 +130,25 @@ def draw_similarity(image: np.ndarray, landmarks: List, index_1: int, index_2, s
     
 
     return annotated_image
+
+
+def draw_result(image: np.ndarray, similarity: float) -> np.ndarray:
+    """
+    結果の表示を行うメソッド
+
+    Args:
+        image: 結果の描画を追加する画像(フレーム)
+        similarity: 表示する結果(類似度)
+
+    Returns:
+        np.ndarray: 結果表示を追加した画像
+    """
+
+    annotated_image = image.copy()
+
+    # 文字を重畳
+    id_color = (255,255,255)
+    id_txt = "similarity: " + str(similarity)
+    cv2.putText(annotated_image,id_txt,(100, 100),cv2.FONT_HERSHEY_SIMPLEX,2.0,id_color,2,cv2.LINE_4)
+
+    return annotated_image

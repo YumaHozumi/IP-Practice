@@ -100,3 +100,21 @@ def calc_penalty(label: np.ndarray) -> float:
     # 指数関数を利用してみる
     penalty: float = np.exp2(not_detect_sum)
     return penalty
+
+
+def calc_multiSimilarity(people_vectors: np.ndarray) -> float:
+    """
+    3人以上の場合でも全体の平均類似度を算出できる関数
+    """
+    sum_similarity = 0  #総類似度
+    num_pares = 0       #組み合わせ数
+
+    for i in range(len(people_vectors)):
+        for j in range(len(people_vectors)):
+            if(i < j):
+                sum_similarity += compare_pose(people_vectors[i], people_vectors[j])
+                num_pares += 1
+                print(num_pares) #テスト用(組み合わせ数を表示)
+
+    #平均類似度を返す
+    return (sum_similarity / num_pares)
