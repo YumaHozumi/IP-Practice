@@ -110,3 +110,45 @@ def draw_id(image: np.ndarray, landmarks: List, image_width: int) -> np.ndarray:
     
     return annotated_image
 
+def draw_similarity(image: np.ndarray, landmarks: List, index_1: int, index_2, similarity: float) -> np.ndarray:
+    annotated_image = image.copy()
+    body1_rectangle: List[float] = landmarks[index_1].json_data()["bbox"]
+    base1_x, base1_y, area_width1, area_height1 = body1_rectangle
+    body2_rectangle: List[float] = landmarks[index_2].json_data()["bbox"]
+    base2_x, base2_y, area_width1, area_height1 = body2_rectangle
+
+    x1: int = int(((base1_x + base2_x) / 2) * SCALE_UP)
+    if(base1_y > base2_y):
+        y1 = int((base2_y - 10) * SCALE_UP)
+    else:
+        y1 = int((base1_y - 10) * SCALE_UP)
+
+    # 文字を重畳
+    id_color = (255,255,255)
+    id_txt = "similarity: " + str(similarity)
+    cv2.putText(annotated_image,id_txt,(x1, y1),cv2.FONT_HERSHEY_SIMPLEX,1.0,id_color,2,cv2.LINE_4)
+    
+
+    return annotated_image
+
+
+def draw_result(image: np.ndarray, similarity: float) -> np.ndarray:
+    """
+    結果の表示を行うメソッド
+
+    Args:
+        image: 結果の描画を追加する画像(フレーム)
+        similarity: 表示する結果(類似度)
+
+    Returns:
+        np.ndarray: 結果表示を追加した画像
+    """
+
+    annotated_image = image.copy()
+
+    # 文字を重畳
+    id_color = (255,255,255)
+    id_txt = "similarity: " + str(similarity)
+    cv2.putText(annotated_image,id_txt,(100, 100),cv2.FONT_HERSHEY_SIMPLEX,2.0,id_color,2,cv2.LINE_4)
+
+    return annotated_image
