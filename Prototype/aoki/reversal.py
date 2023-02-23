@@ -1,7 +1,14 @@
-import cv2
+from PIL import Image
+import numpy as np
+import matplotlib.pyplot as plt
+import statistics
+import math
 
-img = cv2.imread('MAX76_gjmax20140531_TP_V.jpg')
-
-# 左右反転させるコード
-img_flip_lr = cv2.flip(img, 1)
-cv2.imwrite('MAX76_reverse.jpg', img_flip_lr)
+if __name__ == "__main__":
+    img = np.asarray(Image.open('MAX76_gjmax20140531_TP_V.jpg'), dtype=np.uint8)
+    img = img[:, ::-1, :]
+    plt.imshow(img)
+    plt.xticks(color="None")
+    plt.yticks(color="None")
+    plt.tick_params(length=0)
+    plt.savefig('MAX76_reverse.jpg')
