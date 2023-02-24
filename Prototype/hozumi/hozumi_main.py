@@ -5,7 +5,7 @@ import openpifpaf
 from PIL import Image
 from typing import List, Tuple
 from functions import draw_line, create_connected, calculate_cos, created_three_connected
-from settings import SCALE_UP, TIMER
+from settings import SCALE_UP, TIMER, X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END
 from calculation import compare_pose
 from vector_functions import correct_vectors
 
@@ -60,7 +60,7 @@ while capture.isOpened():
     frame：RGBの値を持っている3次元の配列データ ex) サイズ (480, 640, 3) 高さ、幅、色チャネル
     """
     # タイマーの計測開始
-    # TIMER.start()
+    TIMER.start()
 
     read_video: Tuple[bool, np.ndarray] = capture.read()
     success, frame = read_video
@@ -69,9 +69,10 @@ while capture.isOpened():
     if not success :
         print( "frame is None" )
         break
-    
-    
-    resize_frame: np.ndarray = cv2.resize(frame, dsize=None, fx=(1.0 / SCALE_UP), fy=(1.0 / SCALE_UP))
+    # img[top : bottom, left : right]
+    #limit_frame = frame[Y_LIMIT_START:Y_LIMIT_END, X_LIMIT_START:X_LIMIT_END]
+    limit_frame = frame
+    resize_frame: np.ndarray = cv2.resize(limit_frame, dsize=None, fx=(1.0 / SCALE_UP), fy=(1.0 / SCALE_UP))
 
     predictions, gt_anns, meta = predictor.numpy_image(resize_frame)
     """
@@ -90,19 +91,20 @@ while capture.isOpened():
 
     if len(people_vectors) >= 1:
         similarity = compare_pose(people_vectors[0], people_vectors[0]) * 100
-        print(f"類似度：{similarity}")
-        print("---------------------------")
+        # print(f"類似度：{similarity}")
+        # print("---------------------------")
 
     height = frame.shape[0]
     width = frame.shape[1]
+    #annotated_image = cv2.rectangle(annotated_image, (X_LIMIT_START, Y_LIMIT_START), (X_LIMIT_END, Y_LIMIT_END), (0,255,0), thickness=2)
     annotated_image = cv2.flip(annotated_image, 1)
     bigger_frame = cv2.resize(annotated_image, (int(width) * 2, int(height) * 2))
     cv2.imshow('Camera 1',bigger_frame)
     #cv2.moveWindow("Camera 1", 200,40)
     calc(predictions, 0)
 
-    # TIMER.end()
-    # TIMER.calc_speed()
+    TIMER.end()
+    TIMER.calc_speed()
 
     # ESCキーを押すと終了
     if cv2.waitKey(100) == 0x1b:

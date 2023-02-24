@@ -53,18 +53,18 @@ def calculate_score(xy_vectors_1: np.ndarray, xy_vectors_2: np.ndarray, label: n
     not_detect_score: np.ndarray = not_detect_label * score_perfect * calc_penalty(label)
     sum_penalty_score: float = not_detect_score.sum()
     #print(not_detect_score)
-    print(sum_penalty_score)
+    #print(sum_penalty_score)
     #完全一致の場合のスコアを算出
     score_whole = np.sum(score_perfect * label)
     #未検出のベクトルにペナルティを入れる場合は下を使う
     #score_whole = np.sum(score_perfect)
     # print(f"label:{label}")
     # print(f"score_perfect：{score_perfect}")
-    print(f"分子：{sum_points}")
+    #print(f"分子：{sum_points}")
     
     # ペナルティを加算
     score_whole += calc_penalty(label)
-    print(f"分母：{score_whole}")
+    #print(f"分母：{score_whole}")
 
     return sum_points / score_whole
 
@@ -84,7 +84,7 @@ def calculate_cos(xy_vectors_1: np.ndarray, xy_vectors_2: np.ndarray) -> np.ndar
 
 def calc_penalty(label: np.ndarray) -> float:
     not_detect_sum: int = np.sum(label == 0)
-    print(f"not：{not_detect_sum}")
+    #print(f"not：{not_detect_sum}")
     # シグモイド関数を利用してみる
     #penalty: float = sigmoid(not_detect_sum)
 
