@@ -70,8 +70,8 @@ while capture.isOpened():
         print( "frame is None" )
         break
     # img[top : bottom, left : right]
-    #limit_frame = frame[Y_LIMIT_START:Y_LIMIT_END, X_LIMIT_START:X_LIMIT_END]
-    limit_frame = frame
+    limit_frame = frame[Y_LIMIT_START:Y_LIMIT_END, X_LIMIT_START:X_LIMIT_END]
+    #limit_frame = frame
     resize_frame: np.ndarray = cv2.resize(limit_frame, dsize=None, fx=(1.0 / SCALE_UP), fy=(1.0 / SCALE_UP))
 
     predictions, gt_anns, meta = predictor.numpy_image(resize_frame)
@@ -96,7 +96,7 @@ while capture.isOpened():
 
     height = frame.shape[0]
     width = frame.shape[1]
-    #annotated_image = cv2.rectangle(annotated_image, (X_LIMIT_START, Y_LIMIT_START), (X_LIMIT_END, Y_LIMIT_END), (0,255,0), thickness=2)
+    annotated_image = cv2.rectangle(annotated_image, (X_LIMIT_START, Y_LIMIT_START), (X_LIMIT_END, Y_LIMIT_END), (0,255,0), thickness=2)
     annotated_image = cv2.flip(annotated_image, 1)
     bigger_frame = cv2.resize(annotated_image, (int(width) * 2, int(height) * 2))
     cv2.imshow('Camera 1',bigger_frame)
