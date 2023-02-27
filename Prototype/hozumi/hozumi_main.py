@@ -8,6 +8,9 @@ from functions import draw_line, create_connected, calculate_cos, created_three_
 from settings import SCALE_UP, TIMER, X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END
 from calculation import compare_pose
 from vector_functions import correct_vectors
+from threading import Timer
+import threading
+import time
 
 def draw_landmarks(image: np.ndarray, landmarks: List) -> np.ndarray:
 
@@ -40,6 +43,12 @@ def calc(landmarks: np.ndarray, index: int):
         # index += 1
         # print(calculate_cos(pt1, pt2, pt3))
 
+def display_count(end_time, loop):
+    if (loop.time() + 1.0) < end_time:
+        loop.call_later(1, display_count, end_time, loop)
+    else:
+        loop.call_soon(loop.stop) # 単に loop.stop() でもいい
+
 # PCに繋がっているUSBカメラから撮る場合はこれ
 capture = cv2.VideoCapture(0)
 
@@ -54,14 +63,27 @@ if capture.isOpened(): # 正常に読みこめたとき
 
 predictor = openpifpaf.Predictor(checkpoint = "shufflenetv2k16")
 
+def hello():
+    print("hello")
+
+
+def countDown():
+    for i in range(5): 
+        print(i)
+        time.sleep(1)
+
 while capture.isOpened():
     """
     success：画像の取得が成功したか
     frame：RGBの値を持っている3次元の配列データ ex) サイズ (480, 640, 3) 高さ、幅、色チャネル
     """
     # タイマーの計測開始
-    TIMER.start()
-
+    # TIMER.start()
+    if cv2.waitKey(100) == ord('c'):
+        t = threading.Thread(target=countDown)
+        t.start()
+            
+    
     read_video: Tuple[bool, np.ndarray] = capture.read()
     success, frame = read_video
     # print("frame1 =",frame)
@@ -103,8 +125,8 @@ while capture.isOpened():
     #cv2.moveWindow("Camera 1", 200,40)
     calc(predictions, 0)
 
-    TIMER.end()
-    TIMER.calc_speed()
+    # TIMER.end()
+    # TIMER.calc_speed()
 
     # ESCキーを押すと終了
     if cv2.waitKey(100) == 0x1b:
@@ -113,3 +135,4 @@ while capture.isOpened():
 
 capture.release()
 cv2.destroyAllWindows()
+
