@@ -5,7 +5,7 @@ import openpifpaf
 from PIL import Image
 from typing import List, Tuple
 from functions import draw_line, create_connected, calculate_cos, created_three_connected
-from settings import SCALE_UP, TIMER, X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END
+from settings import SCALE_UP, TIMER, X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, COUNT_X, COUNT_Y
 from calculation import compare_pose
 from vector_functions import correct_vectors
 from threading import Timer
@@ -59,19 +59,16 @@ if capture.isOpened(): # 正常に読みこめたとき
 predictor = openpifpaf.Predictor(checkpoint = "shufflenetv2k16")
 q = queue.Queue()
 frame_q = queue.Queue()
+temp = int()
 
 def countDown(counts: int):
+    global temp
     for i in range(counts): 
         time.sleep(1)
         print(i)
         q.put(counts-i)
-
-def display_count(frame: np.ndarray):
-    item = q.get()
-    print(f"item: {item}")
-    cv2.putText(frame, text=f"count: {item}", org=(100, 300), fontFace=cv2.FONT_HERSHEY_SCRIPT_SIMPLEX,
-                fontScale=1.0, color=(0,255,0), thickness=2,lineType=cv2.LINE_4)
-    frame_q.put(frame)
+    time.sleep(1)
+    temp = 0
 
 while capture.isOpened():
     """
@@ -118,10 +115,12 @@ while capture.isOpened():
     # print("frame1 =",frame)
 
     if not q.empty():
-        draw_thread = threading.Thread(target=display_count, args=(annotated_image,))
-        draw_thread.start()
-        draw_thread.join()
-        annotated_image = frame_q.get()
+        temp = q.get()
+
+        print(f"item: {temp}")
+    if temp != 0:
+        cv2.putText(annotated_image, text=f"count: {temp}", org=(COUNT_X, COUNT_Y), fontFace=cv2.FONT_HERSHEY_TRIPLEX,
+                fontScale=2.0, color=(0,255,0), thickness=2,lineType=cv2.LINE_4)
 
     bigger_frame = cv2.resize(annotated_image, (int(width) * 2, int(height) * 2))
     cv2.imshow('Camera 1',bigger_frame)
