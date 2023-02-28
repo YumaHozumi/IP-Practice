@@ -70,6 +70,9 @@ def countDown(counts: int):
     time.sleep(1)
     temp = None
 
+def screenshot(frame: np.ndarray):
+    cv2.imwrite(filename="test.png", img=frame)
+
 while capture.isOpened():
     """
     success：画像の取得が成功したか
@@ -116,8 +119,12 @@ while capture.isOpened():
 
     if not q.empty():
         temp = q.get()
+        if temp == 0:
+            pic_thread = threading.Thread(target=screenshot, args=(frame, ))
+            pic_thread.start()
+            pic_thread.join()
 
-        print(f"item: {temp}")
+        print(f"time: {temp}")
     if temp != None:
         cv2.putText(annotated_image, text=f"count: {temp}", org=(COUNT_X, COUNT_Y), fontFace=cv2.FONT_HERSHEY_TRIPLEX,
                 fontScale=2.0, color=(0,255,0), thickness=2,lineType=cv2.LINE_4)
