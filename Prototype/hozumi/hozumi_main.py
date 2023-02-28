@@ -59,16 +59,16 @@ if capture.isOpened(): # 正常に読みこめたとき
 predictor = openpifpaf.Predictor(checkpoint = "shufflenetv2k16")
 q = queue.Queue()
 frame_q = queue.Queue()
-temp = int()
+temp = None
 
 def countDown(counts: int):
     global temp
-    for i in range(counts): 
+    for i in range(counts+1): 
         time.sleep(1)
         print(i)
         q.put(counts-i)
     time.sleep(1)
-    temp = 0
+    temp = None
 
 while capture.isOpened():
     """
@@ -118,7 +118,7 @@ while capture.isOpened():
         temp = q.get()
 
         print(f"item: {temp}")
-    if temp != 0:
+    if temp != None:
         cv2.putText(annotated_image, text=f"count: {temp}", org=(COUNT_X, COUNT_Y), fontFace=cv2.FONT_HERSHEY_TRIPLEX,
                 fontScale=2.0, color=(0,255,0), thickness=2,lineType=cv2.LINE_4)
 
