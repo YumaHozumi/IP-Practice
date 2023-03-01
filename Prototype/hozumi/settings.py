@@ -7,6 +7,8 @@ X_LIMIT_START = 170
 Y_LIMIT_START = 100
 X_LIMIT_END = 480
 Y_LIMIT_END = 480
+COUNT_X = 100
+COUNT_Y = 50
 
 weight = np.ones(13)
 

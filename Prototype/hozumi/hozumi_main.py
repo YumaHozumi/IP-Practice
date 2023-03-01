@@ -5,9 +5,13 @@ import openpifpaf
 from PIL import Image
 from typing import List, Tuple
 from functions import draw_line, create_connected, calculate_cos, created_three_connected
-from settings import SCALE_UP, TIMER, X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END
+from settings import SCALE_UP, TIMER, X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, COUNT_X, COUNT_Y
 from calculation import compare_pose
 from vector_functions import correct_vectors
+from threading import Timer
+import threading
+import time
+import queue
 
 def draw_landmarks(image: np.ndarray, landmarks: List) -> np.ndarray:
 
@@ -53,18 +57,30 @@ if capture.isOpened(): # 正常に読みこめたとき
     print( "Device captured correctly",capture)
 
 predictor = openpifpaf.Predictor(checkpoint = "shufflenetv2k16")
+q = queue.Queue()
+frame_q = queue.Queue()
+temp = None
+
+def countDown(counts: int):
+    global temp
+    for i in range(counts+1): 
+        time.sleep(1)
+        print(i)
+        q.put(counts-i)
+    time.sleep(1)
+    temp = None
+
+def screenshot(frame: np.ndarray):
+    cv2.imwrite(filename="test.png", img=frame)
 
 while capture.isOpened():
     """
     success：画像の取得が成功したか
     frame：RGBの値を持っている3次元の配列データ ex) サイズ (480, 640, 3) 高さ、幅、色チャネル
     """
-    # タイマーの計測開始
-    TIMER.start()
 
     read_video: Tuple[bool, np.ndarray] = capture.read()
     success, frame = read_video
-    # print("frame1 =",frame)
 
     if not success :
         print( "frame is None" )
@@ -98,18 +114,45 @@ while capture.isOpened():
     width = frame.shape[1]
     annotated_image = cv2.rectangle(annotated_image, (X_LIMIT_START, Y_LIMIT_START), (X_LIMIT_END, Y_LIMIT_END), (0,255,0), thickness=2)
     annotated_image = cv2.flip(annotated_image, 1)
+
+    # print("frame1 =",frame)
+
+    if not q.empty():
+        temp = q.get()
+        if temp == 0:
+            pic_thread = threading.Thread(target=screenshot, args=(frame, ))
+            pic_thread.start()
+            pic_thread.join()
+
+        print(f"time: {temp}")
+    if temp != None:
+        cv2.putText(annotated_image, text=f"count: {temp}", org=(COUNT_X, COUNT_Y), fontFace=cv2.FONT_HERSHEY_TRIPLEX,
+                fontScale=2.0, color=(0,255,0), thickness=2,lineType=cv2.LINE_4)
+
     bigger_frame = cv2.resize(annotated_image, (int(width) * 2, int(height) * 2))
     cv2.imshow('Camera 1',bigger_frame)
     #cv2.moveWindow("Camera 1", 200,40)
     calc(predictions, 0)
 
-    TIMER.end()
-    TIMER.calc_speed()
+    # TIMER.end()
+    # TIMER.calc_speed()
 
     # ESCキーを押すと終了
-    if cv2.waitKey(100) == 0x1b:
+    
+    # 数値100で0.1s秒キー入力待つ
+    # ※ここがボトルネックの一因になってた可能性あり※
+    # 100->1でめっちゃぬるぬる動くように、、、
+    if cv2.waitKey(1) == 0x1b:
         print('ESC pressed. Exiting ...')
         break
 
+    # タイマーの計測開始
+    # TIMER.start()
+    if cv2.waitKey(1) == ord('c'):
+        if threading.active_count() <= 1:
+            thread = threading.Thread(target=countDown, args=(5,))
+            thread.setDaemon(True)
+            thread.start()
 capture.release()
 cv2.destroyAllWindows()
+
