@@ -64,8 +64,8 @@ def calculate_score(xy_vectors_1: np.ndarray, xy_vectors_2: np.ndarray, label: n
     #テスト用
     #print(not_detect_score)
     #print(sum_penalty_score)
-    # print(f"label:{label}")
-    # print(f"score_perfect：{score_perfect}")
+    #print(f"label:{label}")
+    #print(f"score_perfect：{score_perfect}")
     #print(f"分子：{sum_points}")
     #print(f"分母：{score_whole}")
 

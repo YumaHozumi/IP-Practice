@@ -4,9 +4,8 @@ import numpy as np
 import openpifpaf
 from PIL import Image
 from typing import List, Tuple
-from functions import create_connected
 from vector_functions import correct_vectors
-from draw_function import draw_line, draw_landmarks,draw_vectors, draw_rectangle, draw_id, draw_similarity, draw_result
+from draw_function import draw_vectors, draw_result
 from calculation import compare_pose, calc_multiSimilarity
 from settings import SCALE_UP, X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END
 

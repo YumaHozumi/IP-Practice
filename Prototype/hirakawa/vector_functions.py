@@ -95,8 +95,7 @@ def correct_vectors(landmarks: np.ndarray, index: int) -> List[Tuple[np.ndarray]
     return connected
 
 def convert_simpleVectors(person_vectors: np.ndarray) -> np.ndarray:
-    """
-    始点・終点の座標から(0,0)を始点とする簡単なベクトルに変換
+    """始点・終点の座標から(0,0)を始点とする簡単なベクトルに変換
 
     Args:
         person_vectors: ある一人の抽出した部位ベクトル
@@ -118,8 +117,7 @@ def convert_simpleVectors(person_vectors: np.ndarray) -> np.ndarray:
     return simpleVectors
 
 def normalize_vectors(simple_vectors: np.ndarray) -> np.ndarray:
-    """
-    ベクトルの長さを1に変換する
+    """ベクトルの長さを1に変換する
 
     Args:
         simple_vectors: 変化量を表したベクトル(基本convert_simpleVectorsの戻り値)
