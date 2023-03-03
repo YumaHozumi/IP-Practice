@@ -91,7 +91,7 @@ while capture.isOpened():
     #cv2.moveWindow("Camera 1", 200,40)
 
     # ESCキーを押すと終了
-    if cv2.waitKey(100) == 0x1b:
+    if cv2.waitKey(10) == 0x1b:
         print('ESC pressed. Exiting ...')
         break
 

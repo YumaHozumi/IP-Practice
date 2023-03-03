@@ -2,7 +2,17 @@ import numpy as np
 from vector_functions import convert_simpleVectors, normalize_vectors
 from settings import score_perfect, strict_weight, scale_weight, bias, score_weight
 
-def compare_pose(vec1: np.ndarray, vec2: np.ndarray):
+def compare_pose(vec1: np.ndarray, vec2: np.ndarray) -> float:
+    """2人の姿勢の類似度を求める
+
+    Args:
+        vec1 (np.ndarray): 1人目のベクトル集合
+        vec2 (np.ndarray): 2人目のベクトル集合
+
+    Returns:
+        float: 2人の姿勢の類似度
+    """
+
     normalized_vec1 = normalize_vectors(convert_simpleVectors(vec1))
     xy_vectors_1 = normalized_vec1[:, :2] #xy成分だけ取り出す
     use_label_1 = normalized_vec1[:, 2] #ラベルを取り出す
@@ -11,23 +21,33 @@ def compare_pose(vec1: np.ndarray, vec2: np.ndarray):
     xy_vectors_2 = normalized_vec2[:, :2] #xy成分だけ取り出す
     use_label_2 = normalized_vec2[:, 2] #ラベルを取り出す
 
-    
 
     use_label_mixed: np.ndarray = use_label_1 * use_label_2
 
-    """
+
     #動作確認用
-    print(xy_vectors_1)
-    print(use_label_1)
-    print(xy_vectors_2)
-    print(use_label_2)
-    print(use_label_mixed)
-    """
+    #print(xy_vectors_1)
+    #print(use_label_1)
+    #print(xy_vectors_2)
+    #print(use_label_2)
+    #print(use_label_mixed)
+    
 
     return calculate_score(xy_vectors_1, xy_vectors_2, use_label_mixed)
 
 
-def calculate_score(xy_vectors_1: np.ndarray, xy_vectors_2: np.ndarray, label: np.ndarray):
+def calculate_score(xy_vectors_1: np.ndarray, xy_vectors_2: np.ndarray, label: np.ndarray) -> float:
+    """類似度計算を行う(comparepose経由で呼び出す前提)
+
+    Args:
+        xy_vectors_1 (np.ndarray): 1人目のベクトルデータ
+        xy_vectors_2 (np.ndarray): 2人目のベクトルデータ
+        label (np.ndarray): ベクトルの検出・未検出のラベル
+
+    Returns:
+        float: 類似度
+    """
+
     #内積を計算
     cos: np.ndarray = calculate_cos(xy_vectors_1, xy_vectors_2) 
 
@@ -40,13 +60,13 @@ def calculate_score(xy_vectors_1: np.ndarray, xy_vectors_2: np.ndarray, label: n
     #検出できたベクトルのみスコアをカウントする
     sum_points = np.sum(vector_points * label)
 
-    """
-    動作検証用
-    print(cos)
-    print(use_cos)
-    print(exp_cos)
-    print(sum_points)
-    """
+
+    #動作検証用
+    #print(cos)
+    #print(use_cos)
+    #print(exp_cos)
+    #print(sum_points)
+
 
     # ラベルの01反転
     not_detect_label: np.ndarray = np.logical_not(label)
@@ -71,24 +91,37 @@ def calculate_score(xy_vectors_1: np.ndarray, xy_vectors_2: np.ndarray, label: n
 
     return sum_points / score_whole
 
-"""
-二人の部位ごとのベクトルの内積を取る
-vec1:一人目のベクトル集合
-vec2:二人目のベクトル集合
-"""
+
 def calculate_cos(xy_vectors_1: np.ndarray, xy_vectors_2: np.ndarray) -> np.ndarray:
+    """内積計算を行う
+
+    Args:
+        xy_vectors_1 (np.ndarray): 1人目のベクトルデータ
+        xy_vectors_2 (np.ndarray): 2人目のベクトルデータ
+
+    Returns:
+        np.ndarray: 内積の集合
+    """
+    
+    #二人の部位ごとのベクトルの内積を取る
     cos_all: np.ndarray = np.dot(xy_vectors_1, xy_vectors_2.T)
-    cos: np.ndarray = np.zeros(len(xy_vectors_1))
 
     #対角成分抽出
+    cos: np.ndarray = np.zeros(len(xy_vectors_1))
     for vector_num in range(len(xy_vectors_1)):
         cos[vector_num] = cos_all[vector_num][vector_num]
     return cos
 
-"""
-ペナルティの計算
-"""
+
 def calc_penalty(label: np.ndarray) -> float:
+    """未検出のベクトルの数に応じたペナルティを計算
+
+    Args:
+        label (np.ndarray): ベクトルの検出・未検出のラベル
+
+    Returns:
+        float: ペナルティ
+    """
     not_detect_sum: int = np.sum(label == 0)
 
     #テスト用
@@ -103,9 +136,15 @@ def calc_penalty(label: np.ndarray) -> float:
 
 
 def calc_multiSimilarity(people_vectors: np.ndarray) -> float:
+    """グループ全体(人数問わず)の平均類似度を求める
+
+    Args:
+        people_vectors (np.ndarray): 認識した全ての人のベクトルデータ
+
+    Returns:
+        float: グループ類似度(全体の平均類似度)
     """
-    3人以上の場合でも全体の平均類似度を算出できる関数
-    """
+
     sum_similarity = 0  #総類似度
     num_pares = 0       #組み合わせ数
 
