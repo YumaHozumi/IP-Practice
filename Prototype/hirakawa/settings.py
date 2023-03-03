@@ -3,6 +3,15 @@ import numpy as np
 #画面の縮尺
 SCALE_UP = 3.5
 
+#処理領域の設定(macでは画像サイズが1280×720)
+X_LIMIT_START = 250
+Y_LIMIT_START = 200
+X_LIMIT_END = 1030
+Y_LIMIT_END = 720
+
+#結果の表示位置の設定
+Result_X = 400
+Result_Y = 150
 
 """
 スコア計算用パラメータ

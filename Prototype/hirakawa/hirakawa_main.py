@@ -4,9 +4,8 @@ import numpy as np
 import openpifpaf
 from PIL import Image
 from typing import List, Tuple
-from functions import create_connected
 from vector_functions import correct_vectors
-from draw_function import draw_line, draw_landmarks,draw_vectors, draw_rectangle, draw_id, draw_similarity
+from draw_function import draw_vectors, draw_id, draw_similarity
 from calculation import compare_pose
 from settings import SCALE_UP
 
@@ -92,7 +91,7 @@ while capture.isOpened():
     #cv2.moveWindow("Camera 1", 200,40)
 
     # ESCキーを押すと終了
-    if cv2.waitKey(100) == 0x1b:
+    if cv2.waitKey(10) == 0x1b:
         print('ESC pressed. Exiting ...')
         break
 

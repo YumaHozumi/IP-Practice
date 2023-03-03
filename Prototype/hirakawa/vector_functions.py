@@ -95,12 +95,15 @@ def correct_vectors(landmarks: np.ndarray, index: int) -> List[Tuple[np.ndarray]
     return connected
 
 def convert_simpleVectors(person_vectors: np.ndarray) -> np.ndarray:
-    """
-    始点・終点の座標から(0,0)を始点とする簡単なベクトルに変換
+    """始点・終点の座標から(0,0)を始点とする簡単なベクトルに変換
 
     Args:
-        person_vectors: ある一人の抽出した部位ベクトル
+        person_vectors (np.ndarray): ある一人の抽出した部位ベクトルの集合
+
+    Returns:
+        np.ndarray: 変換後のベクトル集合
     """
+
     simpleVectors: np.ndarray = np.zeros((len(person_vectors), 3))
     for vector_num in range(len(person_vectors)):
         start_vec, end_vec = person_vectors[vector_num]
@@ -118,11 +121,13 @@ def convert_simpleVectors(person_vectors: np.ndarray) -> np.ndarray:
     return simpleVectors
 
 def normalize_vectors(simple_vectors: np.ndarray) -> np.ndarray:
-    """
-    ベクトルの長さを1に変換する
+    """ベクトルの長さを1に変換する
 
     Args:
-        simple_vectors: 変化量を表したベクトル(基本convert_simpleVectorsの戻り値)
+        simple_vectors (np.ndarray): 変化量を表したベクトル集合(基本convert_simpleVectorsの戻り値)
+
+    Returns:
+        np.ndarray: 変換後のベクトル集合
     """
 
     xy_vectors = simple_vectors[:, :2] #xy成分だけ取り出す
