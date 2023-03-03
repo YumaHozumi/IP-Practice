@@ -3,7 +3,7 @@ import numpy as np
 from typing import List, Tuple
 from functions import get_draw_info, create_connected
 from vector_functions import correct_vectors
-from settings import SCALE_UP
+from settings import SCALE_UP, Result_X, Result_Y
 
 
 def draw_line(image: np.ndarray, pt1: np.ndarray, pt2: np.ndarray) -> np.ndarray:
@@ -147,8 +147,8 @@ def draw_result(image: np.ndarray, similarity: float) -> np.ndarray:
     annotated_image = image.copy()
 
     # 文字を重畳
-    id_color = (255,255,255)
-    id_txt = "similarity: " + str(similarity)
-    cv2.putText(annotated_image,id_txt,(100, 100),cv2.FONT_HERSHEY_SIMPLEX,2.0,id_color,2,cv2.LINE_4)
+    id_color = (0,255,0)
+    id_txt = "similarity: " + "{:.2f}".format(similarity)
+    cv2.putText(annotated_image,id_txt,(Result_X, Result_Y),cv2.FONT_HERSHEY_SIMPLEX,2.0,id_color,2,cv2.LINE_4)
 
     return annotated_image

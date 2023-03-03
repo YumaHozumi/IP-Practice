@@ -55,6 +55,8 @@ while capture.isOpened():
     if len(predictions) == 0: 
         height = frame.shape[0]
         width = frame.shape[1]
+        #サイズ確認用
+        print('({0}, {1})'.format(height, width))
         annotated_image = cv2.rectangle(annotated_image, (X_LIMIT_START, Y_LIMIT_START), (X_LIMIT_END, Y_LIMIT_END), (0,255,0), thickness=2)
         annotated_image = cv2.flip(annotated_image, 1)
         bigger_frame = cv2.resize(annotated_image, (int(width) * 2, int(height) * 2))
