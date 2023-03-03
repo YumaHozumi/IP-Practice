@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 from typing import List, Tuple
 from functions import get_draw_info, create_connected
-from vector_functions import correct_vectors
 from settings import SCALE_UP, Result_X, Result_Y
 
 
@@ -48,23 +47,6 @@ def draw_vectors(image: np.ndarray, vectors: List) -> np.ndarray:
             annotated_image = draw_line(annotated_image, pt1, pt2)    
     
     return annotated_image
-
-"""
-#骨格を表示する(correct_vectors使用版)
-def draw_vectors(image: np.ndarray, landmarks: List) -> np.ndarray:
-
-    annotated_image = image.copy()
-
-    for people_num in range(len(landmarks)):
-        connected_keypoints = correct_vectors(landmarks, index=people_num)
-        for (pt1, pt2) in connected_keypoints:
-            if((0 in pt1) or (0 in pt2)): continue # 座標をうまく取得できなかったとき
-
-            annotated_image = draw_line(annotated_image, pt1, pt2)
-    
-    return annotated_image
-"""
-
 
 
 #矩形を表示する
