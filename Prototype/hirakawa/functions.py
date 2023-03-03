@@ -1,7 +1,7 @@
 import cv2
 from typing import Tuple, List
 import numpy as np
-from settings import SCALE_UP
+from settings import SCALE_UP, X_LIMIT_START, Y_LIMIT_START
 
 def get_draw_info(pt1: np.ndarray, pt2: np.ndarray) -> List[Tuple[int, int]]:
     """座標点のxy座標を取得
@@ -13,10 +13,19 @@ def get_draw_info(pt1: np.ndarray, pt2: np.ndarray) -> List[Tuple[int, int]]:
     Returns:
         List[Tuple[int, int]]: それぞれのxy座標をタプルでまとめたリスト
     """    
+        
+    """
+    画面全体で認識する場合
     pt1_x = int(pt1[0] * SCALE_UP)
     pt1_y = int(pt1[1] * SCALE_UP)
     pt2_x = int(pt2[0] * SCALE_UP)
     pt2_y = int(pt2[1] * SCALE_UP)
+    """
+    
+    pt1_x = int(pt1[0] * SCALE_UP + X_LIMIT_START)
+    pt1_y = int(pt1[1] * SCALE_UP + Y_LIMIT_START)
+    pt2_x = int(pt2[0] * SCALE_UP + X_LIMIT_START)
+    pt2_y = int(pt2[1] * SCALE_UP + Y_LIMIT_START)
     
     return [(pt1_x, pt1_y), (pt2_x, pt2_y)]
 

@@ -3,6 +3,11 @@ import numpy as np
 #画面の縮尺
 SCALE_UP = 3.5
 
+#処理領域の設定
+X_LIMIT_START = 170
+Y_LIMIT_START = 100
+X_LIMIT_END = 480
+Y_LIMIT_END = 480
 
 """
 スコア計算用パラメータ
