@@ -71,7 +71,8 @@ def countDown(counts: int):
     temp = None
 
 def screenshot(frame: np.ndarray):
-    cv2.imwrite(filename="test.png", img=frame)
+    #cv2.imwrite(filename="test.png", img=frame)
+    pass
 
 while capture.isOpened():
     """
