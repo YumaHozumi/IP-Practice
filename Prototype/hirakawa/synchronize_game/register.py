@@ -8,7 +8,7 @@ from vector_functions import correct_vectors
 from draw_function import draw_vectors,draw_peopleNum
 from settings import SCALE_UP
 from area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END
-from regist_functions import registerable_check
+from regist_functions import registerable_check, regist_faceImg
 
 
 # PCに繋がっているUSBカメラから撮る場合はこれ
@@ -28,8 +28,8 @@ predictor = openpifpaf.Predictor(checkpoint = "shufflenetv2k16")
 
 while capture.isOpened():
     """
-    success：画像の取得が成功したか
-    frame：RGBの値を持っている3次元の配列データ ex) サイズ (480, 640, 3) 高さ、幅、色チャネル
+    success: 画像の取得が成功したか
+    frame: RGBの値を持っている3次元の配列データ ex) サイズ (480, 640, 3) 高さ、幅、色チャネル
     """
     read_video: Tuple[bool, np.ndarray] = capture.read()
     success, frame = read_video
@@ -60,8 +60,8 @@ while capture.isOpened():
         #print('({0}, {1})'.format(height, width))
         
         annotated_image = cv2.rectangle(annotated_image, (X_LIMIT_START, Y_LIMIT_START), (X_LIMIT_END, Y_LIMIT_END), (0,255,0), thickness=2)
-        annotated_image = cv2.flip(annotated_image, 1)
-        bigger_frame = cv2.resize(annotated_image, (int(width) * 2, int(height) * 2))
+        output_image = cv2.flip(annotated_image, 1)
+        bigger_frame = cv2.resize(output_image, (int(width) * 2, int(height) * 2))
         cv2.imshow('Camera 1',bigger_frame)
         
         # ESCキーを押すと終了
@@ -94,10 +94,21 @@ while capture.isOpened():
     cv2.imshow('Camera 1',bigger_frame)
     #cv2.moveWindow("Camera 1", 200,40)
 
+    # Enterキーを押したら画像の読み込みを終了
+    if cv2.waitKey(100) == 0x0d:
+        print('Enter pressed. Saving ...')
+        break
+
+
+#Enter押下時の画像から顔領域を抽出し、表示する
+while True:
+    face_flame:np.ndarray = regist_faceImg(register_frame, predictions, registable_label)
+    cv2.imshow('Camera 1',face_flame) #認識した顔の画像を表示
     # ESCキーを押すと終了
     if cv2.waitKey(10) == 0x1b:
         print('ESC pressed. Exiting ...')
         break
+
 
 capture.release()
 cv2.destroyAllWindows()
