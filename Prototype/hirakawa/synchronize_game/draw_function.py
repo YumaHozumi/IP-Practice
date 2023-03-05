@@ -3,6 +3,7 @@ import numpy as np
 from typing import List, Tuple
 from functions import get_draw_info, create_connected
 from settings import SCALE_UP, Result_X, Result_Y
+from area_settings import peopleNum_X, peopleNum_Y
 
 
 def draw_line(image: np.ndarray, pt1: np.ndarray, pt2: np.ndarray) -> np.ndarray:
@@ -183,7 +184,7 @@ def draw_result(image: np.ndarray, similarity: float) -> np.ndarray:
 
     return annotated_image
 
-def draw_peopleNumber(image: np.ndarray, peopleNumber: int) -> np.ndarray:
+def draw_peopleNum(image: np.ndarray, peopleNum: int) -> np.ndarray:
     """人数を表示する
 
     Args:
@@ -198,8 +199,8 @@ def draw_peopleNumber(image: np.ndarray, peopleNumber: int) -> np.ndarray:
 
     # 文字を重畳
     id_color = (0,255,0)
-    id_txt = "peopleNumber: " + str(peopleNumber)
-    cv2.putText(annotated_image,id_txt,(Result_X, Result_Y),cv2.FONT_HERSHEY_SIMPLEX,2.0,id_color,2,cv2.LINE_4)
+    id_txt = "peopleNumber: " + str(int(peopleNum))
+    cv2.putText(annotated_image,id_txt,(peopleNum_X, peopleNum_Y),cv2.FONT_HERSHEY_SIMPLEX,2.0,id_color,2,cv2.LINE_4)
 
     return annotated_image
 

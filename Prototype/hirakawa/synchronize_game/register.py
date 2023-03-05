@@ -5,10 +5,10 @@ import openpifpaf
 from PIL import Image
 from typing import List, Tuple
 from vector_functions import correct_vectors
-from draw_function import draw_vectors, draw_result, draw_peopleNumber
-from calculation import compare_pose, calc_multiSimilarity
+from draw_function import draw_vectors,draw_peopleNum
 from settings import SCALE_UP
 from area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END
+from regist_functions import registerable_check
 
 
 # PCに繋がっているUSBカメラから撮る場合はこれ
@@ -86,15 +86,16 @@ while capture.isOpened():
 
     
     #人数の描画
-    peopleNumber = len(predictions)
-    annotated_image = draw_peopleNumber(annotated_image, peopleNumber)
+    registable_label = registerable_check(predictions)
+    peopleNumber = np.sum(registable_label)
+    annotated_image = draw_peopleNum(annotated_image, peopleNumber)
 
     bigger_frame = cv2.resize(annotated_image, (int(width) * 2, int(height) * 2))
     cv2.imshow('Camera 1',bigger_frame)
     #cv2.moveWindow("Camera 1", 200,40)
 
     # ESCキーを押すと終了
-    if cv2.waitKey(100) == 0x1b:
+    if cv2.waitKey(10) == 0x1b:
         print('ESC pressed. Exiting ...')
         break
 
