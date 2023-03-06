@@ -9,3 +9,7 @@ Y_LIMIT_END = 720
 #人数の表示位置の設定
 peopleNum_X = 400
 peopleNum_Y = 150
+
+#顔画像の幅と高さ
+face_width = 200
+face_hight = 200

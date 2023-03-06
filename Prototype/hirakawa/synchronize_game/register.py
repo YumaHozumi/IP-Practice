@@ -101,14 +101,19 @@ while capture.isOpened():
 
 
 #Enter押下時の画像から顔領域を抽出し、表示する
+face_Imgs: List[np.ndarray] = regist_faceImg(register_frame, predictions, registable_label)
+images_h: np.ndarray = face_Imgs[0]
+if(len(face_Imgs) > 1):
+    for num in range(len(face_Imgs) - 1):
+        images_h = cv2.hconcat([images_h, face_Imgs[num + 1]])
+
 while True:
-    face_flame:np.ndarray = regist_faceImg(register_frame, predictions, registable_label)
-    cv2.imshow('Camera 1',face_flame) #認識した顔の画像を表示
+    cv2.imshow('Camera 1',images_h) #認識した顔の画像を表示
+            
     # ESCキーを押すと終了
     if cv2.waitKey(10) == 0x1b:
         print('ESC pressed. Exiting ...')
         break
-
 
 capture.release()
 cv2.destroyAllWindows()
