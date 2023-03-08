@@ -2,13 +2,33 @@ import cv2
 import numpy as np
 import openpifpaf
 from typing import List, Tuple
-from functions import draw_line, create_connected, calculate_cos, created_three_connected, screenshot
+from functions import draw_line, create_connected, calculate_cos, created_three_connected
 from settings import SCALE_UP, TIMER, X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, COUNT_X, COUNT_Y
 from calculation import compare_pose
 from vector_functions import correct_vectors
 import threading
 import time
 from queue import Queue
+
+predictor = openpifpaf.Predictor(checkpoint = "shufflenetv2k16")
+q: Queue = Queue()
+frame_q: Queue = Queue()
+temp = None
+isPlayerTurn: bool = False # 真似する人のターンだったらTrueに
+
+
+def screenshot(frame: np.ndarray):
+    """画面のスクショを疑似的に撮るための関数
+       ここから画像送ったりしましょう
+
+    Args:
+        frame (np.ndarray): 任意のタイミングのスクショ
+    """
+    global isPlayerTurn
+
+    isPlayerTurn = not isPlayerTurn
+    #cv2.imwrite(filename="test.png", img=frame)
+    return frame
 
 def draw_landmarks(image: np.ndarray, landmarks: List) -> np.ndarray:
 
@@ -41,6 +61,15 @@ def calc(landmarks: np.ndarray, index: int):
         # index += 1
         # print(calculate_cos(pt1, pt2, pt3))
 
+def countDown(counts: int):
+    global temp
+    for i in range(counts+1): 
+        time.sleep(1)
+        print(i)
+        q.put(counts-i)
+    time.sleep(1)
+    temp = None
+
 # PCに繋がっているUSBカメラから撮る場合はこれ
 capture = cv2.VideoCapture(0)
 
@@ -53,19 +82,7 @@ if not capture.isOpened(): # 正常に動画読み込めなかったとき
 if capture.isOpened(): # 正常に読みこめたとき
     print( "Device captured correctly",capture)
 
-predictor = openpifpaf.Predictor(checkpoint = "shufflenetv2k16")
-q: Queue = Queue()
-frame_q: Queue = Queue()
-temp = None
 
-def countDown(counts: int):
-    global temp
-    for i in range(counts+1): 
-        time.sleep(1)
-        print(i)
-        q.put(counts-i)
-    time.sleep(1)
-    temp = None
 
 while capture.isOpened():
     """
@@ -117,8 +134,8 @@ while capture.isOpened():
             pic_thread = threading.Thread(target=screenshot, args=(frame, ))
             pic_thread.start()
             pic_thread.join()
-
         print(f"time: {temp}")
+
     if temp != None:
         cv2.putText(annotated_image, text=f"count: {temp}", org=(COUNT_X, COUNT_Y), fontFace=cv2.FONT_HERSHEY_TRIPLEX,
                 fontScale=2.0, color=(0,255,0), thickness=2,lineType=cv2.LINE_4)
@@ -147,6 +164,11 @@ while capture.isOpened():
             thread = threading.Thread(target=countDown, args=(5,))
             thread.setDaemon(True)
             thread.start()
+
+    if isPlayerTurn and threading.active_count() <= 1:
+        playerThread = threading.Thread(target=countDown, args=(5, ))
+        playerThread.setDaemon(True)
+        playerThread.start()
 capture.release()
 cv2.destroyAllWindows()
 
