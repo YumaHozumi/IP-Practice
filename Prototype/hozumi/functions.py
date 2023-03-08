@@ -120,7 +120,3 @@ def calculate_cos(pt1: np.ndarray, pt2: np.ndarray, pt3: np.ndarray) -> float:
     degree: float = np.rad2deg(rad)
     return degree
 
-
-
-    
-    
