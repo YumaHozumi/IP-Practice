@@ -1,14 +1,11 @@
-import sys
 import cv2
 import numpy as np
 import openpifpaf
-from PIL import Image
 from typing import List, Tuple
-from functions import draw_line, create_connected, calculate_cos, created_three_connected
+from functions import draw_line, create_connected, calculate_cos, created_three_connected, screenshot
 from settings import SCALE_UP, TIMER, X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, COUNT_X, COUNT_Y
 from calculation import compare_pose
 from vector_functions import correct_vectors
-from threading import Timer
 import threading
 import time
 import queue
@@ -69,10 +66,6 @@ def countDown(counts: int):
         q.put(counts-i)
     time.sleep(1)
     temp = None
-
-def screenshot(frame: np.ndarray):
-    #cv2.imwrite(filename="test.png", img=frame)
-    pass
 
 while capture.isOpened():
     """

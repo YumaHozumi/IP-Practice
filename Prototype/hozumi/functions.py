@@ -120,7 +120,12 @@ def calculate_cos(pt1: np.ndarray, pt2: np.ndarray, pt3: np.ndarray) -> float:
     degree: float = np.rad2deg(rad)
     return degree
 
+def screenshot(frame: np.ndarray):
+    """画面のスクショを疑似的に撮るための関数
+       ここから画像送ったりしましょう
 
-
-    
-    
+    Args:
+        frame (np.ndarray): 任意のタイミングのスクショ
+    """
+    #cv2.imwrite(filename="test.png", img=frame)
+    return frame
