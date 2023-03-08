@@ -8,7 +8,7 @@ from calculation import compare_pose
 from vector_functions import correct_vectors
 import threading
 import time
-import queue
+from queue import Queue
 
 def draw_landmarks(image: np.ndarray, landmarks: List) -> np.ndarray:
 
@@ -54,8 +54,8 @@ if capture.isOpened(): # 正常に読みこめたとき
     print( "Device captured correctly",capture)
 
 predictor = openpifpaf.Predictor(checkpoint = "shufflenetv2k16")
-q = queue.Queue()
-frame_q = queue.Queue()
+q: Queue = Queue()
+frame_q: Queue = Queue()
 temp = None
 
 def countDown(counts: int):
