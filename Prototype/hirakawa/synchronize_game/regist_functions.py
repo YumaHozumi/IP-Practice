@@ -4,8 +4,9 @@ import numpy as np
 from typing import List, Tuple
 from functions import get_draw_info, create_connected
 from draw_function import draw_peopleNum
+from display_functions import display_registered_playeres
 from settings import SCALE_UP, Result_X, Result_Y 
-from area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, face_width, face_hight
+from area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, face_width, face_height
 
 def register(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predictor) -> List[np.ndarray]:
     """プレイヤーを登録する
@@ -81,18 +82,8 @@ def register(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predicto
 
     #Enter押下時の画像から顔領域を抽出し、表示する
     face_Imgs: List[np.ndarray] = regist_faceImg(register_frame, predictions, registable_label)
-    images_h: np.ndarray = face_Imgs[0]
-    if(len(face_Imgs) > 1):
-        for num in range(len(face_Imgs) - 1):
-            images_h = cv2.hconcat([images_h, face_Imgs[num + 1]])
-
-    while True:
-        cv2.imshow('Camera 1',images_h) #認識した顔の画像を表示
-                
-        # Enterキーを押すと表示終了
-        if cv2.waitKey(10) == 0x0d:
-            print('Enter pressed. End face display...')
-            break
+    #登録結果の描画
+    result = display_registered_playeres(face_Imgs)
     
     return face_Imgs
 
@@ -141,7 +132,7 @@ def regist_faceImg(register_frame: np.ndarray, landmarks: np.ndarray, label: np.
         start_X = 0
         start_Y = 0
         end_X = face_width
-        end_Y = face_hight
+        end_Y = face_height
         if(label[num] == 1):
             if(parts.data[4][2]>0):
                 start_X = parts.data[4][0] * SCALE_UP - 20 
@@ -168,7 +159,7 @@ def regist_faceImg(register_frame: np.ndarray, landmarks: np.ndarray, label: np.
             #print(face_frame.shape)
 
             #サイズ調整
-            face_frame = cv2.resize(face_frame, (face_width, face_hight))
+            face_frame = cv2.resize(face_frame, (face_width, face_height))
             #print(face_frame.shape)
 
             faceImgs.append(face_frame)
