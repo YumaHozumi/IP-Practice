@@ -120,3 +120,33 @@ def calculate_cos(pt1: np.ndarray, pt2: np.ndarray, pt3: np.ndarray) -> float:
     degree: float = np.rad2deg(rad)
     return degree
 
+def draw_landmarks(image: np.ndarray, landmarks: List) -> np.ndarray:
+
+    annotated_image = image.copy()
+    # ランドマークとして検出されている点を囲む矩形を描画する
+    # body_rectangle: List[float] = landmarks[0].json_data()["bbox"]
+    # base_x, base_y, width, height = body_rectangle
+
+    # x1 = int(base_x)
+    # y1 = int(base_y - 10)
+    # x2 = int(base_x+width)
+    # y2 = int(base_x+height)
+    # # 解像度1/4にしたので、4倍して位置を調整
+    # cv2.rectangle(annotated_image, (x1*SCALE,y1*SCALE), (x2*SCALE, y2*SCALE), (255, 255, 255))
+
+    connected_keypoints = create_connected(landmarks, index=0)
+    for (pt1, pt2) in connected_keypoints:
+        if((0 in pt1) or (0 in pt2)): continue # 座標をうまく取得できなかったとき
+        annotated_image = draw_line(annotated_image, pt1, pt2)
+    
+    return annotated_image
+
+def calc(landmarks: np.ndarray, index: int):
+    connected: List[Tuple[np.ndarray, np.ndarray, np.ndarray]] = created_three_connected(landmarks, index)
+    index = 0
+    for (pt1, pt2, pt3) in connected:
+        if((0 in pt1) or (0 in pt2) or (0 in pt3)): continue
+        # print("index: ", end="")
+        # print(index)
+        # index += 1
+        # print(calculate_cos(pt1, pt2, pt3))
