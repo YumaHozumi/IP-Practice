@@ -9,21 +9,29 @@ from area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END
 
 whiteboard = 255 * np.ones([Window_height, Window_width, 3])
 
+#プレイヤーを識別する色(B,G,R)
+player_color: List = [(0, 0, 255),(255, 0, 0),(0, 255, 0),(0, 165, 255)]
+
 def display_registered_playeres(face_Imgs: List[np.array]):
-    playeresImg = whiteboard.copy()
-    x_offset=int(Window_width/2 - face_width/2)
-    y_offset=int(Window_height/2 - face_height/2)
+    playeresImg = whiteboard.copy() #背景の設定
 
-    #テスト用
-    #print(x_offset)
-    #print(y_offset)
-    #print(face_Imgs[0])
-    #print(type(face_Imgs[0][0,0,0]))
+    #画面の説明の表示
+    cv2.putText(playeresImg, 'Registered Players', (20, 50), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0,0,0), 4, cv2.LINE_AA)
+    
+    #登録結果表示画面の作成
+    people_num = len(face_Imgs)
+    for i in range(people_num):
+        img = face_Imgs[i] #顔画像
 
-    face_Img = face_Imgs[0]
-    #print(type(face_Img[0,0,0]))
-    playeresImg[y_offset:y_offset+face_Img.shape[0], x_offset:x_offset+face_Img.shape[1]] = face_Img.copy()
-    #print(playeresImg[y_offset:y_offset+face_Img.shape[0], x_offset:x_offset+face_Img.shape[1]])
+        #描画領域の指定
+        separate_width = Window_width / (people_num + 1)
+        x_offset=int((i+1)*separate_width - face_width/2)
+        y_offset=int(Window_height/2 - face_height/2)
+        playeresImg[y_offset:y_offset+img.shape[0], x_offset:x_offset+img.shape[1]] = img.copy()
+        txt = "Player" + str(int(i + 1))
+        cv2.putText(playeresImg, txt, (x_offset, y_offset - 20), cv2.FONT_HERSHEY_SIMPLEX, 1.75, player_color[i], 3, cv2.LINE_AA)
+        
+    #型変換
     playeresImg = playeresImg.astype('uint8')
 
     while True:
