@@ -6,9 +6,9 @@ from functions import draw_landmarks
 from settings import SCALE_UP, TIMER, X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, COUNT_X, COUNT_Y
 from calculation import compare_pose
 from vector_functions import correct_vectors
-import time
+import multiprocessing as mp
 
-def add_countdown(frame, count):
+def add_countdown(frame: np.ndarray, count: int):
     font = cv2.FONT_HERSHEY_SIMPLEX
     if count >= 0:
         cv2.putText(frame, str(count), (300, 300), font, 7, (0, 255, 255), 10, cv2.LINE_AA)
@@ -16,9 +16,9 @@ def add_countdown(frame, count):
         cv2.putText(frame, '', (300, 300), font, 7, (0, 255, 255), 10, cv2.LINE_AA)
     return frame
 
-def countdown(queue, running):
+def countdown(queue: mp.Queue, running, count: int):
     # 5秒カウントダウン
-    for i in range(3, -1, -1):
+    for i in range(count, -1, -1):
         print(i)
         for j in range(30):
             if not running.value:
