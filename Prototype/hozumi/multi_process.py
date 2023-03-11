@@ -28,8 +28,16 @@ def countdown(queue: mp.Queue, running, count: int):
             queue.put(frame)
     return 
 
+def take_screenshot(q2: mp.Queue) -> None:
+    frames = []
+    while not q2.empty():
+        frame = q2.get()
+        frames.append(frame)
+    if frames:
+        #cv2.imwrite(filename="screenshot.png", img=frames[-1])
+        pass
 
-def capture_frames(queue, running):
+def capture_frames(queue: mp.Queue, running, q2: mp.Queue):
 
     predictor = openpifpaf.Predictor(checkpoint = "shufflenetv2k16")
 
@@ -57,6 +65,7 @@ def capture_frames(queue, running):
         if not success :
             print( "frame is None" )
             break
+        q2.put(frame)
         # img[top : bottom, left : right]
         limit_frame = frame[Y_LIMIT_START:Y_LIMIT_END, X_LIMIT_START:X_LIMIT_END]
         #limit_frame = frame
