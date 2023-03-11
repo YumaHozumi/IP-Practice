@@ -79,6 +79,9 @@ def register(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predicto
             print('Enter pressed. Saving ...')
             break
 
+    #white = cv2.imread('whiteboard.png')
+    #print(white)
+
 
     #Enter押下時の画像から顔領域を抽出し、表示する
     face_Imgs: List[np.ndarray] = regist_faceImg(register_frame, predictions, registable_label)

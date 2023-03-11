@@ -10,24 +10,28 @@ from area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END
 whiteboard = 255 * np.ones([Window_height, Window_width, 3])
 
 def display_registered_playeres(face_Imgs: List[np.array]):
-    prayeresImg = whiteboard.copy()
+    playeresImg = whiteboard.copy()
     x_offset=int(Window_width/2 - face_width/2)
     y_offset=int(Window_height/2 - face_height/2)
-    print(x_offset)
-    print(y_offset)
-    print(face_Imgs[0])
-    #prayeresImg[y_offset:y_offset+face_Imgs[0].shape[0], x_offset:x_offset+face_Imgs[0].shape[1], : ] = 0
-    prayeresImg[y_offset:y_offset+face_Imgs[0].shape[0], x_offset:x_offset+face_Imgs[0].shape[1]] = face_Imgs[0].copy()
-    print(prayeresImg[y_offset:y_offset+face_Imgs[0].shape[0], x_offset:x_offset+face_Imgs[0].shape[1]])
 
-    print(prayeresImg.shape)
+    #テスト用
+    #print(x_offset)
+    #print(y_offset)
+    #print(face_Imgs[0])
+    #print(type(face_Imgs[0][0,0,0]))
+
+    face_Img = face_Imgs[0]
+    #print(type(face_Img[0,0,0]))
+    playeresImg[y_offset:y_offset+face_Img.shape[0], x_offset:x_offset+face_Img.shape[1]] = face_Img.copy()
+    #print(playeresImg[y_offset:y_offset+face_Img.shape[0], x_offset:x_offset+face_Img.shape[1]])
+    playeresImg = playeresImg.astype('uint8')
 
     while True:
-        cv2.imshow('Camera 1',prayeresImg) #認識した顔の画像を表示
+        cv2.imshow('Camera 1',playeresImg) #認識した顔の画像を表示
                 
         # Enterキーを押すと表示終了
         if cv2.waitKey(10) == 0x0d:
             print('Enter pressed. End face display...')
             break
 
-    return prayeresImg
+    return playeresImg
