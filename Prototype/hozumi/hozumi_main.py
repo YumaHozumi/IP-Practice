@@ -20,12 +20,12 @@ if __name__ == '__main__':
         # キューからフレームを取得
         frame = queue.get()
         cv2.imshow('frame', frame)
-        if cv2.waitKey(1) & 0xFF == 27:  # ESCキーが押されたら
+        if cv2.waitKeyEx(1) & 0xFF == 27:  # ESCキーが押されたら
             running.value = False
 
         if countdown_process is None:
             # カウントダウンプロセスが動作していない場合
-            if cv2.waitKey(1) == 13:  # Enterキーが押されたら
+            if cv2.waitKeyEx(1) == 13:  # Enterキーが押されたら
                 # カウントダウンプロセスの作成
                 countdown_process = mp.Process(target=countdown, args=(queue, running))
                 countdown_process.start()

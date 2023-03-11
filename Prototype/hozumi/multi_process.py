@@ -26,12 +26,7 @@ def countdown(queue, running):
             frame = queue.get()
             frame = add_countdown(frame, i)
             queue.put(frame)
-
-            
-    while running.value:
-        frame = queue.get()
-        frame = add_countdown(frame, -1)
-        queue.put(frame)
+    return 
 
 
 def capture_frames(queue, running):
