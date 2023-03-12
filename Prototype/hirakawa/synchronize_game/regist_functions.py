@@ -23,72 +23,8 @@ def register(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predicto
 
     #プレイヤーの登録が終了するまで登録作業を繰り返す
     while not register_finished:
-        while capture.isOpened():
-            #success: 画像の取得が成功したか
-            #frame: RGBの値を持っている3次元の配列データ ex) サイズ (480, 640, 3) 高さ、幅、色チャネル
-            read_video: Tuple[bool, np.ndarray] = capture.read()
-            success, frame = read_video
-            # print("frame1 =",frame)
-
-            if not success :
-                print( "frame is None" )
-                break
-            
-            
-            #登録をおこなう領域を指定
-            register_frame = frame[Y_LIMIT_START:Y_LIMIT_END, X_LIMIT_START:X_LIMIT_END]
-            #登録領域で認識を行う(ここは人数だけ分かればいい)
-            resize_frame: np.ndarray = cv2.resize(register_frame, dsize=None, fx=(1.0 / SCALE_UP), fy=(1.0 / SCALE_UP))
-            predictions, gt_anns, meta = predictor.numpy_image(resize_frame)
-            #predictions: 関節座標
-            #インデックス: 関節座標点
-            
-            annotated_image = frame.copy()
-
-            #認識領域に人が映ってないときにもカメラ映像を出すように
-            if len(predictions) == 0: 
-                height = frame.shape[0]
-                width = frame.shape[1]
-                #サイズ確認用(テスト)
-                #print('({0}, {1})'.format(height, width))
-                
-                annotated_image = cv2.rectangle(annotated_image, (X_LIMIT_START, Y_LIMIT_START), (X_LIMIT_END, Y_LIMIT_END), (0,255,0), thickness=2)
-                output_image = cv2.flip(annotated_image, 1)
-                bigger_frame = cv2.resize(output_image, (int(width) * 2, int(height) * 2))
-                cv2.imshow('Camera 1',bigger_frame)
-                
-                # ESCキーを押すと終了
-                if cv2.waitKey(10) == 0x1b:
-                    print('ESC pressed. Exiting ...')
-                    break
-                
-                continue
-
-            height = frame.shape[0]
-            width = frame.shape[1]
-            annotated_image = cv2.rectangle(annotated_image, (X_LIMIT_START, Y_LIMIT_START), (X_LIMIT_END, Y_LIMIT_END), (0,255,0), thickness=2)
-            annotated_image = cv2.flip(annotated_image, 1)
-            
-            #人数の描画
-            registable_label = registerable_check(predictions)
-            peopleNumber = np.sum(registable_label)
-            annotated_image = draw_peopleNum(annotated_image, peopleNumber)
-
-            bigger_frame = cv2.resize(annotated_image, (int(width) * 2, int(height) * 2))
-            cv2.imshow('Camera 1',bigger_frame)
-            #cv2.moveWindow("Camera 1", 200,40)
-
-            # Enterキーを押したら画像の読み込みを終了
-            if cv2.waitKey(10) == 0x0d:
-                print('Enter pressed. Saving ...')
-                break
-
-        #white = cv2.imread('whiteboard.png')
-        #print(white)
-
-
-        #Enter押下時の画像から顔領域を抽出し、表示する
-        face_Imgs: List[np.ndarray] = regist_faceImg(register_frame, predictions, registable_label)
+        #登録する顔のリストを得る
+        face_Imgs = capture_registerArea(capture, predictor)
         #登録結果の描画(一応登録者一覧画面をもらってるが、今のところ再利用する予定なし)
         result = display_registered_playeres(face_Imgs)
 
@@ -104,6 +40,81 @@ def register(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predicto
             elif key == 127:
                 break
     
+    return face_Imgs
+
+def capture_registerArea(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predictor) -> List[np.ndarray]:
+    """登録領域を撮影し、顔画像を抽出する
+
+    Args:
+        capture (cv2.VideoCapture): キャプチャー
+        predictor (openpifpaf.predictor.Predictor): 関節点推定モデル
+
+    Returns:
+        List[np.ndarray]: 顔画像のリスト
+    """
+
+    while capture.isOpened():
+        #success: 画像の取得が成功したか
+        #frame: RGBの値を持っている3次元の配列データ ex) サイズ (480, 640, 3) 高さ、幅、色チャネル
+        read_video: Tuple[bool, np.ndarray] = capture.read()
+        success, frame = read_video
+        # print("frame1 =",frame)
+
+        if not success :
+            print( "frame is None" )
+            break
+        
+        
+        #登録をおこなう領域を指定
+        register_frame = frame[Y_LIMIT_START:Y_LIMIT_END, X_LIMIT_START:X_LIMIT_END]
+        #登録領域で認識を行う(ここは人数だけ分かればいい)
+        resize_frame: np.ndarray = cv2.resize(register_frame, dsize=None, fx=(1.0 / SCALE_UP), fy=(1.0 / SCALE_UP))
+        predictions, gt_anns, meta = predictor.numpy_image(resize_frame)
+        #predictions: 関節座標
+        #インデックス: 関節座標点
+        
+        annotated_image = frame.copy()
+
+        #認識領域に人が映ってないときにもカメラ映像を出すように
+        if len(predictions) == 0: 
+            height = frame.shape[0]
+            width = frame.shape[1]
+            #サイズ確認用(テスト)
+            #print('({0}, {1})'.format(height, width))
+            
+            annotated_image = cv2.rectangle(annotated_image, (X_LIMIT_START, Y_LIMIT_START), (X_LIMIT_END, Y_LIMIT_END), (0,255,0), thickness=2)
+            output_image = cv2.flip(annotated_image, 1)
+            bigger_frame = cv2.resize(output_image, (int(width) * 2, int(height) * 2))
+            cv2.imshow('Camera 1',bigger_frame)
+            
+            # ESCキーを押すと終了
+            if cv2.waitKey(10) == 0x1b:
+                print('ESC pressed. Exiting ...')
+                break
+            
+            continue
+
+        height = frame.shape[0]
+        width = frame.shape[1]
+        annotated_image = cv2.rectangle(annotated_image, (X_LIMIT_START, Y_LIMIT_START), (X_LIMIT_END, Y_LIMIT_END), (0,255,0), thickness=2)
+        annotated_image = cv2.flip(annotated_image, 1)
+        
+        #人数の描画
+        registable_label = registerable_check(predictions)
+        peopleNumber = np.sum(registable_label)
+        annotated_image = draw_peopleNum(annotated_image, peopleNumber)
+
+        bigger_frame = cv2.resize(annotated_image, (int(width) * 2, int(height) * 2))
+        cv2.imshow('Camera 1',bigger_frame)
+        #cv2.moveWindow("Camera 1", 200,40)
+
+        # Enterキーを押したら画像の読み込みを終了
+        if cv2.waitKey(10) == 0x0d:
+            print('Enter pressed. Saving ...')
+            break
+
+    #Enter押下時の画像から顔領域を抽出し、表示する
+    face_Imgs: List[np.ndarray] = regist_faceImg(register_frame, predictions, registable_label)
     return face_Imgs
 
 
