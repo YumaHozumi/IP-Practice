@@ -19,6 +19,40 @@ def register(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predicto
         List[np.ndarray]: 登録した顔画像のリスト
     """
 
+    register_finished: bool = False #登録が完了したかどうか
+
+    #プレイヤーの登録が終了するまで登録作業を繰り返す
+    while not register_finished:
+        #登録する顔のリストを得る
+        face_Imgs = capture_registerArea(capture, predictor)
+        #登録結果の描画(一応登録者一覧画面をもらってるが、今のところ再利用する予定なし)
+        result = display_registered_playeres(face_Imgs)
+
+        while True: 
+            #キーボード入力を受け取る
+            key = cv2.waitKey(10)
+            # Enterキーを押すと登録完了
+            if key == 0x0d:
+                print('Enter pressed. Register finished...')
+                register_finished = True
+                break
+            #Deleteを押すと登録をやり直し
+            elif key == 127:
+                break
+    
+    return face_Imgs
+
+def capture_registerArea(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predictor) -> List[np.ndarray]:
+    """登録領域を撮影し、顔画像を抽出する
+
+    Args:
+        capture (cv2.VideoCapture): キャプチャー
+        predictor (openpifpaf.predictor.Predictor): 関節点推定モデル
+
+    Returns:
+        List[np.ndarray]: 顔画像のリスト
+    """
+
     while capture.isOpened():
         #success: 画像の取得が成功したか
         #frame: RGBの値を持っている3次元の配列データ ex) サイズ (480, 640, 3) 高さ、幅、色チャネル
@@ -79,15 +113,8 @@ def register(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predicto
             print('Enter pressed. Saving ...')
             break
 
-    #white = cv2.imread('whiteboard.png')
-    #print(white)
-
-
     #Enter押下時の画像から顔領域を抽出し、表示する
     face_Imgs: List[np.ndarray] = regist_faceImg(register_frame, predictions, registable_label)
-    #登録結果の描画
-    result = display_registered_playeres(face_Imgs)
-    
     return face_Imgs
 
 
