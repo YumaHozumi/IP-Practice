@@ -25,9 +25,9 @@ def display_registered_playeres(face_Imgs: List[np.array]) -> np.ndarray:
     playeresImg = whiteboard.copy() #背景の設定
 
     #画面の説明の表示
-    cv2_putText(playeresImg, 'プレイヤー一覧', (20, 80), "/Library/Fonts/Arial Unicode.ttf", 80, (0,0,0))
-    cv2_putText(playeresImg, '　OK!　  > Enter', (int(Window_width * 0.7), Window_height - 50), "/Library/Fonts/Arial Unicode.ttf", 40, (0,0,0))
-    cv2_putText(playeresImg, 'やり直す > Delete', (int(Window_width * 0.7), Window_height - 10), "/Library/Fonts/Arial Unicode.ttf", 40, (0,0,0))
+    cv2_putText(playeresImg, 'プレイヤー一覧', (20, 80), 80, (0,0,0))
+    cv2_putText(playeresImg, '　OK!　  > Enter', (int(Window_width * 0.7), Window_height - 50), 40, (0,0,0))
+    cv2_putText(playeresImg, 'やり直す > Delete', (int(Window_width * 0.7), Window_height - 10), 40, (0,0,0))
     
     #登録結果表示画面の作成
     people_num = len(face_Imgs)
@@ -49,7 +49,7 @@ def display_registered_playeres(face_Imgs: List[np.array]) -> np.ndarray:
 
     return playeresImg
 
-def cv2_putText(img, text, org, fontFace, fontScale, color, mode=0):
+def cv2_putText(img, text, org, fontScale, color, mode=0, fontFace = "./Arial Unicode.ttf"):
     """日本語にも対応したputText
 
     Args:
