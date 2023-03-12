@@ -13,19 +13,21 @@ whiteboard = 255 * np.ones([Window_height, Window_width, 3])
 #プレイヤーを識別する色(B,G,R)
 player_color: List = [(0, 0, 255),(255, 0, 0),(0, 255, 0),(0, 165, 255)]
 
-def display_registered_playeres(face_Imgs: List[np.array]):
+def display_registered_playeres(face_Imgs: List[np.array]) -> np.ndarray:
     """登録されたプレイヤー一覧を表示する
 
     Args:
         face_Imgs (List[np.array]): 顔画像のリスト
 
     Returns:
-        _type_: 一覧を表示している画像
+        np.ndarray: 一覧を表示している画像
     """
     playeresImg = whiteboard.copy() #背景の設定
 
     #画面の説明の表示
     cv2_putText(playeresImg, 'プレイヤー一覧', (20, 80), "/Library/Fonts/Arial Unicode.ttf", 80, (0,0,0))
+    cv2_putText(playeresImg, '　OK!　  > Enter', (int(Window_width * 0.7), Window_height - 50), "/Library/Fonts/Arial Unicode.ttf", 40, (0,0,0))
+    cv2_putText(playeresImg, 'やり直す > Delete', (int(Window_width * 0.7), Window_height - 10), "/Library/Fonts/Arial Unicode.ttf", 40, (0,0,0))
     
     #登録結果表示画面の作成
     people_num = len(face_Imgs)
@@ -44,12 +46,6 @@ def display_registered_playeres(face_Imgs: List[np.array]):
     playeresImg = playeresImg.astype('uint8')
 
     cv2.imshow('Camera 1',playeresImg) #認識した顔の画像を表示
-
-    while True: 
-        # Enterキーを押すと表示終了
-        if cv2.waitKey(10) == 0x0d:
-            print('Enter pressed. End face display...')
-            break
 
     return playeresImg
 
