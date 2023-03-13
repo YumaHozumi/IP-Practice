@@ -8,7 +8,16 @@ from calculation import compare_pose
 from vector_functions import correct_vectors
 import multiprocessing as mp
 
-def add_countdown(frame: np.ndarray, count: int):
+def add_countdown(frame: np.ndarray, count: int) -> np.ndarray:
+    """カウントをフレーム上に追加するメソッド
+
+    Args:
+        frame (np.ndarray): カウントを載せたいフレーム
+        count (int): 今何秒目か
+
+    Returns:
+        np.ndarray: カウントの情報をフレームに追加したもの
+    """
     font = cv2.FONT_HERSHEY_SIMPLEX
     if count >= 0:
         cv2.putText(frame, str(count), (300, 300), font, 7, (0, 255, 255), 10, cv2.LINE_AA)
@@ -17,16 +26,41 @@ def add_countdown(frame: np.ndarray, count: int):
     return frame
 
 def countdown(queue: mp.Queue, running, count: int):
-    # 5秒カウントダウン
+    """カウントダウンを行うためのメソッド
+
+    Args:
+        queue (mp.Queue): フレーム（加工済み）を格納するキュー
+        running (boolean): プログラムが実行中か
+        count (int): 何秒間カウントするか
+    """
     for i in range(count, -1, -1):
         print(i)
-        for j in range(30):
+        for j in range(30): # 1秒を30フレームで分割
             if not running.value:
                 return         
             frame = queue.get()
             frame = add_countdown(frame, i)
             queue.put(frame)
     return 
+
+def playerChange(queue: mp.Queue, running, q2: mp.Queue, changeNum: int):
+    """lead役->スクショ->Player役->スクショ の1セットをchangeNum回繰り返すメソッド
+
+    Args:
+        queue (mp.Queue): フレーム（加工済み）を格納するキュー
+        running (boolean): プログラムが実行中か
+        q2 (mp.Queue): フレーム（未加工）を格納するキュー
+        changeNum (int): 何回セットを繰り返すか
+    """
+    for i in range(changeNum):
+        print(f"{i+1}回目")
+        for _ in range(2):
+            process = mp.Process(target=countdown, args=(queue, running, 3))
+            process.start()
+            process.join()
+            scrennshot_process = mp.Process(target=take_screenshot, args=(q2, ))
+            scrennshot_process.start()
+            scrennshot_process.join()
 
 def take_screenshot(q2: mp.Queue) -> None:
     frames = []
