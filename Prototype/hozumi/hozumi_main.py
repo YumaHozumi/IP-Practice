@@ -2,7 +2,7 @@ import multiprocessing as mp
 from multiprocessing import Queue;
 import time
 import cv2
-from multi_process import countdown, capture_frames, take_screenshot
+from multi_process import countdown, capture_frames, take_screenshot, playerChange
 from SynchronizeProcess import SharedRunning
 
 if __name__ == '__main__':
@@ -29,13 +29,13 @@ if __name__ == '__main__':
             # カウントダウンプロセスが動作していない場合
             if cv2.waitKey(1) & 0xFF == 13:  # Enterキーが押されたら
                 # カウントダウンプロセスの作成
-                countdown_process = mp.Process(target=countdown, args=(queue, running, 5))
+                countdown_process = mp.Process(target=playerChange, args=(queue, running, queue2, 2))
                 countdown_process.start()
         elif not countdown_process.is_alive():
             # カウントダウンプロセスが停止している場合
             countdown_process = None
-            screenshot_process = mp.Process(target=take_screenshot, args=(queue2, ))
-            screenshot_process.start()
+            # screenshot_process = mp.Process(target=take_screenshot, args=(queue2, ))
+            # screenshot_process.start()
 
     video_process.terminate()
     if countdown_process is not None:
