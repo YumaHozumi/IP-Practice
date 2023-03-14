@@ -22,6 +22,24 @@ def get_draw_info(pt1: np.ndarray, pt2: np.ndarray) -> List[Tuple[int, int]]:
     
     return [(pt1_x, pt1_y), (pt2_x, pt2_y)]
 
+def get_draw_info_0(pt1: np.ndarray, pt2: np.ndarray) -> List[Tuple[int, int]]:
+    """座標点のxy座標を取得(全画面版)
+
+    Args: 
+        pt1 (np.ndarray): 1つ目の点
+        pt2 (np.ndarray): 2つ目の点
+
+    Returns:
+        List[Tuple[int, int]]: それぞれのxy座標をタプルでまとめたリスト
+    """    
+    
+    pt1_x = int(pt1[0])
+    pt1_y = int(pt1[1])
+    pt2_x = int(pt2[0])
+    pt2_y = int(pt2[1])
+    
+    return [(pt1_x, pt1_y), (pt2_x, pt2_y)]
+
 
 def create_connected(landmarks: np.ndarray, index: int) -> List[Tuple[np.ndarray, np.ndarray]]:
     """関節点のつながりをまとめた情報をつくる
