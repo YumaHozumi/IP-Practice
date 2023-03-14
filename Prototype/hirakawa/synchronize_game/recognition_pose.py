@@ -41,13 +41,6 @@ def capture_leader(capture: cv2.VideoCapture) -> np.ndarray:
             print( "frame is None" )
             break
         
-        
-        #登録をおこなう領域を指定
-        
-        #領域の切り取り
-        register_frame = frame[area_Ystart:area_Yend, area_Xstart:area_Xend]
-        register_frame = cv2.flip(register_frame, 1)
-        
         annotated_image = frame.copy()
         #認識領域を表示
         annotated_image = cv2.resize(annotated_image, (Window_width, Window_height))
@@ -63,7 +56,27 @@ def capture_leader(capture: cv2.VideoCapture) -> np.ndarray:
             break
 
     #Enter押下時のスクショを返す
-    #return cv2.flip(frame, 1)
+    return cv2.resize(frame, (Window_width, Window_height))
+
+def extract_leaderArea(frame: np.ndarray) -> np.ndarray:
+    """leaderのスクショから、対象領域の画像を抽出
+
+    Args:
+        frame (np.ndarray): leaderのスクショ
+
+    Returns:
+        np.ndarray: 対象領域の画像
+    """
+    #認識領域の設定
+    area_Xstart = int((Window_width - human_width)/2)
+    area_Xend = int((Window_width + human_width)/2)
+    area_Ystart = Window_height - humuan_height
+    area_Yend = Window_height
+
+    #領域の切り取り
+    register_frame = frame[area_Ystart:area_Yend, area_Xstart:area_Xend]
+    register_frame = cv2.flip(register_frame, 1)
+
     return register_frame
 
 
@@ -108,11 +121,8 @@ def capture_players(capture: cv2.VideoCapture, playerNum: int) -> List[np.ndarra
         annotated_image = frame.copy()
         annotated_image = cv2.resize(annotated_image, (Window_width, Window_height))
         #登録をおこなう領域を指定
-        #領域の切り取り
-        register_frames:List = []
+
         for j in range(playerNum):
-            register_frame = frame[area_Ystart:area_Yend, area_Xstarts[j]:area_Xends[j]]
-            register_frames.append(cv2.flip(register_frame, 1))
             #認識領域を表示
             annotated_image = cv2.rectangle(annotated_image, (area_Xstarts[j], area_Ystart), (area_Xends[j], area_Yend), (0,255,0), thickness=2)
             
@@ -128,4 +138,36 @@ def capture_players(capture: cv2.VideoCapture, playerNum: int) -> List[np.ndarra
 
     #Enter押下時のスクショを返す
     #return cv2.flip(frame, 1)
+    return cv2.resize(frame, (Window_width, Window_height))
+
+def extract_playersArea(frame: np.ndarray, playerNum: int) -> List[np.ndarray]:
+    """playersのスクショから、対象領域の画像を抽出
+
+    Args:
+        frame (np.ndarray): playersのスクショ
+
+    Returns:
+        List[np.ndarray]: 対象領域の画像
+    """
+    if playerNum > 3: playerNum = 3
+    elif playerNum < 1: playerNum = 1
+
+    #認識領域の設定
+    area_Xstarts = []
+    area_Xends = []
+
+    for i in range(playerNum):
+        area_Xstarts.append(int(((2*i+1)/playerNum * Window_width - human_width)/2))
+        area_Xends.append(int(((2*i+1)/playerNum * Window_width + human_width)/2))
+
+    area_Ystart = Window_height - humuan_height
+    area_Yend = Window_height
+
+    #領域の切り取り
+    #領域の切り取り
+    register_frames:List = []
+    for j in range(playerNum):
+        register_frame = frame[area_Ystart:area_Yend, area_Xstarts[j]:area_Xends[j]]
+        register_frames.append(cv2.flip(register_frame, 1))
+        
     return register_frames
