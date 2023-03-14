@@ -49,7 +49,7 @@ def display_registered_playeres(face_Imgs: List[np.array]) -> np.ndarray:
 
     return playeresImg
 
-def cv2_putText(img, text, org, fontScale, color, mode=0, fontFace = "./Arial Unicode.ttf"):
+def cv2_putText(img, text, org, fontScale, color, mode=0, fontFace = "./arial-unicode-ms.ttf"):
     """日本語にも対応したputText
 
     Args:
