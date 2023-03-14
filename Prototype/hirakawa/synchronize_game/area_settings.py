@@ -17,3 +17,7 @@ peopleNum_Y = 150
 #顔画像の幅と高さ
 face_width = 200
 face_height = 200
+
+#人の姿勢推定領域のサイズ
+human_width = int(Window_width / 4)
+humuan_height = int(Window_height * 0.65)
