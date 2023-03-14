@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from typing import List, Tuple
-from functions import get_draw_info, create_connected
+from functions import get_draw_info, create_connected, get_draw_info_0
 from settings import SCALE_UP, Result_X, Result_Y
 from area_settings import peopleNum_X, peopleNum_Y
 
@@ -19,6 +19,22 @@ def draw_line(image: np.ndarray, pt1: np.ndarray, pt2: np.ndarray) -> np.ndarray
     """    
     red: Tuple[int, int, int] = (0, 0, 255)
     pt1_coordinate, pt2_coordinate = get_draw_info(pt1, pt2)
+    cv2.line(image, pt1_coordinate, pt2_coordinate, red, thickness=3)
+    return image
+
+def draw_line_0(image: np.ndarray, pt1: np.ndarray, pt2: np.ndarray) -> np.ndarray:
+    """2つの点を線で結ぶ(全画面版)
+
+    Args:
+        image (np.ndarray): 点を描画する画像
+        pt1 (np.ndarray): 1つ目の点
+        pt2 (np.ndarray): 2つ目の点
+
+    Returns:
+        np.ndarray: 描画後の画像
+    """    
+    red: Tuple[int, int, int] = (0, 0, 255)
+    pt1_coordinate, pt2_coordinate = get_draw_info_0(pt1, pt2)
     cv2.line(image, pt1_coordinate, pt2_coordinate, red, thickness=3)
     return image
 
@@ -63,6 +79,26 @@ def draw_vectors(image: np.ndarray, vectors: List) -> np.ndarray:
             if((0 in pt1) or (0 in pt2)): continue # 座標をうまく取得できなかったとき
 
             annotated_image = draw_line(annotated_image, pt1, pt2)    
+    
+    return annotated_image
+
+def draw_vectors_0(image: np.ndarray, vectors: List) -> np.ndarray:
+    """骨格表示を追加する(correct_vectors使用版)(全画面版)
+
+    Args:
+        image (np.ndarray): 骨格を表示する画像
+        vectors (List): 関節点を結んだベクトルのリスト
+
+    Returns:
+        np.ndarray: 骨格表示を追加した画像
+    """
+
+    annotated_image = image.copy()
+
+    for (pt1, pt2) in vectors:
+            if((0 in pt1) or (0 in pt2)): continue # 座標をうまく取得できなかったとき
+
+            annotated_image = draw_line_0(annotated_image, pt1, pt2)    
     
     return annotated_image
 
