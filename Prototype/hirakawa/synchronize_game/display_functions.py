@@ -4,7 +4,6 @@ import numpy as np
 from typing import List, Tuple
 from PIL import Image, ImageDraw, ImageFont
 from functions import get_draw_info, create_connected
-from draw_function import draw_peopleNum
 from settings import SCALE_UP, Result_X, Result_Y 
 from area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, face_width, face_height, Window_width, Window_height
 
