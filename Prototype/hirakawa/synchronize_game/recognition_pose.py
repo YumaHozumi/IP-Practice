@@ -7,7 +7,7 @@ from typing import List, Tuple
 from vector_functions import correct_vectors
 from draw_function import draw_vectors, draw_vectors_0, draw_result
 from regist_functions import register
-from display_functions import display_registered_playeres
+from display_functions import display_registered_playeres, display_check_leader
 from calculation import compare_pose, calc_multiSimilarity
 from settings import SCALE_UP
 from display_settings import player_color
@@ -43,7 +43,8 @@ def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.
         leader_picture = draw_vectors_0(leader_picture, leader_vectors)
 
         #leaderのスクショを表示
-        cv2.imshow('Camera 1',leader_picture)
+        #cv2.imshow('Camera 1',leader_picture)
+        display_check_leader(leader_picture, leader_Id)
         while True:
             key = cv2.waitKey(10)
             # Enterキーを押すと、

@@ -46,6 +46,44 @@ def display_registered_playeres(face_Imgs: List[np.array]) -> np.ndarray:
 
     return playeresImg
 
+def display_check_leader(leader_picture: np.array, leader_id: int) -> np.ndarray:
+    """leader役のプレイヤーにポーズの確認をとる画面を表示
+
+    Args:
+        leader_picture (np.array): leader役のキャプチャーされた画像
+        leader_id (int): leader役のプレイヤーのid
+
+    Returns:
+        np.ndarray: 確認画面
+    """
+    
+    check_Img = whiteboard.copy() #背景の設定
+
+    #画面の説明の表示
+    page_about: str = 'プレイヤー' + str(leader_id + 1) + 'さんのお手本ポーズ'
+    cv2_putText(check_Img, page_about, (20, 80), 80, (0,0,0))
+    cv2_putText(check_Img, '　OK!　  > Enter', (int(Window_width * 0.7), Window_height - 50), 40, (0,0,0))
+    cv2_putText(check_Img, 'やり直す > Delete', (int(Window_width * 0.7), Window_height - 10), 40, (0,0,0))
+    
+    #ポーズ確認画面の作成
+    
+    #描画領域の指定
+    picture_height = leader_picture.shape[0]
+    picture_width = leader_picture.shape[1]
+    x_offset=int(Window_width/2 - picture_height/2)
+    y_offset=int(Window_height/2 - picture_width/2)
+    check_Img[y_offset:y_offset+picture_height, x_offset:x_offset+picture_width] = leader_picture.copy()
+    txt = "Player" + str(leader_id + 1)
+    #cv2.putText(check_Img, txt, (int(x_offset + picture_width/2), y_offset - 20), cv2.FONT_HERSHEY_SIMPLEX, 1.75, player_color[leader_id], 3, cv2.LINE_AA)
+    cv2_putText(check_Img, txt, (int(x_offset + picture_width/2), y_offset - 40), 60, player_color[leader_id], 2)
+
+    #型変換
+    check_Img = check_Img.astype('uint8')
+    #確認画面を表示
+    cv2.imshow('Camera 1',check_Img) 
+
+    return check_Img
+
 def cv2_putText(img, text, org, fontScale, color, mode=0, fontFace = "./arial-unicode-ms.ttf"):
     """日本語にも対応したputText
 
