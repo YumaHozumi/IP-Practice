@@ -59,7 +59,7 @@ def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.
     players_complete = False
     while not players_complete:
         players_complete = True
-        player_screen = capture_players(capture, playerNum)
+        player_screen = capture_players(capture, players_id)
         player_pictures = extract_playersArea(player_screen, playerNum)
         players_vectors = []
         for i in range(playerNum):
@@ -155,16 +155,17 @@ def extract_leaderArea(frame: np.ndarray) -> np.ndarray:
     return register_frame
 
 
-def capture_players(capture: cv2.VideoCapture, playerNum: int) -> List[np.ndarray]:
+def capture_players(capture: cv2.VideoCapture, players_id: List[int]) -> List[np.ndarray]:
     """playerのスクショを取る
 
     Args:
         capture (cv2.VideoCapture): キャプチャー
-        playerNum (int): プレイヤーの人数
+        players_id (List[int]): playersのid
 
     Returns:
         List[np.ndarray]: playerのスクショ
     """
+    playerNum = len(players_id)
     if playerNum > 3: playerNum = 3
     elif playerNum < 1: playerNum = 1
 
@@ -199,7 +200,8 @@ def capture_players(capture: cv2.VideoCapture, playerNum: int) -> List[np.ndarra
 
         for j in range(playerNum):
             #認識領域を表示
-            annotated_image = cv2.rectangle(annotated_image, (area_Xstarts[j], area_Ystart), (area_Xends[j], area_Yend), (0,255,0), thickness=2)
+            #領域の枠は、スクリーン上で左からプレイヤー番号の若い順になっている(色んなパーティゲームと揃えた)
+            annotated_image = cv2.rectangle(annotated_image, (area_Xstarts[j], area_Ystart), (area_Xends[j], area_Yend), player_color[players_id[playerNum -1 -j]], thickness=2)
             
         annotated_image = cv2.flip(annotated_image, 1)
 
