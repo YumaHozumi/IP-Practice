@@ -91,7 +91,15 @@ while capture.isOpened():
         #ここまででゲームの前段階終了
 
         print('Start recognize')
-        leader_picture, leader_vectors, player_pictures, players_vectors = get_humanPicture(capture, predictor, playerNum, 0)
+        #playersのid(インデックス)を格納したリストを作成する
+        leader_id = 0
+        players_id:List = []
+        for i in range(playerNum):
+            if not i == leader_id:
+                players_id.append(i)
+        print(players_id)
+
+        leader_picture, leader_vectors, player_pictures, players_vectors = get_humanPicture(capture, predictor, face_Imgs, players_id, leader_id)
 
         for player_vector in players_vectors:
             similarity = compare_pose(leader_vectors, player_vector)

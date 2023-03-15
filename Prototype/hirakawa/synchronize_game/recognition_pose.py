@@ -12,13 +12,14 @@ from calculation import compare_pose, calc_multiSimilarity
 from settings import SCALE_UP
 from area_settings import Window_width, Window_height, human_width, humuan_height
 
-def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predictor, registeredNum: int, leader_Id: int) -> List[np.ndarray]:
+def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predictor, face_Imgs: List[np.ndarray], players_id: int, leader_Id: int) -> List[np.ndarray]:
     """leaderとplayerの写真と姿勢推定の結果を取得する
 
     Args:
         capture (cv2.VideoCapture): キャプチャー
         predictor (openpifpaf.predictor.Predictor): 姿勢推定モデル
-        registeredNum (int): 登録されたプレイヤーの人数
+        face_Imgs (List[np.ndarray]): 顔画像の一覧
+        players_id (List[int]): playersのインデックス
         leader_Id (int): leaderのインデックス
 
     Returns:
@@ -53,7 +54,7 @@ def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.
                 break
         
     #playerの姿勢を推定する
-    playerNum = registeredNum - 1
+    playerNum = len(players_id)
     players_complete = False
     while not players_complete:
         players_complete = True
