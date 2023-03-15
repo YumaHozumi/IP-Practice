@@ -9,7 +9,7 @@ from draw_function import draw_vectors, draw_vectors_0, draw_result
 from regist_functions import register
 from display_functions import display_registered_playeres
 from calculation import compare_pose, calc_multiSimilarity
-from settings import SCALE_UP
+from settings import SCALE_UP, player_color
 from area_settings import Window_width, Window_height, human_width, humuan_height
 
 def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predictor, face_Imgs: List[np.ndarray], players_id: int, leader_Id: int) -> List[np.ndarray]:
@@ -30,7 +30,7 @@ def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.
     #プレイヤーの登録が終了するまで登録作業を繰り返す
     while not leader_finished:
         #leaderのスクショを取得する
-        leader_screen = capture_leader(capture)
+        leader_screen = capture_leader(capture, leader_Id)
         #対象領域のみ切り取る
         leader_picture = extract_leaderArea(leader_screen)
 
@@ -85,11 +85,12 @@ def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.
     
     return leader_picture, leader_vectors, player_pictures, players_vectors
 
-def capture_leader(capture: cv2.VideoCapture) -> np.ndarray:
+def capture_leader(capture: cv2.VideoCapture, leader_Id: int) -> np.ndarray:
     """leaderのスクショを取る
 
     Args:
         capture (cv2.VideoCapture): キャプチャー
+        leader_Id (int): leaderのid
 
     Returns:
         np.ndarray: leaderのスクショ
@@ -117,7 +118,7 @@ def capture_leader(capture: cv2.VideoCapture) -> np.ndarray:
         annotated_image = frame.copy()
         #認識領域を表示
         annotated_image = cv2.resize(annotated_image, (Window_width, Window_height))
-        annotated_image = cv2.rectangle(annotated_image, (area_Xstart, area_Ystart), (area_Xend, area_Yend), (0,255,0), thickness=2)
+        annotated_image = cv2.rectangle(annotated_image, (area_Xstart, area_Ystart), (area_Xend, area_Yend), player_color[leader_Id], thickness=2)
         annotated_image = cv2.flip(annotated_image, 1)
 
         cv2.imshow('Camera 1',annotated_image)
