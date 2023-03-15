@@ -34,7 +34,7 @@ def countdown(queue: mp.Queue, running, count: int):
         running (boolean): プログラムが実行中か
         count (int): 何秒間カウントするか
     """
-    frames_per_second = 30
+    frames_per_second = 5
     frames_per_count = count * frames_per_second
     start_time = time.monotonic()
     for i in range(frames_per_count + 1):
