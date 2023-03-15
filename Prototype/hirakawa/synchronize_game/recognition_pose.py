@@ -11,7 +11,7 @@ from display_functions import display_registered_playeres
 from calculation import compare_pose, calc_multiSimilarity
 from settings import SCALE_UP
 from display_settings import player_color
-from area_settings import Window_width, Window_height, human_width, humuan_height
+from area_settings import Window_width, Window_height, human_width, humuan_height, face_width, face_height
 
 def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predictor, face_Imgs: List[np.ndarray], players_id: int, leader_Id: int) -> List[np.ndarray]:
     """leaderとplayerの写真と姿勢推定の結果を取得する
@@ -31,7 +31,7 @@ def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.
     #プレイヤーの登録が終了するまで登録作業を繰り返す
     while not leader_finished:
         #leaderのスクショを取得する
-        leader_screen = capture_leader(capture, leader_Id)
+        leader_screen = capture_leader(capture, face_Imgs, leader_Id)
         #対象領域のみ切り取る
         leader_picture = extract_leaderArea(leader_screen)
 
@@ -86,7 +86,7 @@ def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.
     
     return leader_picture, leader_vectors, player_pictures, players_vectors
 
-def capture_leader(capture: cv2.VideoCapture, leader_Id: int) -> np.ndarray:
+def capture_leader(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], leader_Id: int) -> np.ndarray:
     """leaderのスクショを取る
 
     Args:
@@ -102,8 +102,16 @@ def capture_leader(capture: cv2.VideoCapture, leader_Id: int) -> np.ndarray:
     area_Ystart = Window_height - humuan_height
     area_Yend = Window_height
 
+    #leaderに当てられたプレイヤーの顔画像
+    face = cv2.flip(face_Imgs[leader_Id], 1) #後で反転して表示されるので、先に反転させとく
+    face_Xstart = int((area_Xstart + area_Xend)/2 - face_width/2)
+    face_Xend = int(face_Xstart + face_width)
+    face_Yend = area_Ystart - 10 #枠線が残るように
+    face_Ystart = face_Yend - face_height
+
     print("Width:" + str(area_Xend - area_Xstart))
     print("Height:" + str(area_Yend - area_Ystart))
+
 
     while capture.isOpened():
         #success: 画像の取得が成功したか
@@ -120,6 +128,10 @@ def capture_leader(capture: cv2.VideoCapture, leader_Id: int) -> np.ndarray:
         #認識領域を表示
         annotated_image = cv2.resize(annotated_image, (Window_width, Window_height))
         annotated_image = cv2.rectangle(annotated_image, (area_Xstart, area_Ystart), (area_Xend, area_Yend), player_color[leader_Id], thickness=2)
+        #顔画像を表示
+        annotated_image[face_Ystart:face_Yend, face_Xstart:face_Xend] = face.copy()
+        #型変換
+        annotated_image = annotated_image.astype('uint8')
         annotated_image = cv2.flip(annotated_image, 1)
 
         cv2.imshow('Camera 1',annotated_image)
