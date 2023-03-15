@@ -54,17 +54,20 @@ def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.
         
     #playerの姿勢を推定する
     playerNum = registeredNum - 1
-    player_screen = capture_players(capture, playerNum)
-    player_pictures = extract_playersArea(player_screen, playerNum)
-    players_vectors = []
-    for i in range(playerNum):
-        player_pose, gt_anns, meta = predictor.numpy_image(player_pictures[i])
-        if len(player_pose) > 0:
-            players_vectors.append(correct_vectors(player_pose, 0))
-        else:
-            players_vectors = []
-            break
-        player_pictures[i] = draw_vectors_0(player_pictures[i], players_vectors[i])
+    players_complete = False
+    while not players_complete:
+        players_complete = True
+        player_screen = capture_players(capture, playerNum)
+        player_pictures = extract_playersArea(player_screen, playerNum)
+        players_vectors = []
+        for i in range(playerNum):
+            player_pose, gt_anns, meta = predictor.numpy_image(player_pictures[i])
+            if len(player_pose) > 0:
+                players_vectors.append(correct_vectors(player_pose, 0))
+            else:
+                players_complete = False #1人も検出されない画像があった場合、再度撮影を行う
+                break
+            player_pictures[i] = draw_vectors_0(player_pictures[i], players_vectors[i])
 
     if players_vectors:
         players_result = player_pictures[0]
@@ -79,7 +82,7 @@ def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.
                 print('Save frame...')
                 break
     
-    return player_pictures    
+    return leader_picture, leader_vectors, player_pictures, players_vectors
 
 def capture_leader(capture: cv2.VideoCapture) -> np.ndarray:
     """leaderのスクショを取る

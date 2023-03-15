@@ -91,7 +91,11 @@ while capture.isOpened():
         #ここまででゲームの前段階終了
 
         print('Start recognize')
-        imgs = get_humanPicture(capture, predictor, playerNum, 0)
+        leader_picture, leader_vectors, player_pictures, players_vectors = get_humanPicture(capture, predictor, playerNum, 0)
+
+        for player_vector in players_vectors:
+            similarity = compare_pose(leader_vectors, player_vector)
+            print(similarity)
         break
 
 
