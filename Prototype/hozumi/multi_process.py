@@ -7,6 +7,7 @@ from settings import SCALE_UP, TIMER, X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END,
 from calculation import compare_pose
 from vector_functions import correct_vectors
 import multiprocessing as mp
+import time
 
 def add_countdown(frame: np.ndarray, count: int) -> np.ndarray:
     """カウントをフレーム上に追加するメソッド
@@ -33,15 +34,20 @@ def countdown(queue: mp.Queue, running, count: int):
         running (boolean): プログラムが実行中か
         count (int): 何秒間カウントするか
     """
-    for i in range(count, -1, -1):
-        print(i)
-        for j in range(30): # 1秒を30フレームで分割
-            if not running.value:
-                return         
-            frame = queue.get()
-            frame = add_countdown(frame, i)
-            queue.put(frame)
-    return 
+    frames_per_second = 30
+    frames_per_count = count * frames_per_second
+    start_time = time.monotonic()
+    for i in range(frames_per_count + 1):
+        if not running.value:
+            return
+        frame_time = i / frames_per_second
+        current_time = time.monotonic() - start_time
+        if frame_time > current_time:
+            time.sleep(frame_time - current_time)
+        frame = queue.get()
+        frame = add_countdown(frame, count - (i // frames_per_second))
+        queue.put(frame)
+    return
 
 def playerChange(queue: mp.Queue, running, q2: mp.Queue, changeNum: int):
     """lead役->スクショ->Player役->スクショ の1セットをchangeNum回繰り返すメソッド
