@@ -46,6 +46,52 @@ def display_registered_playeres(face_Imgs: List[np.array]) -> np.ndarray:
 
     return playeresImg
 
+def display_instraction_leader(leader_id: int) -> np.ndarray:
+    """leader役のプレイヤーへの指示を表示
+
+    Args:
+        leader_id (int): leader役のプレイヤーのid
+
+    Returns:
+        np.ndarray: 確認画面
+    """
+    
+    instraction_Img = whiteboard.copy() #背景の設定
+
+    #画面の説明の表示
+    instraction_message: str = 'Player' + str(leader_id + 1) + 'さんがお手本役です。\n'
+    instraction_message += '次の画面で表示される枠内でお手本になるポーズをとってください'
+    cv2_putText(instraction_Img, instraction_message, (20, 80), 80, (0,0,0))
+    cv2_putText(instraction_Img, 'Start!  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+    
+    #型変換
+    instraction_Img = instraction_Img.astype('uint8')
+    #確認画面を表示
+    cv2.imshow('Camera 1',instraction_Img) 
+
+    return instraction_Img
+
+def display_leaderRecognitionError() -> np.ndarray:
+    """leaderを認識できなかったため再度playerの撮影を行うメッセージの表示を行う
+
+    Returns:
+        np.ndarray: メッセージ表示画面
+    """
+    
+    error_Img = whiteboard.copy() #背景の設定
+
+    #画面の説明の表示
+    errorMessage: str = '認識エラーが発生しました。\nもう一度行います。'
+    cv2_putText(error_Img, errorMessage, (int(Window_width/2), int(Window_height/2)), 80, (0,0,0), 2)
+    cv2_putText(error_Img, '次へ  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+
+    #型変換
+    error_Img = error_Img.astype('uint8')
+    #確認画面を表示
+    cv2.imshow('Camera 1',error_Img) 
+
+    return error_Img
+
 def display_check_leader(leader_picture: np.array, leader_id: int) -> np.ndarray:
     """leader役のプレイヤーにポーズの確認をとる画面を表示
 
@@ -83,6 +129,61 @@ def display_check_leader(leader_picture: np.array, leader_id: int) -> np.ndarray
     cv2.imshow('Camera 1',check_Img) 
 
     return check_Img
+
+def display_instraction_players(leader_picture: np.array, leader_id: int) -> np.ndarray:
+    """真似するポーズを表示し、player役のプレイヤーへの指示を表示
+
+    Args:
+        leader_picture (np.array): leader役のキャプチャーされた画像
+        leader_id (int): leader役のプレイヤーのid
+
+    Returns:
+        np.ndarray: 確認画面
+    """
+    
+    instraction_Img = whiteboard.copy() #背景の設定
+
+    #画面の説明の表示
+    page_about: str = 'このポーズをよく覚えてください。'
+    cv2_putText(instraction_Img, page_about, (20, 80), 80, (0,0,0))
+    cv2_putText(instraction_Img, 'Start!  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+    
+    #指示画面の作成
+    
+    #描画領域の指定
+    picture_height = leader_picture.shape[0]
+    picture_width = leader_picture.shape[1]
+    x_offset=int(Window_width/2 - picture_height/2)
+    y_offset=int(Window_height/2 - picture_width/2)
+    instraction_Img[y_offset:y_offset+picture_height, x_offset:x_offset+picture_width] = leader_picture.copy()
+
+    #型変換
+    instraction_Img = instraction_Img.astype('uint8')
+    #確認画面を表示
+    cv2.imshow('Camera 1',instraction_Img) 
+
+    return instraction_Img
+
+def display_playersRecognitionError() -> np.ndarray:
+    """playerの内、認識できなかったため再度playerの撮影を行うメッセージの表示を行う
+
+    Returns:
+        np.ndarray: メッセージ表示画面
+    """
+    
+    error_Img = whiteboard.copy() #背景の設定
+
+    #画面の説明の表示
+    errorMessage: str = '認識エラーが発生しました。\nもう一度行います。'
+    cv2_putText(error_Img, errorMessage, (int(Window_width/2), int(Window_height/2)), 80, (0,0,0), 2)
+    cv2_putText(error_Img, '次へ  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+
+    #型変換
+    error_Img = error_Img.astype('uint8')
+    #確認画面を表示
+    cv2.imshow('Camera 1',error_Img) 
+
+    return error_Img
 
 def cv2_putText(img, text, org, fontScale, color, mode=0, fontFace = "./arial-unicode-ms.ttf"):
     """日本語にも対応したputText

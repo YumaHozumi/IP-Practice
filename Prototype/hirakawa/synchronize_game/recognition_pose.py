@@ -7,7 +7,8 @@ from typing import List, Tuple
 from vector_functions import correct_vectors
 from draw_function import draw_vectors, draw_vectors_0, draw_result
 from regist_functions import register
-from display_functions import display_registered_playeres, display_check_leader
+from display_functions import display_registered_playeres, display_check_leader, display_instraction_players
+from display_functions import display_instraction_leader, display_playersRecognitionError, display_leaderRecognitionError 
 from calculation import compare_pose, calc_multiSimilarity
 from settings import SCALE_UP
 from display_settings import player_color
@@ -30,6 +31,13 @@ def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.
 
     #プレイヤーの登録が終了するまで登録作業を繰り返す
     while not leader_finished:
+        #leader役への指示を表示する
+        display_instraction_leader(leader_Id)
+        while True:
+            # Enterキーを押すと次に進む
+            if cv2.waitKey(10) == 0x0d:
+                break
+
         #leaderのスクショを取得する
         leader_screen = capture_leader(capture, face_Imgs, leader_Id)
         #対象領域のみ切り取る
@@ -37,21 +45,29 @@ def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.
 
         #leaderの姿勢を推定する
         leader_pose, gt_anns, meta = predictor.numpy_image(leader_picture)
+
+        #領域内に人を認識できなかった場合、再度撮影を行う
         if len(leader_pose) == 0:
+            display_leaderRecognitionError()
+            while True:
+                # Enterキーを押すと次に進む
+                if cv2.waitKey(10) == 0x0d:
+                    break
             continue
+
         leader_vectors = correct_vectors(leader_pose, 0)
         leader_picture = draw_vectors_0(leader_picture, leader_vectors)
 
-        #leaderのスクショを表示
+        #leader役の確認画面を表示
         #cv2.imshow('Camera 1',leader_picture)
         display_check_leader(leader_picture, leader_Id)
         while True:
             key = cv2.waitKey(10)
-            # Enterキーを押すと、
+            # Enterキーを押すと、見本登録を終了する
             if key == 0x0d:
-                print('Save frame...')
                 leader_finished = True
                 break
+            # Deleteキーを押すと、登録をやり直す
             if key == 127:
                 break
         
@@ -59,7 +75,15 @@ def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.
     playerNum = len(players_id)
     players_complete = False
     while not players_complete:
-        players_complete = True
+        players_complete = True #player役の全員が認識できたかのflag
+
+        #player役への指示を表示
+        display_instraction_players(leader_picture, leader_Id)
+        while True:
+            # Enterキーを押すと、次に進む
+            if cv2.waitKey(10) == 0x0d:
+                break
+
         player_screen = capture_players(capture, players_id)
         player_pictures = extract_playersArea(player_screen, playerNum)
         players_vectors = []
@@ -69,6 +93,11 @@ def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.
                 players_vectors.append(correct_vectors(player_pose, 0))
             else:
                 players_complete = False #1人も検出されない画像があった場合、再度撮影を行う
+                display_playersRecognitionError()
+                while True:
+                    # Enterキーを押すと次に進む
+                    if cv2.waitKey(10) == 0x0d:
+                        break
                 break
             player_pictures[i] = draw_vectors_0(player_pictures[i], players_vectors[i])
 
