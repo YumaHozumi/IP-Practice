@@ -60,8 +60,8 @@ def display_instraction_leader(leader_id: int) -> np.ndarray:
 
     #画面の説明の表示
     instraction_message: str = 'Player' + str(leader_id + 1) + 'さんがお手本役です。\n'
-    instraction_message += '次の画面で表示される枠内でお手本になるポーズをとってください'
-    cv2_putText(instraction_Img, instraction_message, (20, 80), 80, (0,0,0))
+    instraction_message += '次の画面で表示される枠内で\nお手本になるポーズをとってください'
+    cv2_putText(instraction_Img, instraction_message, (int(Window_width/2), int(Window_height/2)), 60, (0,0,0), 2)
     cv2_putText(instraction_Img, 'Start!  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
     
     #型変換

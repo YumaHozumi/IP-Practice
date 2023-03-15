@@ -29,7 +29,7 @@ def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.
     """
     leader_finished: bool = False #leaderの姿勢登録が完了したかどうか
 
-    #プレイヤーの登録が終了するまで登録作業を繰り返す
+    #leaderの見本の登録が終了するまで登録作業を繰り返す
     while not leader_finished:
         #leader役への指示を表示する
         display_instraction_leader(leader_Id)
@@ -84,7 +84,7 @@ def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.
             if cv2.waitKey(10) == 0x0d:
                 break
 
-        player_screen = capture_players(capture, players_id)
+        player_screen = capture_players(capture, face_Imgs, players_id)
         player_pictures = extract_playersArea(player_screen, playerNum)
         players_vectors = []
         for i in range(playerNum):
@@ -132,7 +132,7 @@ def capture_leader(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], leade
     area_Ystart = Window_height - humuan_height
     area_Yend = Window_height
 
-    #leaderに当てられたプレイヤーの顔画像
+    #leader役のプレイヤーの顔画像
     face = cv2.flip(face_Imgs[leader_Id], 1) #後で反転して表示されるので、先に反転させとく
     face_Xstart = int((area_Xstart + area_Xend)/2 - face_width/2)
     face_Xend = int(face_Xstart + face_width)
@@ -197,7 +197,7 @@ def extract_leaderArea(frame: np.ndarray) -> np.ndarray:
     return register_frame
 
 
-def capture_players(capture: cv2.VideoCapture, players_id: List[int]) -> List[np.ndarray]:
+def capture_players(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], players_id: List[int]) -> List[np.ndarray]:
     """playerのスクショを取る
 
     Args:
@@ -222,6 +222,18 @@ def capture_players(capture: cv2.VideoCapture, players_id: List[int]) -> List[np
     area_Ystart = Window_height - humuan_height
     area_Yend = Window_height
 
+    #顔画像関連の設定
+    faces = []
+    face_Xstarts = []
+    face_Xends = []
+    for j in range(playerNum):
+        faces.append(cv2.flip(face_Imgs[players_id[j]], 1)) #player役のプレイヤーの顔画像だけ抽出
+        face_Xstarts.append(int((area_Xstarts[j] + area_Xends[j])/2 - face_width/2))
+        face_Xends.append(int(face_Xstarts[j] + face_width))
+
+    face_Yend = area_Ystart - 10 #枠線が残るように
+    face_Ystart = face_Yend - face_height
+
     print("Width:" + str(area_Xends[0] - area_Xstarts[0]))
     print("Height:" + str(area_Yend - area_Ystart))
 
@@ -240,10 +252,12 @@ def capture_players(capture: cv2.VideoCapture, players_id: List[int]) -> List[np
         annotated_image = cv2.resize(annotated_image, (Window_width, Window_height))
         #登録をおこなう領域を指定
 
-        for j in range(playerNum):
+        for k in range(playerNum):
             #認識領域を表示
             #領域の枠は、スクリーン上で左からプレイヤー番号の若い順になっている(色んなパーティゲームと揃えた)
-            annotated_image = cv2.rectangle(annotated_image, (area_Xstarts[j], area_Ystart), (area_Xends[j], area_Yend), player_color[players_id[playerNum -1 -j]], thickness=2)
+            annotated_image = cv2.rectangle(annotated_image, (area_Xstarts[k], area_Ystart), (area_Xends[k], area_Yend), player_color[players_id[playerNum -1 -k]], thickness=2)
+            #顔画像を表示
+            annotated_image[face_Ystart:face_Yend, face_Xstarts[k]:face_Xends[k]] = faces[playerNum -1 -k].copy()
             
         annotated_image = cv2.flip(annotated_image, 1)
 
