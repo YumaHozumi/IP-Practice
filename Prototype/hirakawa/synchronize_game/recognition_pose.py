@@ -302,5 +302,8 @@ def extract_playersArea(frame: np.ndarray, playerNum: int) -> List[np.ndarray]:
     for j in range(playerNum):
         register_frame = frame[area_Ystart:area_Yend, area_Xstarts[j]:area_Xends[j]]
         register_frames.append(cv2.flip(register_frame, 1))
+
+    #表示の都合で、ここまでではスクリーン上で右側の人から順に格納されてる -> スクリーン上で左側の人から順に格納されるようにしたい
+    register_frames.reverse()
         
     return register_frames
