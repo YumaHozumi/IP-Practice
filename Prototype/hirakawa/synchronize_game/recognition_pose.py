@@ -5,12 +5,81 @@ import openpifpaf
 from PIL import Image
 from typing import List, Tuple
 from vector_functions import correct_vectors
-from draw_function import draw_vectors, draw_result
+from draw_function import draw_vectors, draw_vectors_0, draw_result
 from regist_functions import register
 from display_functions import display_registered_playeres
 from calculation import compare_pose, calc_multiSimilarity
 from settings import SCALE_UP
 from area_settings import Window_width, Window_height, human_width, humuan_height
+
+def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predictor, registeredNum: int, leader_Id: int) -> List[np.ndarray]:
+    """leaderとplayerの写真と姿勢推定の結果を取得する
+
+    Args:
+        capture (cv2.VideoCapture): キャプチャー
+        predictor (openpifpaf.predictor.Predictor): 姿勢推定モデル
+        registeredNum (int): 登録されたプレイヤーの人数
+        leader_Id (int): leaderのインデックス
+
+    Returns:
+        List[np.ndarray]: _description_
+    """
+    leader_finished: bool = False #leaderの姿勢登録が完了したかどうか
+
+    #プレイヤーの登録が終了するまで登録作業を繰り返す
+    while not leader_finished:
+        #leaderのスクショを取得する
+        leader_screen = capture_leader(capture)
+        #対象領域のみ切り取る
+        leader_picture = extract_leaderArea(leader_screen)
+
+        #leaderの姿勢を推定する
+        leader_pose, gt_anns, meta = predictor.numpy_image(leader_picture)
+        if len(leader_pose) == 0:
+            continue
+        leader_vectors = correct_vectors(leader_pose, 0)
+        leader_picture = draw_vectors_0(leader_picture, leader_vectors)
+
+        #leaderのスクショを表示
+        cv2.imshow('Camera 1',leader_picture)
+        while True:
+            key = cv2.waitKey(10)
+            # Enterキーを押すと、
+            if key == 0x0d:
+                print('Save frame...')
+                leader_finished = True
+                break
+            if key == 127:
+                break
+        
+    #playerの姿勢を推定する
+    playerNum = registeredNum - 1
+    player_screen = capture_players(capture, playerNum)
+    player_pictures = extract_playersArea(player_screen, playerNum)
+    players_vectors = []
+    for i in range(playerNum):
+        player_pose, gt_anns, meta = predictor.numpy_image(player_pictures[i])
+        if len(player_pose) > 0:
+            players_vectors.append(correct_vectors(player_pose, 0))
+        else:
+            players_vectors = []
+            break
+        player_pictures[i] = draw_vectors_0(player_pictures[i], players_vectors[i])
+
+    if players_vectors:
+        players_result = player_pictures[0]
+        for j in range(len(players_vectors) - 1):
+            players_result = cv2.hconcat([players_result, player_pictures[j + 1]]) 
+
+        #playerのスクショを表示
+        cv2.imshow('Camera 1',players_result)
+        while True:
+            # Enterキーを押すまで、スクショを表示
+            if cv2.waitKey(10) == 0x0d:
+                print('Save frame...')
+                break
+    
+    return player_pictures    
 
 def capture_leader(capture: cv2.VideoCapture) -> np.ndarray:
     """leaderのスクショを取る

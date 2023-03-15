@@ -8,6 +8,7 @@ from vector_functions import correct_vectors
 from draw_function import draw_vectors, draw_result
 from regist_functions import register
 from display_functions import display_registered_playeres
+from recognition_pose import get_humanPicture
 from calculation import compare_pose, calc_multiSimilarity
 from settings import SCALE_UP
 
@@ -62,14 +63,8 @@ while capture.isOpened():
         
         continue
 
-    #骨格を表示
-    #annotated_image: np.ndarray = draw_landmarks(frame, predictions)
-    #predictions[0].data[0] : (x,y,c)
-
     #骨格(ベクトル)を表示
-    
     people_vectors: np.ndarray = np.zeros((len(predictions), 13, 2, 3))
-
     
     for person_id in range(len(predictions)):
         vectors = correct_vectors(predictions, person_id)
@@ -84,12 +79,21 @@ while capture.isOpened():
     cv2.imshow('Camera 1',bigger_frame)
     #cv2.moveWindow("Camera 1", 200,40)
 
-    # Enterキーを押すとプレイヤー登録開始
-    if cv2.waitKey(10) == 0x0d:
+    
+    if cv2.waitKey(10) == 0x0d: 
+        # Enterキーを押すとプレイヤー登録開始
         print('Start register...')
         face_Imgs = register(capture, predictor)
         print('End register...')
+
+        playerNum = len(face_Imgs)
+        print(playerNum)
+        #ここまででゲームの前段階終了
+
+        print('Start recognize')
+        imgs = get_humanPicture(capture, predictor, playerNum, 0)
         break
+
 
 #print(type(face_Imgs))
 capture.release()
