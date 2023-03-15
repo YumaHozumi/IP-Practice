@@ -4,9 +4,6 @@ from typing import List, Tuple
 #画面の縮尺
 SCALE_UP = 3.5
 
-#プレイヤーを識別する色(B,G,R)
-player_color: List = [(0, 0, 255),(255, 0, 0),(0, 255, 0),(0, 165, 255)]
-
 #処理領域の設定(macでは画像サイズが1280×720)
 X_LIMIT_START = 250
 Y_LIMIT_START = 200

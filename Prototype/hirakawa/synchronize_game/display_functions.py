@@ -4,7 +4,8 @@ import numpy as np
 from typing import List, Tuple
 from PIL import Image, ImageDraw, ImageFont
 from functions import get_draw_info, create_connected
-from settings import SCALE_UP, Result_X, Result_Y, player_color
+from settings import SCALE_UP, Result_X, Result_Y
+from display_settings import player_color
 from area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, face_width, face_height, Window_width, Window_height
 
 whiteboard = 255 * np.ones([Window_height, Window_width, 3])

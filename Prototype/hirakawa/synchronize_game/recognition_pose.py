@@ -9,7 +9,8 @@ from draw_function import draw_vectors, draw_vectors_0, draw_result
 from regist_functions import register
 from display_functions import display_registered_playeres
 from calculation import compare_pose, calc_multiSimilarity
-from settings import SCALE_UP, player_color
+from settings import SCALE_UP
+from display_settings import player_color
 from area_settings import Window_width, Window_height, human_width, humuan_height
 
 def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predictor, face_Imgs: List[np.ndarray], players_id: int, leader_Id: int) -> List[np.ndarray]:
