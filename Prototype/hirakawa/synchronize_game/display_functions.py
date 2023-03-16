@@ -93,6 +93,27 @@ def display_leaderRecognitionError() -> np.ndarray:
 
     return error_Img
 
+def display_change() -> np.ndarray:
+    """leaderを認識できなかったため再度playerの撮影を行うメッセージの表示を行う
+
+    Returns:
+        np.ndarray: メッセージ表示画面
+    """
+    
+    error_Img = whiteboard.copy() #背景の設定
+
+    #画面の説明の表示
+    errorMessage: str = '見本役を交代します'
+    cv2_putText(error_Img, errorMessage, (int(Window_width/2), int(Window_height/2)), 80, (0,0,0), 2)
+    cv2_putText(error_Img, '次へ  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+
+    #型変換
+    error_Img = error_Img.astype('uint8')
+    #確認画面を表示
+    cv2.imshow('Camera 1',error_Img) 
+
+    return error_Img
+
 def display_check_leader(leader_picture: np.array, leader_id: int) -> np.ndarray:
     """leader役のプレイヤーにポーズの確認をとる画面を表示
 
