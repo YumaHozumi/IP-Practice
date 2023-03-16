@@ -100,19 +100,6 @@ def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.
                         break
                 break
             player_pictures[i] = draw_vectors_0(player_pictures[i], players_vectors[i])
-
-    if players_vectors:
-        players_result = player_pictures[0]
-        for j in range(len(players_vectors) - 1):
-            players_result = cv2.hconcat([players_result, player_pictures[j + 1]]) 
-
-        #playerのスクショを表示
-        cv2.imshow('Camera 1',players_result)
-        while True:
-            # Enterキーを押すまで、スクショを表示
-            if cv2.waitKey(10) == 0x0d:
-                print('Save frame...')
-                break
     
     return leader_picture, leader_vectors, player_pictures, players_vectors
 

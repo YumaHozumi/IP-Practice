@@ -272,7 +272,7 @@ def display_final_result(face_Imgs: List[np.array], similarities: List) -> np.nd
 
     #画面の説明の表示
     cv2_putText(resultImg, '最終結果', (20, 80), 80, (0,0,0))
-    cv2_putText(resultImg, '　終了!　  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+    cv2_putText(resultImg, '　終了!　  > Enter', (int(Window_width * 0.7), Window_height - 10), 40, (0,0,0))
     
     #登録結果表示画面の作成
     people_num = len(face_Imgs)
