@@ -7,7 +7,7 @@ from typing import List, Tuple
 from vector_functions import correct_vectors
 from draw_function import draw_vectors, draw_result
 from regist_functions import register
-from display_functions import display_registered_playeres, display_result, display_change
+from display_functions import display_registered_playeres, display_result, display_change, display_final_result
 from recognition_pose import get_humanPicture
 from calculation import compare_pose, calc_multiSimilarity
 from settings import SCALE_UP
@@ -124,6 +124,11 @@ while capture.isOpened():
                         break
         break
 
+display_final_result(face_Imgs, all_similarities)
+while True:
+    # Enterキーを押すと終了
+    if cv2.waitKey(10) == 0x0d:
+        break
 print(all_similarities)
 #print(type(face_Imgs))
 capture.release()

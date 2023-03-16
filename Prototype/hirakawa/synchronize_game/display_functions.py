@@ -187,10 +187,10 @@ def display_instraction_players(leader_picture: np.array, leader_id: int) -> np.
     return instraction_Img
 
 def display_result(player_pictures: np.array, leader_id: int, players_id: List[int], similarities: List) -> np.ndarray:
-    """真似するポーズを表示し、player役のプレイヤーへの指示を表示
+    """1ゲームの結果を表示する
 
     Args:
-        player_pictures (np.array): leader役のキャプチャーされた画像
+        player_pictures (np.array): player役のキャプチャーされた画像
         leader_id (int): leader役のプレイヤーのid
         players_id (List[int]): player役のプレイヤーのid
         similarities (List): 類似度のリスト
@@ -271,12 +271,13 @@ def display_final_result(face_Imgs: List[np.array], similarities: List) -> np.nd
     resultImg = whiteboard.copy() #背景の設定
 
     #画面の説明の表示
-    cv2_putText(resultImg, 'プレイヤー一覧', (20, 80), 80, (0,0,0))
-    cv2_putText(resultImg, '　OK!　  > Enter', (int(Window_width * 0.7), Window_height - 50), 40, (0,0,0))
-    cv2_putText(resultImg, 'やり直す > Delete', (int(Window_width * 0.7), Window_height - 10), 40, (0,0,0))
+    cv2_putText(resultImg, '最終結果', (20, 80), 80, (0,0,0))
+    cv2_putText(resultImg, '　終了!　  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
     
     #登録結果表示画面の作成
     people_num = len(face_Imgs)
+    final_similarities = []
+
     for i in range(people_num):
         img = face_Imgs[i] #顔画像
 
@@ -287,6 +288,16 @@ def display_final_result(face_Imgs: List[np.array], similarities: List) -> np.nd
         resultImg[y_offset:y_offset+img.shape[0], x_offset:x_offset+img.shape[1]] = img.copy()
         txt = "Player" + str(int(i + 1))
         cv2.putText(resultImg, txt, (x_offset, y_offset - 20), cv2.FONT_HERSHEY_SIMPLEX, 1.75, player_color[i], 3, cv2.LINE_AA)
+        if (people_num -1) == 1: 
+            average_sim = similarities[i][0]
+        elif (people_num -1) > 1:
+            average_sim = sum(similarities[i]) / len(similarities[i])
+        final_similarities.append(average_sim)
+        txt_score = '{:.2f}'.format(final_similarities[i])
+        score_X = int(x_offset + face_width/2)
+        score_Y = int(y_offset+face_height + 60)
+        cv2_putText(resultImg, txt_score, (score_X, score_Y), 60, (0,0,0), 2)
+        #cv2.putText(resultImg, txt_score, (score_X, y_offset+img.shape[0]), cv2.FONT_HERSHEY_SIMPLEX, 1.75, player_color[i], 3, cv2.LINE_AA)
         
     #型変換
     resultImg = resultImg.astype('uint8')
