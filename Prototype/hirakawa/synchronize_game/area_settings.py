@@ -20,4 +20,4 @@ face_height = 200
 
 #人の姿勢推定領域のサイズ
 human_width = int(Window_width / 4)
-humuan_height = int(Window_height * 0.65)
+human_height = int(Window_height * 0.65)

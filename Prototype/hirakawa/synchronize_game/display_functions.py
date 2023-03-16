@@ -7,6 +7,7 @@ from functions import get_draw_info, create_connected
 from settings import SCALE_UP, Result_X, Result_Y
 from display_settings import player_color
 from area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, face_width, face_height, Window_width, Window_height
+from area_settings import human_width, human_height
 
 whiteboard = 255 * np.ones([Window_height, Window_width, 3])
 
@@ -116,12 +117,12 @@ def display_check_leader(leader_picture: np.array, leader_id: int) -> np.ndarray
     #描画領域の指定
     picture_height = leader_picture.shape[0]
     picture_width = leader_picture.shape[1]
-    x_offset=int(Window_width/2 - picture_height/2)
-    y_offset=int(Window_height/2 - picture_width/2)
+    x_offset=int(Window_width/2 - picture_width/2)
+    y_offset=int(Window_height/2 - picture_height/2)
     check_Img[y_offset:y_offset+picture_height, x_offset:x_offset+picture_width] = leader_picture.copy()
     txt = "Player" + str(leader_id + 1)
-    #cv2.putText(check_Img, txt, (int(x_offset + picture_width/2), y_offset - 20), cv2.FONT_HERSHEY_SIMPLEX, 1.75, player_color[leader_id], 3, cv2.LINE_AA)
-    cv2_putText(check_Img, txt, (int(x_offset + picture_width/2), y_offset - 40), 60, player_color[leader_id], 2)
+    #プレイヤー番号の表示
+    #cv2_putText(check_Img, txt, (int(x_offset + picture_width/2), y_offset - 40), 60, player_color[leader_id], 2)
 
     #型変換
     check_Img = check_Img.astype('uint8')
@@ -153,8 +154,8 @@ def display_instraction_players(leader_picture: np.array, leader_id: int) -> np.
     #描画領域の指定
     picture_height = leader_picture.shape[0]
     picture_width = leader_picture.shape[1]
-    x_offset=int(Window_width/2 - picture_height/2)
-    y_offset=int(Window_height/2 - picture_width/2)
+    x_offset=int(Window_width/2 - picture_width/2)
+    y_offset=int(Window_height/2 - picture_height/2)
     instraction_Img[y_offset:y_offset+picture_height, x_offset:x_offset+picture_width] = leader_picture.copy()
 
     #型変換
@@ -163,6 +164,57 @@ def display_instraction_players(leader_picture: np.array, leader_id: int) -> np.
     cv2.imshow('Camera 1',instraction_Img) 
 
     return instraction_Img
+
+def display_result(player_pictures: np.array, leader_id: int, players_id: List[int], similarities: List) -> np.ndarray:
+    """真似するポーズを表示し、player役のプレイヤーへの指示を表示
+
+    Args:
+        player_pictures (np.array): leader役のキャプチャーされた画像
+        leader_id (int): leader役のプレイヤーのid
+        players_id (List[int]): player役のプレイヤーのid
+        similarities (List): 類似度のリスト
+
+    Returns:
+        np.ndarray: 結果表示画面
+    """
+    
+    result_Img = whiteboard.copy() #背景の設定
+
+    #画面の説明の表示
+    message: str = 'ゲーム' + str(leader_id + 1) + "の結果発表!"
+    cv2_putText(result_Img, message, (20, 80), 80, (0,0,0))
+    cv2_putText(result_Img, '次へ  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+    
+    #結果表示画面の作成
+    player_num = len(player_pictures)
+    #縮尺
+    small_width = int(human_width * 0.8)
+    small_hight = int(human_height * 0.8)
+
+    area_Xstarts = []
+    area_Xends = []
+
+    for i in range(player_num):
+        area_Xstarts.append(int(((2*i+1)/player_num * Window_width - small_width)/2))
+        area_Xends.append(int(((2*i+1)/player_num * Window_width + small_width)/2))
+
+    area_Ystart = int(Window_height*0.45 - small_hight/2)
+    area_Yend = area_Ystart + small_hight
+
+    for j in range(player_num):
+        img = cv2.resize(player_pictures[j], (small_width, small_hight))
+        result_Img[area_Ystart:area_Yend, area_Xstarts[j]:area_Xends[j]] = img.copy()
+        result_Img = cv2.rectangle(result_Img, (area_Xstarts[j], area_Ystart), (area_Xends[j], area_Yend), player_color[players_id[j]], thickness=4)
+        txt_X = int((area_Xstarts[j] + area_Xends[j])/2)
+        txt_Y = int(area_Yend + 50)
+        cv2_putText(result_Img, '{:.2f}'.format(similarities[j]), (txt_X, txt_Y), 50, (0,0,0), 2)
+
+    #型変換
+    result_Img = result_Img.astype('uint8')
+    #確認画面を表示
+    cv2.imshow('Camera 1',result_Img) 
+
+    return result_Img
 
 def display_playersRecognitionError() -> np.ndarray:
     """playerの内、認識できなかったため再度playerの撮影を行うメッセージの表示を行う

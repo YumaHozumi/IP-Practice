@@ -12,9 +12,9 @@ from display_functions import display_instraction_leader, display_playersRecogni
 from calculation import compare_pose, calc_multiSimilarity
 from settings import SCALE_UP
 from display_settings import player_color
-from area_settings import Window_width, Window_height, human_width, humuan_height, face_width, face_height
+from area_settings import Window_width, Window_height, human_width, human_height, face_width, face_height
 
-def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predictor, face_Imgs: List[np.ndarray], players_id: int, leader_Id: int) -> List[np.ndarray]:
+def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predictor, face_Imgs: List[np.ndarray], players_id: List[int], leader_Id: int) -> List[np.ndarray]:
     """leaderとplayerの写真と姿勢推定の結果を取得する
 
     Args:
@@ -129,7 +129,7 @@ def capture_leader(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], leade
     #認識領域の設定
     area_Xstart = int((Window_width - human_width)/2)
     area_Xend = int((Window_width + human_width)/2)
-    area_Ystart = Window_height - humuan_height
+    area_Ystart = Window_height - human_height
     area_Yend = Window_height
 
     #leader役のプレイヤーの顔画像
@@ -187,7 +187,7 @@ def extract_leaderArea(frame: np.ndarray) -> np.ndarray:
     #認識領域の設定
     area_Xstart = int((Window_width - human_width)/2)
     area_Xend = int((Window_width + human_width)/2)
-    area_Ystart = Window_height - humuan_height
+    area_Ystart = Window_height - human_height
     area_Yend = Window_height
 
     #領域の切り取り
@@ -219,7 +219,7 @@ def capture_players(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], play
         area_Xstarts.append(int(((2*i+1)/playerNum * Window_width - human_width)/2))
         area_Xends.append(int(((2*i+1)/playerNum * Window_width + human_width)/2))
 
-    area_Ystart = Window_height - humuan_height
+    area_Ystart = Window_height - human_height
     area_Yend = Window_height
 
     #顔画像関連の設定
@@ -293,7 +293,7 @@ def extract_playersArea(frame: np.ndarray, playerNum: int) -> List[np.ndarray]:
         area_Xstarts.append(int(((2*i+1)/playerNum * Window_width - human_width)/2))
         area_Xends.append(int(((2*i+1)/playerNum * Window_width + human_width)/2))
 
-    area_Ystart = Window_height - humuan_height
+    area_Ystart = Window_height - human_height
     area_Yend = Window_height
 
     #領域の切り取り

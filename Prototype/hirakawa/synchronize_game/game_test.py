@@ -7,7 +7,7 @@ from typing import List, Tuple
 from vector_functions import correct_vectors
 from draw_function import draw_vectors, draw_result
 from regist_functions import register
-from display_functions import display_registered_playeres
+from display_functions import display_registered_playeres, display_result
 from recognition_pose import get_humanPicture
 from calculation import compare_pose, calc_multiSimilarity
 from settings import SCALE_UP
@@ -101,9 +101,19 @@ while capture.isOpened():
 
         leader_picture, leader_vectors, player_pictures, players_vectors = get_humanPicture(capture, predictor, face_Imgs, players_id, leader_id)
 
+        #ここまでで画像の抽出は完了
+
+        #以降で、類似度の計算・結果の表示
+        similarities = []
         for player_vector in players_vectors:
-            similarity = compare_pose(leader_vectors, player_vector)
-            print(similarity)
+            similarity = compare_pose(leader_vectors, player_vector) * 100
+            similarities.append(similarity)
+        
+        display_result(player_pictures, leader_id, players_id, similarities)
+        while True:
+            # Enterキーを押すと次へ
+            if cv2.waitKey(10) == 0x0d:
+                break
         break
 
 
