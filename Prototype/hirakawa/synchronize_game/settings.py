@@ -1,4 +1,5 @@
 import numpy as np
+from typing import List, Tuple
 
 #画面の縮尺
 SCALE_UP = 3.5

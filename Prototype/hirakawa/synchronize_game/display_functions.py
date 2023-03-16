@@ -4,14 +4,12 @@ import numpy as np
 from typing import List, Tuple
 from PIL import Image, ImageDraw, ImageFont
 from functions import get_draw_info, create_connected
-from draw_function import draw_peopleNum
-from settings import SCALE_UP, Result_X, Result_Y 
+from settings import SCALE_UP, Result_X, Result_Y
+from display_settings import player_color
 from area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, face_width, face_height, Window_width, Window_height
+from area_settings import human_width, human_height
 
 whiteboard = 255 * np.ones([Window_height, Window_width, 3])
-
-#プレイヤーを識別する色(B,G,R)
-player_color: List = [(0, 0, 255),(255, 0, 0),(0, 255, 0),(0, 165, 255)]
 
 def display_registered_playeres(face_Imgs: List[np.array]) -> np.ndarray:
     """登録されたプレイヤー一覧を表示する
@@ -48,6 +46,265 @@ def display_registered_playeres(face_Imgs: List[np.array]) -> np.ndarray:
     cv2.imshow('Camera 1',playeresImg) #認識した顔の画像を表示
 
     return playeresImg
+
+def display_instraction_leader(leader_id: int) -> np.ndarray:
+    """leader役のプレイヤーへの指示を表示
+
+    Args:
+        leader_id (int): leader役のプレイヤーのid
+
+    Returns:
+        np.ndarray: 確認画面
+    """
+    
+    instraction_Img = whiteboard.copy() #背景の設定
+
+    #画面の説明の表示
+    instraction_message: str = 'Player' + str(leader_id + 1) + 'さんがお手本役です。\n'
+    instraction_message += '次の画面で表示される枠内で\nお手本になるポーズをとってください'
+    cv2_putText(instraction_Img, instraction_message, (int(Window_width/2), int(Window_height/2)), 60, (0,0,0), 2)
+    cv2_putText(instraction_Img, 'Start!  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+    
+    #型変換
+    instraction_Img = instraction_Img.astype('uint8')
+    #確認画面を表示
+    cv2.imshow('Camera 1',instraction_Img) 
+
+    return instraction_Img
+
+def display_leaderRecognitionError() -> np.ndarray:
+    """leaderを認識できなかったため再度playerの撮影を行うメッセージの表示を行う
+
+    Returns:
+        np.ndarray: メッセージ表示画面
+    """
+    
+    error_Img = whiteboard.copy() #背景の設定
+
+    #画面の説明の表示
+    errorMessage: str = '認識エラーが発生しました。\nもう一度行います。'
+    cv2_putText(error_Img, errorMessage, (int(Window_width/2), int(Window_height/2)), 80, (0,0,0), 2)
+    cv2_putText(error_Img, '次へ  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+
+    #型変換
+    error_Img = error_Img.astype('uint8')
+    #確認画面を表示
+    cv2.imshow('Camera 1',error_Img) 
+
+    return error_Img
+
+def display_change() -> np.ndarray:
+    """leaderを認識できなかったため再度playerの撮影を行うメッセージの表示を行う
+
+    Returns:
+        np.ndarray: メッセージ表示画面
+    """
+    
+    error_Img = whiteboard.copy() #背景の設定
+
+    #画面の説明の表示
+    errorMessage: str = '見本役を交代します'
+    cv2_putText(error_Img, errorMessage, (int(Window_width/2), int(Window_height/2)), 80, (0,0,0), 2)
+    cv2_putText(error_Img, '次へ  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+
+    #型変換
+    error_Img = error_Img.astype('uint8')
+    #確認画面を表示
+    cv2.imshow('Camera 1',error_Img) 
+
+    return error_Img
+
+def display_check_leader(leader_picture: np.array, leader_id: int) -> np.ndarray:
+    """leader役のプレイヤーにポーズの確認をとる画面を表示
+
+    Args:
+        leader_picture (np.array): leader役のキャプチャーされた画像
+        leader_id (int): leader役のプレイヤーのid
+
+    Returns:
+        np.ndarray: 確認画面
+    """
+    
+    check_Img = whiteboard.copy() #背景の設定
+
+    #画面の説明の表示
+    page_about: str = 'プレイヤー' + str(leader_id + 1) + 'さんのお手本ポーズ'
+    cv2_putText(check_Img, page_about, (20, 80), 80, (0,0,0))
+    cv2_putText(check_Img, '　OK!　  > Enter', (int(Window_width * 0.7), Window_height - 50), 40, (0,0,0))
+    cv2_putText(check_Img, 'やり直す > Delete', (int(Window_width * 0.7), Window_height - 10), 40, (0,0,0))
+    
+    #ポーズ確認画面の作成
+    
+    #描画領域の指定
+    picture_height = leader_picture.shape[0]
+    picture_width = leader_picture.shape[1]
+    x_offset=int(Window_width/2 - picture_width/2)
+    y_offset=int(Window_height/2 - picture_height/2)
+    check_Img[y_offset:y_offset+picture_height, x_offset:x_offset+picture_width] = leader_picture.copy()
+    txt = "Player" + str(leader_id + 1)
+    #プレイヤー番号の表示
+    #cv2_putText(check_Img, txt, (int(x_offset + picture_width/2), y_offset - 40), 60, player_color[leader_id], 2)
+
+    #型変換
+    check_Img = check_Img.astype('uint8')
+    #確認画面を表示
+    cv2.imshow('Camera 1',check_Img) 
+
+    return check_Img
+
+def display_instraction_players(leader_picture: np.array, leader_id: int) -> np.ndarray:
+    """真似するポーズを表示し、player役のプレイヤーへの指示を表示
+
+    Args:
+        leader_picture (np.array): leader役のキャプチャーされた画像
+        leader_id (int): leader役のプレイヤーのid
+
+    Returns:
+        np.ndarray: 確認画面
+    """
+    
+    instraction_Img = whiteboard.copy() #背景の設定
+
+    #画面の説明の表示
+    page_about: str = 'このポーズをよく覚えてください。'
+    cv2_putText(instraction_Img, page_about, (20, 80), 80, (0,0,0))
+    cv2_putText(instraction_Img, 'Start!  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+    
+    #指示画面の作成
+    
+    #描画領域の指定
+    picture_height = leader_picture.shape[0]
+    picture_width = leader_picture.shape[1]
+    x_offset=int(Window_width/2 - picture_width/2)
+    y_offset=int(Window_height/2 - picture_height/2)
+    instraction_Img[y_offset:y_offset+picture_height, x_offset:x_offset+picture_width] = leader_picture.copy()
+
+    #型変換
+    instraction_Img = instraction_Img.astype('uint8')
+    #確認画面を表示
+    cv2.imshow('Camera 1',instraction_Img) 
+
+    return instraction_Img
+
+def display_result(player_pictures: np.array, leader_id: int, players_id: List[int], similarities: List) -> np.ndarray:
+    """1ゲームの結果を表示する
+
+    Args:
+        player_pictures (np.array): player役のキャプチャーされた画像
+        leader_id (int): leader役のプレイヤーのid
+        players_id (List[int]): player役のプレイヤーのid
+        similarities (List): 類似度のリスト
+
+    Returns:
+        np.ndarray: 結果表示画面
+    """
+    
+    result_Img = whiteboard.copy() #背景の設定
+
+    #画面の説明の表示
+    message: str = 'ゲーム' + str(leader_id + 1) + "の結果発表!"
+    cv2_putText(result_Img, message, (20, 80), 80, (0,0,0))
+    cv2_putText(result_Img, '次へ  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+    
+    #結果表示画面の作成
+    player_num = len(player_pictures)
+    #縮尺
+    small_width = int(human_width * 0.8)
+    small_hight = int(human_height * 0.8)
+
+    area_Xstarts = []
+    area_Xends = []
+
+    for i in range(player_num):
+        area_Xstarts.append(int(((2*i+1)/player_num * Window_width - small_width)/2))
+        area_Xends.append(int(((2*i+1)/player_num * Window_width + small_width)/2))
+
+    area_Ystart = int(Window_height*0.45 - small_hight/2)
+    area_Yend = area_Ystart + small_hight
+
+    for j in range(player_num):
+        img = cv2.resize(player_pictures[j], (small_width, small_hight))
+        result_Img[area_Ystart:area_Yend, area_Xstarts[j]:area_Xends[j]] = img.copy()
+        result_Img = cv2.rectangle(result_Img, (area_Xstarts[j], area_Ystart), (area_Xends[j], area_Yend), player_color[players_id[j]], thickness=4)
+        txt_X = int((area_Xstarts[j] + area_Xends[j])/2)
+        txt_Y = int(area_Yend + 50)
+        cv2_putText(result_Img, '{:.2f}'.format(similarities[j]), (txt_X, txt_Y), 50, (0,0,0), 2)
+
+    #型変換
+    result_Img = result_Img.astype('uint8')
+    #確認画面を表示
+    cv2.imshow('Camera 1',result_Img) 
+
+    return result_Img
+
+def display_playersRecognitionError() -> np.ndarray:
+    """playerの内、認識できなかったため再度playerの撮影を行うメッセージの表示を行う
+
+    Returns:
+        np.ndarray: メッセージ表示画面
+    """
+    
+    error_Img = whiteboard.copy() #背景の設定
+
+    #画面の説明の表示
+    errorMessage: str = '認識エラーが発生しました。\nもう一度行います。'
+    cv2_putText(error_Img, errorMessage, (int(Window_width/2), int(Window_height/2)), 80, (0,0,0), 2)
+    cv2_putText(error_Img, '次へ  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+
+    #型変換
+    error_Img = error_Img.astype('uint8')
+    #確認画面を表示
+    cv2.imshow('Camera 1',error_Img) 
+
+    return error_Img
+
+def display_final_result(face_Imgs: List[np.array], similarities: List) -> np.ndarray:
+    """最終結果を表示する
+
+    Args:
+        face_Imgs (List[np.array]): 顔画像のリスト
+        similarities (List): 全てのゲーム結果
+
+    Returns:
+        np.ndarray: 一覧を表示している画像
+    """
+    resultImg = whiteboard.copy() #背景の設定
+
+    #画面の説明の表示
+    cv2_putText(resultImg, '最終結果', (20, 80), 80, (0,0,0))
+    cv2_putText(resultImg, '　終了!　  > Enter', (int(Window_width * 0.7), Window_height - 10), 40, (0,0,0))
+    
+    #登録結果表示画面の作成
+    people_num = len(face_Imgs)
+    final_similarities = []
+
+    for i in range(people_num):
+        img = face_Imgs[i] #顔画像
+
+        #描画領域の指定
+        separate_width = Window_width / (people_num + 1)
+        x_offset=int((i+1)*separate_width - face_width/2)
+        y_offset=int(Window_height/2 - face_height/2)
+        resultImg[y_offset:y_offset+img.shape[0], x_offset:x_offset+img.shape[1]] = img.copy()
+        txt = "Player" + str(int(i + 1))
+        cv2.putText(resultImg, txt, (x_offset, y_offset - 20), cv2.FONT_HERSHEY_SIMPLEX, 1.75, player_color[i], 3, cv2.LINE_AA)
+        if (people_num -1) == 1: 
+            average_sim = similarities[i][0]
+        elif (people_num -1) > 1:
+            average_sim = sum(similarities[i]) / len(similarities[i])
+        final_similarities.append(average_sim)
+        txt_score = '{:.2f}'.format(final_similarities[i])
+        score_X = int(x_offset + face_width/2)
+        score_Y = int(y_offset+face_height + 60)
+        cv2_putText(resultImg, txt_score, (score_X, score_Y), 60, (0,0,0), 2)
+        #cv2.putText(resultImg, txt_score, (score_X, y_offset+img.shape[0]), cv2.FONT_HERSHEY_SIMPLEX, 1.75, player_color[i], 3, cv2.LINE_AA)
+        
+    #型変換
+    resultImg = resultImg.astype('uint8')
+
+    cv2.imshow('Camera 1',resultImg) #認識した顔の画像を表示
+
+    return resultImg
 
 def cv2_putText(img, text, org, fontScale, color, mode=0, fontFace = "./arial-unicode-ms.ttf"):
     """日本語にも対応したputText

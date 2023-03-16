@@ -109,9 +109,12 @@ def capture_registerArea(capture: cv2.VideoCapture, predictor: openpifpaf.predic
         #cv2.moveWindow("Camera 1", 200,40)
 
         # Enterキーを押したら画像の読み込みを終了
-        if cv2.waitKey(10) == 0x0d:
+        key = cv2.waitKey(10)
+        if (key == 0x0d and peopleNumber > 1 and peopleNumber < 5):
             print('Enter pressed. Saving ...')
             break
+        else:
+            key = 0
 
     #Enter押下時の画像から顔領域を抽出し、表示する
     face_Imgs: List[np.ndarray] = regist_faceImg(register_frame, predictions, registable_label)

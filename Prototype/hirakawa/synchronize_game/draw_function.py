@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from typing import List, Tuple
 from functions import get_draw_info, create_connected, get_draw_info_0
+from display_functions import cv2_putText
 from settings import SCALE_UP, Result_X, Result_Y
 from area_settings import peopleNum_X, peopleNum_Y
 
@@ -235,8 +236,14 @@ def draw_peopleNum(image: np.ndarray, peopleNum: int) -> np.ndarray:
 
     # 文字を重畳
     id_color = (0,255,0)
-    id_txt = "peopleNumber: " + str(int(peopleNum))
-    cv2.putText(annotated_image,id_txt,(peopleNum_X, peopleNum_Y),cv2.FONT_HERSHEY_SIMPLEX,2.0,id_color,2,cv2.LINE_4)
+    if peopleNum < 2:
+        id_txt = "2人以上必要です"
+    elif peopleNum > 4:
+        id_txt = "このゲームは4人まで用です"
+    else:
+        id_txt = "認識中の人数: " + str(int(peopleNum))
+    #cv2.putText(annotated_image,id_txt,(peopleNum_X, peopleNum_Y),cv2.FONT_HERSHEY_SIMPLEX,2.0,id_color,2,cv2.LINE_4)
+    cv2_putText(annotated_image, id_txt, (peopleNum_X, peopleNum_Y), 80, id_color, 2)
 
     return annotated_image
 
