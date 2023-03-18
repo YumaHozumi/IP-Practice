@@ -4,13 +4,13 @@ import numpy as np
 import openpifpaf
 from PIL import Image
 from typing import List, Tuple
-from .vector_functions import correct_vectors
-from .draw_function import draw_vectors, draw_result
-from .regist_functions import register
-from .display_functions import display_registered_playeres, display_result, display_change, display_final_result
-from .recognition_pose import get_humanPicture
-from .calculation import compare_pose, calc_multiSimilarity
-from .settings import SCALE_UP
+from vector_functions import correct_vectors
+from draw_function import draw_vectors, draw_result
+from regist_functions import register
+from display_functions import display_registered_playeres, display_result, display_change, display_final_result
+from recognition_pose import get_humanPicture
+from calculation import compare_pose, calc_multiSimilarity
+from settings import SCALE_UP
 
 
 # PCに繋がっているUSBカメラから撮る場合はこれ
@@ -86,9 +86,7 @@ while capture.isOpened():
 
         playerNum = len(face_Imgs) #プレイ人数
         #全ての類似度を格納する
-        all_similarities = []
-        for all_people in range(playerNum):
-            all_similarities.append([])
+        all_similarities: List[list] = [[] for _ in range(playerNum)]
         #ここまででゲームの前段階終了
 
         for leader_id in range(playerNum):

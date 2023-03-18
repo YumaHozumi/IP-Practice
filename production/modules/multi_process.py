@@ -117,20 +117,9 @@ def capture_frames(queue: mp.Queue, running, q2: mp.Queue):
         predictions：関節座標
         インデックス：関節座標点
         """
-        if len(predictions) == 0: continue
+
         #annotated_image: np.ndarray = draw_landmarks(frame, predictions)
         #predictions[0].data[0] : (x,y,c)
-
-        people_vectors: np.ndarray = np.zeros((len(predictions), 13, 2, 3))
-
-        for person_id in range(len(predictions)):
-            vectors = correct_vectors(predictions, person_id)
-            people_vectors[person_id] = np.asarray(vectors)
-
-        if len(people_vectors) >= 1:
-            similarity = compare_pose(people_vectors[0], people_vectors[0]) * 100
-            # print(f"類似度：{similarity}")
-            # print("---------------------------")
 
         height = frame.shape[0]
         width = frame.shape[1]
