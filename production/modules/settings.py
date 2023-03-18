@@ -14,6 +14,9 @@ Y_LIMIT_END = 720
 Result_X = 400
 Result_Y = 150
 
+# カウント文字の表示スピードに関してはここで調整
+FRAMES_PER_SECOND = 30
+
 """
 スコア計算用パラメータ
 """

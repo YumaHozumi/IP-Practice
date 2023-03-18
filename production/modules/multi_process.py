@@ -2,10 +2,10 @@ import cv2
 import numpy as np
 import openpifpaf
 from typing import List, Tuple
-from functions import draw_landmarks
-from settings import SCALE_UP, TIMER, X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, COUNT_X, COUNT_Y
-from calculation import compare_pose
-from vector_functions import correct_vectors
+#from functions import draw_landmarks
+from .settings import SCALE_UP, X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, FRAMES_PER_SECOND
+from .calculation import compare_pose
+from .vector_functions import correct_vectors
 import multiprocessing as mp
 import time
 
@@ -34,18 +34,17 @@ def countdown(queue: mp.Queue, running, count: int):
         running (boolean): プログラムが実行中か
         count (int): 何秒間カウントするか
     """
-    frames_per_second = 5
-    frames_per_count = count * frames_per_second
+    frames_per_count = count * FRAMES_PER_SECOND
     start_time = time.monotonic()
     for i in range(frames_per_count + 1):
         if not running.value:
             return
-        frame_time = i / frames_per_second
+        frame_time = i / FRAMES_PER_SECOND
         current_time = time.monotonic() - start_time
         if frame_time > current_time:
             time.sleep(frame_time - current_time)
         frame = queue.get()
-        frame = add_countdown(frame, count - (i // frames_per_second))
+        frame = add_countdown(frame, count - (i // FRAMES_PER_SECOND))
         queue.put(frame)
     return
 
@@ -112,12 +111,14 @@ def capture_frames(queue: mp.Queue, running, q2: mp.Queue):
         resize_frame: np.ndarray = cv2.resize(limit_frame, dsize=None, fx=(1.0 / SCALE_UP), fy=(1.0 / SCALE_UP))
 
         predictions, gt_anns, meta = predictor.numpy_image(resize_frame)
+
+        annotated_image = frame.copy()
         """
         predictions：関節座標
         インデックス：関節座標点
         """
         if len(predictions) == 0: continue
-        annotated_image: np.ndarray = draw_landmarks(frame, predictions)
+        #annotated_image: np.ndarray = draw_landmarks(frame, predictions)
         #predictions[0].data[0] : (x,y,c)
 
         people_vectors: np.ndarray = np.zeros((len(predictions), 13, 2, 3))
