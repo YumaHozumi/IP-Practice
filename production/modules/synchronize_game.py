@@ -4,11 +4,11 @@ import numpy as np
 import openpifpaf
 from PIL import Image
 from typing import List, Tuple
-from vector_functions import correct_vectors
-from draw_function import draw_vectors, draw_result
-from calculation import compare_pose, calc_multiSimilarity
-from area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END
-from settings import SCALE_UP
+from .vector_functions import correct_vectors
+from .draw_function import draw_vectors, draw_result
+from .calculation import compare_pose, calc_multiSimilarity
+from .area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END
+from .settings import SCALE_UP
 
 
 # PCに繋がっているUSBカメラから撮る場合はこれ

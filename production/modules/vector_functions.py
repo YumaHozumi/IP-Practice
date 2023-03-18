@@ -1,7 +1,7 @@
 import cv2
 from typing import Tuple, List
 import numpy as np
-from settings import SCALE_UP
+from .settings import SCALE_UP
 
 def get_draw_info(pt1: np.ndarray, pt2: np.ndarray) -> List[Tuple[int, int]]:
     """座標点のxy座標を取得
@@ -22,7 +22,7 @@ def get_draw_info(pt1: np.ndarray, pt2: np.ndarray) -> List[Tuple[int, int]]:
 
 
 
-def correct_vectors(landmarks: np.ndarray, index: int) -> List[Tuple[np.ndarray]]:
+def correct_vectors(landmarks: np.ndarray, index: int) -> List[Tuple[np.ndarray, np.ndarray]]:
     """関節点のつながりをまとめた情報をつくる
 
     Args:
@@ -45,7 +45,7 @@ def correct_vectors(landmarks: np.ndarray, index: int) -> List[Tuple[np.ndarray]
         [11]:胴体左のベクトル
         [12]:胴体右のベクトル
     """    
-    connected: List[Tuple[np.ndarray]] = []
+    connected: List[Tuple[np.ndarray, np.ndarray]] = []
 
     left_ear = landmarks[index].data[3]
     right_ear = landmarks[index].data[4]

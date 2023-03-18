@@ -1,8 +1,8 @@
 import cv2
 from typing import Tuple, List
 import numpy as np
-from settings import SCALE_UP
-from area_settings import X_LIMIT_START, Y_LIMIT_START
+from .settings import SCALE_UP
+from .area_settings import X_LIMIT_START, Y_LIMIT_START
 
 def get_draw_info(pt1: np.ndarray, pt2: np.ndarray) -> List[Tuple[int, int]]:
     """座標点のxy座標を取得

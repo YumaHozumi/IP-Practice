@@ -4,15 +4,15 @@ import numpy as np
 import openpifpaf
 from PIL import Image
 from typing import List, Tuple
-from vector_functions import correct_vectors
-from draw_function import draw_vectors, draw_vectors_0, draw_result
-from regist_functions import register
-from display_functions import display_registered_playeres, display_check_leader, display_instraction_players
-from display_functions import display_instraction_leader, display_playersRecognitionError, display_leaderRecognitionError 
-from calculation import compare_pose, calc_multiSimilarity
-from settings import SCALE_UP
-from display_settings import player_color
-from area_settings import Window_width, Window_height, human_width, human_height, face_width, face_height
+from .vector_functions import correct_vectors
+from .draw_function import draw_vectors, draw_vectors_0, draw_result
+from .regist_functions import register
+from .display_functions import display_registered_playeres, display_check_leader, display_instraction_players
+from .display_functions import display_instraction_leader, display_playersRecognitionError, display_leaderRecognitionError 
+from .calculation import compare_pose, calc_multiSimilarity
+from .settings import SCALE_UP
+from .display_settings import player_color
+from .area_settings import Window_width, Window_height, human_width, human_height, face_width, face_height
 
 def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predictor, face_Imgs: List[np.ndarray], players_id: List[int], leader_Id: int) -> List[np.ndarray]:
     """leaderとplayerの写真と姿勢推定の結果を取得する

@@ -1,10 +1,10 @@
 import cv2
 import numpy as np
 from typing import List, Tuple
-from functions import get_draw_info, create_connected, get_draw_info_0
-from display_functions import cv2_putText
-from settings import SCALE_UP, Result_X, Result_Y
-from area_settings import peopleNum_X, peopleNum_Y
+from .functions import get_draw_info, create_connected, get_draw_info_0
+from .display_functions import cv2_putText
+from .settings import SCALE_UP, Result_X, Result_Y
+from .area_settings import peopleNum_X, peopleNum_Y
 
 
 def draw_line(image: np.ndarray, pt1: np.ndarray, pt2: np.ndarray) -> np.ndarray:

@@ -2,11 +2,11 @@ import cv2
 import openpifpaf
 import numpy as np
 from typing import List, Tuple
-from functions import get_draw_info, create_connected
-from draw_function import draw_peopleNum
-from display_functions import display_registered_playeres
-from settings import SCALE_UP, Result_X, Result_Y 
-from area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, face_width, face_height
+from .functions import get_draw_info, create_connected
+from .draw_function import draw_peopleNum
+from .display_functions import display_registered_playeres
+from .settings import SCALE_UP, Result_X, Result_Y 
+from .area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, face_width, face_height
 
 def register(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predictor) -> List[np.ndarray]:
     """プレイヤーを登録する

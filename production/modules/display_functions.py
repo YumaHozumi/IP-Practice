@@ -1,17 +1,17 @@
 import cv2
-import openpifpaf
 import numpy as np
 from typing import List, Tuple
 from PIL import Image, ImageDraw, ImageFont
-from functions import get_draw_info, create_connected
-from settings import SCALE_UP, Result_X, Result_Y
-from display_settings import player_color
-from area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, face_width, face_height, Window_width, Window_height
-from area_settings import human_width, human_height
+from .functions import get_draw_info, create_connected
+from .settings import SCALE_UP, Result_X, Result_Y
+from .display_settings import player_color
+from .area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, face_width, face_height, Window_width, Window_height
+from .area_settings import human_width, human_height
+from pathlib import Path
 
 whiteboard = 255 * np.ones([Window_height, Window_width, 3])
 
-def display_registered_playeres(face_Imgs: List[np.array]) -> np.ndarray:
+def display_registered_playeres(face_Imgs: List[np.ndarray]) -> np.ndarray:
     """登録されたプレイヤー一覧を表示する
 
     Args:
@@ -114,7 +114,7 @@ def display_change() -> np.ndarray:
 
     return error_Img
 
-def display_check_leader(leader_picture: np.array, leader_id: int) -> np.ndarray:
+def display_check_leader(leader_picture: np.ndarray, leader_id: int) -> np.ndarray:
     """leader役のプレイヤーにポーズの確認をとる画面を表示
 
     Args:
@@ -152,7 +152,7 @@ def display_check_leader(leader_picture: np.array, leader_id: int) -> np.ndarray
 
     return check_Img
 
-def display_instraction_players(leader_picture: np.array, leader_id: int) -> np.ndarray:
+def display_instraction_players(leader_picture: np.ndarray, leader_id: int) -> np.ndarray:
     """真似するポーズを表示し、player役のプレイヤーへの指示を表示
 
     Args:
@@ -186,7 +186,7 @@ def display_instraction_players(leader_picture: np.array, leader_id: int) -> np.
 
     return instraction_Img
 
-def display_result(player_pictures: np.array, leader_id: int, players_id: List[int], similarities: List) -> np.ndarray:
+def display_result(player_pictures: np.ndarray, leader_id: int, players_id: List[int], similarities: List) -> np.ndarray:
     """1ゲームの結果を表示する
 
     Args:
@@ -258,7 +258,7 @@ def display_playersRecognitionError() -> np.ndarray:
 
     return error_Img
 
-def display_final_result(face_Imgs: List[np.array], similarities: List) -> np.ndarray:
+def display_final_result(face_Imgs: List[np.ndarray], similarities: List) -> np.ndarray:
     """最終結果を表示する
 
     Args:
@@ -306,7 +306,8 @@ def display_final_result(face_Imgs: List[np.array], similarities: List) -> np.nd
 
     return resultImg
 
-def cv2_putText(img, text, org, fontScale, color, mode=0, fontFace = "./arial-unicode-ms.ttf"):
+font_dir = Path(__file__).resolve().parent / 'arial-unicode-ms.ttf'
+def cv2_putText(img, text, org, fontScale, color, mode=0, fontFace = str(font_dir)):
     """日本語にも対応したputText
 
     Args:
