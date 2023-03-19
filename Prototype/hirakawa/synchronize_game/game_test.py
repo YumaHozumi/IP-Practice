@@ -5,7 +5,7 @@ import openpifpaf
 from PIL import Image
 from typing import List, Tuple
 from vector_functions import correct_vectors
-from draw_function import draw_vectors, draw_result
+from draw_function import draw_vectors, draw_result, draw_vectors_0
 from regist_functions import register
 from display_functions import display_registered_playeres, display_result, display_change, display_final_result
 from recognition_pose import get_humanPicture
@@ -69,7 +69,7 @@ while capture.isOpened():
     
     for person_id in range(len(predictions)):
         vectors = correct_vectors(predictions, person_id)
-        annotated_image = draw_vectors(annotated_image, vectors)
+        annotated_image = draw_vectors_0(annotated_image, vectors, SCALE_UP)
         people_vectors[person_id] = np.asarray(vectors)
 
     height = frame.shape[0]

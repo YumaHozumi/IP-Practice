@@ -23,19 +23,20 @@ def draw_line(image: np.ndarray, pt1: np.ndarray, pt2: np.ndarray) -> np.ndarray
     cv2.line(image, pt1_coordinate, pt2_coordinate, red, thickness=3)
     return image
 
-def draw_line_0(image: np.ndarray, pt1: np.ndarray, pt2: np.ndarray) -> np.ndarray:
+def draw_line_0(image: np.ndarray, pt1: np.ndarray, pt2: np.ndarray, scale:float = 1) -> np.ndarray:
     """2つの点を線で結ぶ(全画面版)
 
     Args:
         image (np.ndarray): 点を描画する画像
         pt1 (np.ndarray): 1つ目の点
         pt2 (np.ndarray): 2つ目の点
+        scale (float): 姿勢推定時に画像が何倍に縮小されたか. Defaults to 1. 
 
     Returns:
         np.ndarray: 描画後の画像
     """    
     red: Tuple[int, int, int] = (0, 0, 255)
-    pt1_coordinate, pt2_coordinate = get_draw_info_0(pt1, pt2)
+    pt1_coordinate, pt2_coordinate = get_draw_info_0(pt1, pt2, scale)
     cv2.line(image, pt1_coordinate, pt2_coordinate, red, thickness=3)
     return image
 
@@ -83,12 +84,13 @@ def draw_vectors(image: np.ndarray, vectors: List) -> np.ndarray:
     
     return annotated_image
 
-def draw_vectors_0(image: np.ndarray, vectors: List) -> np.ndarray:
+def draw_vectors_0(image: np.ndarray, vectors: List, scale:float = 1) -> np.ndarray:
     """骨格表示を追加する(correct_vectors使用版)(全画面版)
 
     Args:
         image (np.ndarray): 骨格を表示する画像
         vectors (List): 関節点を結んだベクトルのリスト
+        scale (float): 姿勢推定時に画像が何倍に縮小されたか. Defaults to 1. 
 
     Returns:
         np.ndarray: 骨格表示を追加した画像
@@ -99,7 +101,7 @@ def draw_vectors_0(image: np.ndarray, vectors: List) -> np.ndarray:
     for (pt1, pt2) in vectors:
             if((0 in pt1) or (0 in pt2)): continue # 座標をうまく取得できなかったとき
 
-            annotated_image = draw_line_0(annotated_image, pt1, pt2)    
+            annotated_image = draw_line_0(annotated_image, pt1, pt2, scale)    
     
     return annotated_image
 
