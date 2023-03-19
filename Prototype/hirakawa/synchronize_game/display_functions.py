@@ -58,6 +58,7 @@ def display_instraction_leader(leader_id: int) -> np.ndarray:
     """
     
     instraction_Img = whiteboard.copy() #背景の設定
+    instraction_Img = cv2.resize(instraction_Img, (Window_width, Window_height))
 
     #画面の説明の表示
     instraction_message: str = 'Player' + str(leader_id + 1) + 'さんがお手本役です。\n'
@@ -80,6 +81,7 @@ def display_leaderRecognitionError() -> np.ndarray:
     """
     
     error_Img = whiteboard.copy() #背景の設定
+    error_Img = cv2.resize(error_Img, (Window_width, Window_height))
 
     #画面の説明の表示
     errorMessage: str = '認識エラーが発生しました。\nもう一度行います。'
@@ -100,19 +102,20 @@ def display_change() -> np.ndarray:
         np.ndarray: メッセージ表示画面
     """
     
-    error_Img = whiteboard.copy() #背景の設定
+    change_Img = whiteboard.copy() #背景の設定
+    change_Img = cv2.resize(change_Img, (Window_width, Window_height))
 
     #画面の説明の表示
-    errorMessage: str = '見本役を交代します'
-    cv2_putText(error_Img, errorMessage, (int(Window_width/2), int(Window_height/2)), 80, (0,0,0), 2)
-    cv2_putText(error_Img, '次へ  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+    changeMessage: str = '見本役を交代します'
+    cv2_putText(change_Img, changeMessage, (int(Window_width/2), int(Window_height/2)), 80, (0,0,0), 2)
+    cv2_putText(change_Img, '次へ  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
 
     #型変換
-    error_Img = error_Img.astype('uint8')
+    change_Img = change_Img.astype('uint8')
     #確認画面を表示
-    cv2.imshow('Camera 1',error_Img) 
+    cv2.imshow('Camera 1',change_Img) 
 
-    return error_Img
+    return change_Img
 
 def display_check_leader(leader_picture: np.array, leader_id: int) -> np.ndarray:
     """leader役のプレイヤーにポーズの確認をとる画面を表示
@@ -126,6 +129,7 @@ def display_check_leader(leader_picture: np.array, leader_id: int) -> np.ndarray
     """
     
     check_Img = whiteboard.copy() #背景の設定
+    check_Img = cv2.resize(check_Img, (Window_width, Window_height))
 
     #画面の説明の表示
     page_about: str = 'プレイヤー' + str(leader_id + 1) + 'さんのお手本ポーズ'
@@ -164,6 +168,7 @@ def display_instraction_players(leader_picture: np.array, leader_id: int) -> np.
     """
     
     instraction_Img = whiteboard.copy() #背景の設定
+    instraction_Img = cv2.resize(instraction_Img, (Window_width, Window_height))
 
     #画面の説明の表示
     page_about: str = 'このポーズをよく覚えてください。'
@@ -200,6 +205,7 @@ def display_result(player_pictures: np.array, leader_id: int, players_id: List[i
     """
     
     result_Img = whiteboard.copy() #背景の設定
+    result_Img = cv2.resize(result_Img, (Window_width, Window_height))
 
     #画面の説明の表示
     message: str = 'ゲーム' + str(leader_id + 1) + "の結果発表!"
@@ -245,6 +251,7 @@ def display_playersRecognitionError() -> np.ndarray:
     """
     
     error_Img = whiteboard.copy() #背景の設定
+    error_Img = cv2.resize(error_Img, (Window_width, Window_height))
 
     #画面の説明の表示
     errorMessage: str = '認識エラーが発生しました。\nもう一度行います。'
@@ -269,6 +276,7 @@ def display_final_result(face_Imgs: List[np.array], similarities: List) -> np.nd
         np.ndarray: 一覧を表示している画像
     """
     resultImg = whiteboard.copy() #背景の設定
+    resultImg = cv2.resize(resultImg, (Window_width, Window_height))
 
     #画面の説明の表示
     cv2_putText(resultImg, '最終結果', (20, 80), 80, (0,0,0))

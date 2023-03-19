@@ -11,6 +11,7 @@ from display_functions import display_registered_playeres, display_result, displ
 from recognition_pose import get_humanPicture
 from calculation import compare_pose, calc_multiSimilarity
 from settings import SCALE_UP
+from area_settings import Window_width, Window_height
 
 
 # PCに繋がっているUSBカメラから撮る場合はこれ
@@ -53,7 +54,7 @@ while capture.isOpened():
         #print('({0}, {1})'.format(height, width))
         
         annotated_image = cv2.flip(annotated_image, 1)
-        bigger_frame = cv2.resize(annotated_image, (int(width) * 2, int(height) * 2))
+        bigger_frame = cv2.resize(annotated_image, (Window_width, Window_height))
         cv2.imshow('Camera 1',bigger_frame)
         
         # ESCキーを押すと終了
@@ -75,7 +76,7 @@ while capture.isOpened():
     width = frame.shape[1]
     annotated_image = cv2.flip(annotated_image, 1)
 
-    bigger_frame = cv2.resize(annotated_image, (int(width) * 2, int(height) * 2))
+    bigger_frame = cv2.resize(annotated_image, (Window_width, Window_height))
     cv2.imshow('Camera 1',bigger_frame)
     #cv2.moveWindow("Camera 1", 200,40)
 

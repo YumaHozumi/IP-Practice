@@ -129,7 +129,7 @@ def capture_leader(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], leade
     print("Width:" + str(area_Xend - area_Xstart))
     print("Height:" + str(area_Yend - area_Ystart))
 
-
+    
     while capture.isOpened():
         #success: 画像の取得が成功したか
         #frame: RGBの値を持っている3次元の配列データ ex) サイズ (480, 640, 3) 高さ、幅、色チャネル

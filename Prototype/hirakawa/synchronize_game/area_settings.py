@@ -1,6 +1,6 @@
 import numpy as np
 
-#ディスプレイウィンドウのサイズ
+#表示するディスプレイウィンドウのサイズ
 Window_width = 1280
 Window_height = 720
 
