@@ -15,7 +15,7 @@ from area_settings import Window_width, Window_height
 
 
 # PCに繋がっているUSBカメラから撮る場合はこれ
-capture = cv2.VideoCapture(0)
+capture = cv2.VideoCapture(1)
 
 if not capture.isOpened(): # 正常に動画読み込めなかったとき
     print( "Error opening capture device")

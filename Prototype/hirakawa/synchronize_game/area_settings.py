@@ -1,14 +1,14 @@
 import numpy as np
 
 #表示するディスプレイウィンドウのサイズ
-Window_width = 1280
-Window_height = 720
+Window_width = 1920
+Window_height = 1080
 
 #登録領域の設定(macでは画像サイズが1280×720)
 X_LIMIT_START = 200
 Y_LIMIT_START = 100
-X_LIMIT_END = 1280 - 200
-Y_LIMIT_END = 720 
+X_LIMIT_END = 1920 - 200
+Y_LIMIT_END = 1080 
 
 #人数の表示位置の設定
 peopleNum_X = int(Window_width / 2)
