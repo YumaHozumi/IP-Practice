@@ -11,7 +11,7 @@ from .regist_functions import register
 from .display_functions import display_registered_playeres, display_check_leader, display_instraction_players
 from .display_functions import display_instraction_leader, display_playersRecognitionError, display_leaderRecognitionError 
 from .calculation import compare_pose, calc_multiSimilarity
-from .settings import SCALE_UP
+from .settings import SCALE_UP, Capture_Width, Capture_Height
 from .display_settings import player_color
 from .area_settings import Window_width, Window_height, human_width, human_height, face_width, face_height
 
@@ -125,10 +125,10 @@ def capture_leader(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], leade
         np.ndarray: leaderのスクショ
     """
     #認識領域の設定
-    area_Xstart = int((Window_width - human_width)/2)
-    area_Xend = int((Window_width + human_width)/2)
-    area_Ystart = Window_height - human_height
-    area_Yend = Window_height
+    area_Xstart = int((Capture_Width - human_width)/2)
+    area_Xend = int((Capture_Width + human_width)/2)
+    area_Ystart = Capture_Height - human_height
+    area_Yend = Capture_Height
 
     #leader役のプレイヤーの顔画像
     face = cv2.flip(face_Imgs[leader_Id], 1) #後で反転して表示されるので、先に反転させとく
@@ -157,7 +157,7 @@ def capture_leader(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], leade
 
         annotated_image = frame.copy()
         #認識領域を表示
-        annotated_image = cv2.resize(annotated_image, (Window_width, Window_height))
+        annotated_image = cv2.resize(annotated_image, (Capture_Width, Capture_Height))
         annotated_image = cv2.rectangle(annotated_image, (area_Xstart, area_Ystart), (area_Xend, area_Yend), player_color[leader_Id], thickness=2)
         #顔画像を表示
         annotated_image[face_Ystart:face_Yend, face_Xstart:face_Xend] = face.copy()
@@ -190,7 +190,7 @@ def capture_leader(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], leade
         #     break
 
     #Enter押下時のスクショを返す
-    return cv2.resize(frame, (Window_width, Window_height))
+    return cv2.resize(frame, (Capture_Width, Capture_Height))
 
 def extract_leaderArea(frame: np.ndarray) -> np.ndarray:
     """leaderのスクショから、対象領域の画像を抽出
@@ -202,10 +202,10 @@ def extract_leaderArea(frame: np.ndarray) -> np.ndarray:
         np.ndarray: 対象領域の画像
     """
     #認識領域の設定
-    area_Xstart = int((Window_width - human_width)/2)
-    area_Xend = int((Window_width + human_width)/2)
-    area_Ystart = Window_height - human_height
-    area_Yend = Window_height
+    area_Xstart = int((Capture_Width - human_width)/2)
+    area_Xend = int((Capture_Width + human_width)/2)
+    area_Ystart = Capture_Height - human_height
+    area_Yend = Capture_Height
 
     #領域の切り取り
     register_frame = frame[area_Ystart:area_Yend, area_Xstart:area_Xend]

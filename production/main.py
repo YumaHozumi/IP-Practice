@@ -50,9 +50,6 @@ if __name__ == '__main__':
         success, frame = read_video
         # print("frame1 =",frame)
 
-        #Macで1920×1080の入力での動作を再現するため(外部のカメラを実際に接続する際には不要)
-        frame = cv2.resize(frame, (Window_width, Window_height))
-
         if not success :
             print( "frame is None" )
             break
@@ -84,10 +81,7 @@ if __name__ == '__main__':
             annotated_image = draw_vectors_0(annotated_image, vectors, 8) #骨格の表示
             people_vectors[person_id] = np.asarray(vectors)
 
-        height = frame.shape[0]
-        width = frame.shape[1]
         annotated_image = cv2.flip(annotated_image, 1)
-
         display_frame = cv2.resize(annotated_image, (Window_width, Window_height))
         cv2.imshow('Camera 1',display_frame)
         #cv2.moveWindow("Camera 1", 200,40)
