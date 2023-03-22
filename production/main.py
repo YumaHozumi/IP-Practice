@@ -10,7 +10,7 @@ from modules.regist_functions import register
 from modules.display_functions import display_registered_playeres, display_result, display_change, display_final_result
 from modules.recognition_pose import get_humanPicture
 from modules.calculation import compare_pose, calc_multiSimilarity
-from modules.settings import SCALE_UP
+from modules.settings import SCALE_UP, Capture
 from modules.area_settings import Window_width, Window_height
 import tkinter as tk
 import time
@@ -24,8 +24,8 @@ def countdown(n, label):
 
 
 if __name__ == '__main__':
-    # PCに繋がっているUSBカメラから撮る場合はこれ
-    capture = cv2.VideoCapture(0)
+    # PCに繋がっているUSBカメラから撮る場合はこれ(settings.pyから取得)
+    capture = Capture
 
     #ウインドウの設定
     cv2.namedWindow('Camera 1', cv2.WINDOW_NORMAL)

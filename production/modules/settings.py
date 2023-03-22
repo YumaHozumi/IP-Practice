@@ -1,5 +1,13 @@
+import cv2
 import numpy as np
 from typing import List, Tuple
+
+#キャプチャーの用意
+Capture = cv2.VideoCapture(0)
+
+#入力画像の解像度を取得
+Capture_Width = Capture.get(cv2.CAP_PROP_FRAME_WIDTH)
+Capture_Height = Capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
 #画面の縮尺
 SCALE_UP = 3.5
