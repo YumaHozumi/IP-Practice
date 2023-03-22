@@ -7,6 +7,7 @@ from .draw_function import draw_peopleNum
 from .display_functions import display_registered_playeres
 from .settings import SCALE_UP, Result_X, Result_Y 
 from .area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, face_width, face_height
+from .area_settings import Window_width, Window_height
 
 def register(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predictor) -> List[np.ndarray]:
     """プレイヤーを登録する
@@ -77,15 +78,10 @@ def capture_registerArea(capture: cv2.VideoCapture, predictor: openpifpaf.predic
 
         #認識領域に人が映ってないときにもカメラ映像を出すように
         if len(predictions) == 0: 
-            height = frame.shape[0]
-            width = frame.shape[1]
-            #サイズ確認用(テスト)
-            #print('({0}, {1})'.format(height, width))
-            
             annotated_image = cv2.rectangle(annotated_image, (X_LIMIT_START, Y_LIMIT_START), (X_LIMIT_END, Y_LIMIT_END), (0,255,0), thickness=2)
             output_image = cv2.flip(annotated_image, 1)
-            bigger_frame = cv2.resize(output_image, (int(width) * 2, int(height) * 2))
-            cv2.imshow('Camera 1',bigger_frame)
+            display_frame = cv2.resize(output_image, (Window_width, Window_height))
+            cv2.imshow('Camera 1',display_frame)
             
             # ESCキーを押すと終了
             if cv2.waitKey(10) == 0x1b:
@@ -94,8 +90,6 @@ def capture_registerArea(capture: cv2.VideoCapture, predictor: openpifpaf.predic
             
             continue
 
-        height = frame.shape[0]
-        width = frame.shape[1]
         annotated_image = cv2.rectangle(annotated_image, (X_LIMIT_START, Y_LIMIT_START), (X_LIMIT_END, Y_LIMIT_END), (0,255,0), thickness=2)
         annotated_image = cv2.flip(annotated_image, 1)
         
@@ -104,8 +98,8 @@ def capture_registerArea(capture: cv2.VideoCapture, predictor: openpifpaf.predic
         peopleNumber = np.sum(registable_label)
         annotated_image = draw_peopleNum(annotated_image, peopleNumber)
 
-        bigger_frame = cv2.resize(annotated_image, (int(width) * 2, int(height) * 2))
-        cv2.imshow('Camera 1',bigger_frame)
+        display_frame = cv2.resize(annotated_image, (Window_width, Window_height))
+        cv2.imshow('Camera 1',display_frame)
         #cv2.moveWindow("Camera 1", 200,40)
 
         # Enterキーを押したら画像の読み込みを終了

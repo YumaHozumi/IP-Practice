@@ -22,7 +22,7 @@ def get_draw_info(pt1: np.ndarray, pt2: np.ndarray) -> List[Tuple[int, int]]:
     
     return [(pt1_x, pt1_y), (pt2_x, pt2_y)]
 
-def get_draw_info_0(pt1: np.ndarray, pt2: np.ndarray) -> List[Tuple[int, int]]:
+def get_draw_info_0(pt1: np.ndarray, pt2: np.ndarray, scale:float = 1) -> List[Tuple[int, int]]:
     """座標点のxy座標を取得(全画面版)
 
     Args: 
@@ -33,10 +33,10 @@ def get_draw_info_0(pt1: np.ndarray, pt2: np.ndarray) -> List[Tuple[int, int]]:
         List[Tuple[int, int]]: それぞれのxy座標をタプルでまとめたリスト
     """    
     
-    pt1_x = int(pt1[0])
-    pt1_y = int(pt1[1])
-    pt2_x = int(pt2[0])
-    pt2_y = int(pt2[1])
+    pt1_x = int(pt1[0] * scale)
+    pt1_y = int(pt1[1] * scale)
+    pt2_x = int(pt2[0] * scale)
+    pt2_y = int(pt2[1] * scale)
     
     return [(pt1_x, pt1_y), (pt2_x, pt2_y)]
 

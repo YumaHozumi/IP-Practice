@@ -5,12 +5,13 @@ import openpifpaf
 from PIL import Image
 from typing import List, Tuple
 from modules.vector_functions import correct_vectors
-from modules.draw_function import draw_vectors, draw_result
+from modules.draw_function import draw_vectors_0, draw_vectors, draw_result
 from modules.regist_functions import register
 from modules.display_functions import display_registered_playeres, display_result, display_change, display_final_result
 from modules.recognition_pose import get_humanPicture
 from modules.calculation import compare_pose, calc_multiSimilarity
-from modules.settings import SCALE_UP
+from modules.settings import SCALE_UP, Capture
+from modules.area_settings import Window_width, Window_height
 import tkinter as tk
 import time
 
@@ -23,8 +24,12 @@ def countdown(n, label):
 
 
 if __name__ == '__main__':
-    # PCに繋がっているUSBカメラから撮る場合はこれ
-    capture = cv2.VideoCapture(0)
+    # PCに繋がっているUSBカメラから撮る場合はこれ(settings.pyから取得)
+    capture = Capture
+
+    #ウインドウの設定
+    cv2.namedWindow('Camera 1', cv2.WINDOW_NORMAL)
+    cv2.resizeWindow('Camera 1', Window_width, Window_height) 
 
     if not capture.isOpened(): # 正常に動画読み込めなかったとき
         print( "Error opening capture device")
@@ -49,22 +54,17 @@ if __name__ == '__main__':
             print( "frame is None" )
             break
         
-        
-        resize_frame: np.ndarray = cv2.resize(frame, dsize=None, fx=(1.0 / SCALE_UP), fy=(1.0 / SCALE_UP))
+        #待機画面では解像度を1/8に落として骨格推定と表示を行う
+        resize_frame: np.ndarray = cv2.resize(frame, dsize=None, fx=(1.0 / 8), fy=(1.0 / 8))
         predictions, gt_anns, meta = predictor.numpy_image(resize_frame)
         
         annotated_image = frame.copy()
 
         #認識領域に人が映ってないときにもカメラ映像を出すように
         if len(predictions) == 0: 
-            height = frame.shape[0]
-            width = frame.shape[1]
-            #サイズ確認用(テスト)
-            #print('({0}, {1})'.format(height, width))
-            
             annotated_image = cv2.flip(annotated_image, 1)
-            bigger_frame = cv2.resize(annotated_image, (int(width) * 2, int(height) * 2))
-            cv2.imshow('Camera 1',bigger_frame)
+            display_frame = cv2.resize(annotated_image, (Window_width, Window_height))
+            cv2.imshow('Camera 1',display_frame)
             
             # ESCキーを押すと終了
             if cv2.waitKey(10) == 0x1b:
@@ -78,15 +78,12 @@ if __name__ == '__main__':
         
         for person_id in range(len(predictions)):
             vectors = correct_vectors(predictions, person_id)
-            annotated_image = draw_vectors(annotated_image, vectors)
+            annotated_image = draw_vectors_0(annotated_image, vectors, 8) #骨格の表示
             people_vectors[person_id] = np.asarray(vectors)
 
-        height = frame.shape[0]
-        width = frame.shape[1]
         annotated_image = cv2.flip(annotated_image, 1)
-
-        bigger_frame = cv2.resize(annotated_image, (int(width) * 2, int(height) * 2))
-        cv2.imshow('Camera 1',bigger_frame)
+        display_frame = cv2.resize(annotated_image, (Window_width, Window_height))
+        cv2.imshow('Camera 1',display_frame)
         #cv2.moveWindow("Camera 1", 200,40)
 
         
