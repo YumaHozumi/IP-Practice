@@ -50,6 +50,9 @@ if __name__ == '__main__':
         success, frame = read_video
         # print("frame1 =",frame)
 
+        #Macで1920×1080の入力での動作を再現するため(外部のカメラを実際に接続する際には不要)
+        frame = cv2.resize(frame, (Window_width, Window_height))
+
         if not success :
             print( "frame is None" )
             break
