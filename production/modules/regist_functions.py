@@ -7,7 +7,6 @@ from .draw_function import draw_peopleNum
 from .display_functions import display_registered_playeres
 from .settings import SCALE_UP, Result_X, Result_Y 
 from .area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, face_width, face_height
-from .area_settings import Window_width, Window_height
 
 def register(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predictor) -> List[np.ndarray]:
     """プレイヤーを登録する
@@ -60,9 +59,6 @@ def capture_registerArea(capture: cv2.VideoCapture, predictor: openpifpaf.predic
         read_video: Tuple[bool, np.ndarray] = capture.read()
         success, frame = read_video
         # print("frame1 =",frame)
-
-        #Macで1920×1080の入力での動作を再現するため(外部のカメラを実際に接続する際には不要)
-        frame = cv2.resize(frame, (Window_width, Window_height))
 
         if not success :
             print( "frame is None" )
