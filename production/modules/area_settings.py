@@ -1,8 +1,8 @@
 import numpy as np
 
 #ディスプレイウィンドウのサイズ
-Window_width = 1280
-Window_height = 720
+Window_width = 1920
+Window_height = 1080
 
 #登録領域の設定(macでは画像サイズが1280×720)
 X_LIMIT_START = 0
