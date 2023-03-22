@@ -12,8 +12,8 @@ X_LIMIT_END = int(Capture_Width * 0.85)
 Y_LIMIT_END = int(Capture_Height)
 
 #人数の表示位置の設定
-peopleNum_X = int(Window_width / 2)
-peopleNum_Y = int(Window_height * 0.15)
+peopleNum_X = int(Capture_Width / 2)
+peopleNum_Y = int(Capture_Height * 0.09)
 
 #顔画像の幅と高さ
 face_width = 200
