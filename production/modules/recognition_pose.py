@@ -233,11 +233,11 @@ def capture_players(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], play
     area_Xends = []
 
     for i in range(playerNum):
-        area_Xstarts.append(int(((2*i+1)/playerNum * Window_width - human_width)/2))
-        area_Xends.append(int(((2*i+1)/playerNum * Window_width + human_width)/2))
+        area_Xstarts.append(int(((2*i+1)/playerNum * Capture_Width - human_width)/2))
+        area_Xends.append(int(((2*i+1)/playerNum * Capture_Width + human_width)/2))
 
-    area_Ystart = Window_height - human_height
-    area_Yend = Window_height
+    area_Ystart = Capture_Height - human_height
+    area_Yend = Capture_Height
 
     #顔画像関連の設定
     faces = []
@@ -269,7 +269,7 @@ def capture_players(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], play
             break
         
         annotated_image = frame.copy()
-        annotated_image = cv2.resize(annotated_image, (Window_width, Window_height))
+        annotated_image = cv2.resize(annotated_image, (Capture_Width, Capture_Height))
         #登録をおこなう領域を指定
 
         for k in range(playerNum):
@@ -301,7 +301,7 @@ def capture_players(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], play
 
     #Enter押下時のスクショを返す
     #return cv2.flip(frame, 1)
-    return cv2.resize(frame, (Window_width, Window_height))
+    return cv2.resize(frame, (Capture_Width, Capture_Height))
 
 def extract_playersArea(frame: np.ndarray, playerNum: int) -> List[np.ndarray]:
     """playersのスクショから、対象領域の画像を抽出
@@ -320,11 +320,11 @@ def extract_playersArea(frame: np.ndarray, playerNum: int) -> List[np.ndarray]:
     area_Xends = []
 
     for i in range(playerNum):
-        area_Xstarts.append(int(((2*i+1)/playerNum * Window_width - human_width)/2))
-        area_Xends.append(int(((2*i+1)/playerNum * Window_width + human_width)/2))
+        area_Xstarts.append(int(((2*i+1)/playerNum * Capture_Width - human_width)/2))
+        area_Xends.append(int(((2*i+1)/playerNum * Capture_Width + human_width)/2))
 
-    area_Ystart = Window_height - human_height
-    area_Yend = Window_height
+    area_Ystart = Capture_Height - human_height
+    area_Yend = Capture_Height
 
     #領域の切り取り
     #領域の切り取り
