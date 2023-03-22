@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import openpifpaf
 from PIL import Image
+import time
 from typing import List, Tuple
 from .vector_functions import correct_vectors
 from .draw_function import draw_vectors, draw_vectors_0, draw_result
@@ -13,6 +14,17 @@ from .calculation import compare_pose, calc_multiSimilarity
 from .settings import SCALE_UP
 from .display_settings import player_color
 from .area_settings import Window_width, Window_height, human_width, human_height, face_width, face_height
+
+def countdown(frame, count):
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    font_scale = 5
+    font_thickness = 2
+    height, width, _ = frame.shape
+    text = str(count)
+    text_size, _ = cv2.getTextSize(text, font, font_scale, font_thickness)
+    x = int((width - text_size[0]) / 2)
+    y = int((height + text_size[1]) / 2)
+    cv2.putText(frame, text, (x, y), font, font_scale, (0, 255, 0), font_thickness, cv2.LINE_AA)
 
 def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predictor, face_Imgs: List[np.ndarray], players_id: List[int], leader_Id: int) -> List[np.ndarray]:
     """leaderとplayerの写真と姿勢推定の結果を取得する
@@ -37,7 +49,6 @@ def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.
             # Enterキーを押すと次に進む
             if cv2.waitKey(10) == 0x0d:
                 break
-
         #leaderのスクショを取得する
         leader_screen = capture_leader(capture, face_Imgs, leader_Id)
         #対象領域のみ切り取る
@@ -129,6 +140,9 @@ def capture_leader(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], leade
     print("Width:" + str(area_Xend - area_Xstart))
     print("Height:" + str(area_Yend - area_Ystart))
 
+    count = None
+    start_time = None
+
 
     while capture.isOpened():
         #success: 画像の取得が成功したか
@@ -140,7 +154,7 @@ def capture_leader(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], leade
         if not success :
             print( "frame is None" )
             break
-        
+
         annotated_image = frame.copy()
         #認識領域を表示
         annotated_image = cv2.resize(annotated_image, (Window_width, Window_height))
@@ -151,13 +165,29 @@ def capture_leader(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], leade
         annotated_image = annotated_image.astype('uint8')
         annotated_image = cv2.flip(annotated_image, 1)
 
+        # カウントダウンの表示
+        if count is not None:
+            elapsed_time = time.time() - start_time
+            remaining_time = 3 - int(elapsed_time)
+            if remaining_time > 0:
+                countdown(annotated_image, remaining_time)
+            else:
+                count = None
+                break
+
+        if cv2.waitKey(10) == 0x0d:
+            if count is None:
+                count = 3
+                start_time = time.time()
+
         cv2.imshow('Camera 1',annotated_image)
         #cv2.moveWindow("Camera 1", 200,40)
 
+
         # Enterキーを押したら画像の読み込みを終了
-        if cv2.waitKey(10) == 0x0d:
-            print('Enter pressed. Saving ...')
-            break
+        # if cv2.waitKey(10) == 0x0d:
+        #     print('Enter pressed. Saving ...')
+        #     break
 
     #Enter押下時のスクショを返す
     return cv2.resize(frame, (Window_width, Window_height))
@@ -224,6 +254,9 @@ def capture_players(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], play
     print("Width:" + str(area_Xends[0] - area_Xstarts[0]))
     print("Height:" + str(area_Yend - area_Ystart))
 
+    count = None
+    start_time = None
+
     while capture.isOpened():
         #success: 画像の取得が成功したか
         #frame: RGBの値を持っている3次元の配列データ ex) サイズ (480, 640, 3) 高さ、幅、色チャネル
@@ -248,13 +281,23 @@ def capture_players(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], play
             
         annotated_image = cv2.flip(annotated_image, 1)
 
+        # カウントダウンの表示
+        if count is not None:
+            elapsed_time = time.time() - start_time
+            remaining_time = 3 - int(elapsed_time)
+            if remaining_time > 0:
+                countdown(annotated_image, remaining_time)
+            else:
+                count = None
+                break
+
         cv2.imshow('Camera 1',annotated_image)
         #cv2.moveWindow("Camera 1", 200,40)
-
-        # Enterキーを押したら画像の読み込みを終了
         if cv2.waitKey(10) == 0x0d:
-            print('Enter pressed. Saving ...')
-            break
+            if count is None:
+                count = 3
+                start_time = time.time()
+                
 
     #Enter押下時のスクショを返す
     #return cv2.flip(frame, 1)
