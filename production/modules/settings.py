@@ -10,7 +10,7 @@ Capture_Width = Capture.get(cv2.CAP_PROP_FRAME_WIDTH)
 Capture_Height = Capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
 #画面の縮尺
-SCALE_UP = 3.5
+SCALE_UP = 4
 
 #処理領域の設定(macでは画像サイズが1280×720)
 X_LIMIT_START = 250
