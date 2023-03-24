@@ -22,9 +22,13 @@ face_height = 200
 display_face_width = 300
 display_face_height = 300
 
-#人の姿勢推定領域のサイズ
+#人の姿勢推定領域のサイズ(mac用)
 human_width = int(Capture_Width / 3.2)
 human_height = int(Capture_Height * 0.7)
+
+#人の姿勢推定領域のサイズ(本番用)
+#human_width = int(Capture_Width / 3.2)
+#human_height = int(Capture_Height * 0.8)
 
 #結果等で表示する際の取得ポーズ画像のサイズ
 display_human_height = 700

@@ -1,5 +1,7 @@
 import cv2
+import os
 import numpy as np
+import time
 from typing import List, Tuple
 from PIL import Image, ImageDraw, ImageFont
 from .functions import get_draw_info, create_connected
@@ -10,6 +12,25 @@ from .area_settings import human_width, human_height, display_face_width, displa
 from pathlib import Path
 
 whiteboard = 255 * np.ones([Window_height, Window_width, 3])
+
+def display_title():
+    """タイトルを表示する
+    """
+
+    #print(os.getcwd()) #カレントディレクトリの確認 -> main.py実行時、productionから相対パスで指定すればOK
+    title = cv2.imread('./modules/pictures/Title.bmp', cv2.IMREAD_COLOR )
+    title = cv2.resize(title, (Window_width, Window_height))
+
+    #タイトルを表示
+    cv2.imshow('Camera 1', title)
+
+    while True:
+        key = cv2.waitKey(10)
+        if key == 0x0d: 
+            break
+    return
+
+
 
 def display_registered_playeres(face_Imgs: List[np.ndarray]) -> np.ndarray:
     """登録されたプレイヤー一覧を表示する
