@@ -18,7 +18,14 @@ peopleNum_Y = int(Capture_Height * 0.09)
 #顔画像の幅と高さ
 face_width = 200
 face_height = 200
+#結果などの表示用の顔画像の幅と高さ
+display_face_width = 300
+display_face_height = 300
 
 #人の姿勢推定領域のサイズ
 human_width = int(Capture_Width / 3.2)
 human_height = int(Capture_Height * 0.7)
+
+#結果等で表示する際の取得ポーズ画像のサイズ
+display_human_height = 700
+display_human_width = int(human_width * (display_human_height / human_height))

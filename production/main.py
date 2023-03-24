@@ -89,7 +89,7 @@ if __name__ == '__main__':
         
         if cv2.waitKey(10) == 0x0d: 
             # Enterキーを押すとプレイヤー登録開始
-            face_Imgs = register(capture, predictor)
+            face_Imgs, display_face_Imgs = register(capture, predictor)
 
             playerNum = len(face_Imgs) #プレイ人数
             #全ての類似度を格納する
@@ -129,7 +129,7 @@ if __name__ == '__main__':
                             break
             break
 
-    display_final_result(face_Imgs, all_similarities)
+    display_final_result(display_face_Imgs, all_similarities)
     while True:
         # Enterキーを押すと終了
         if cv2.waitKey(10) == 0x0d:

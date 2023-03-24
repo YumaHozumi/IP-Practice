@@ -6,7 +6,7 @@ from .functions import get_draw_info, create_connected
 from .settings import SCALE_UP, Result_X, Result_Y
 from .display_settings import player_color
 from .area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, face_width, face_height, Window_width, Window_height
-from .area_settings import human_width, human_height
+from .area_settings import human_width, human_height, display_face_width, display_face_height, display_human_height, display_human_width
 from pathlib import Path
 
 whiteboard = 255 * np.ones([Window_height, Window_width, 3])
@@ -34,11 +34,12 @@ def display_registered_playeres(face_Imgs: List[np.ndarray]) -> np.ndarray:
 
         #描画領域の指定
         separate_width = Window_width / (people_num + 1)
-        x_offset=int((i+1)*separate_width - face_width/2)
-        y_offset=int(Window_height/2 - face_height/2)
+        x_offset=int((i+1)*separate_width - display_face_width/2)
+        y_offset=int(Window_height/2 - display_face_height/2)
         playeresImg[y_offset:y_offset+img.shape[0], x_offset:x_offset+img.shape[1]] = img.copy()
         txt = "Player" + str(int(i + 1))
-        cv2.putText(playeresImg, txt, (x_offset, y_offset - 20), cv2.FONT_HERSHEY_SIMPLEX, 1.75, player_color[i], 3, cv2.LINE_AA)
+        #cv2.putText(playeresImg, txt, (x_offset, y_offset - 20), cv2.FONT_HERSHEY_SIMPLEX, 1.75, player_color[i], 3, cv2.LINE_AA)
+        cv2_putText(playeresImg, txt, (int(x_offset + display_face_width/2), int(y_offset - 60)), 100, player_color[i], 2)
         
     #型変換
     playeresImg = playeresImg.astype('uint8')
@@ -135,6 +136,9 @@ def display_check_leader(leader_picture: np.ndarray, leader_id: int) -> np.ndarr
     
     #ポーズ確認画面の作成
     
+    #表示するポーズ画像のサイズ調整
+    leader_picture = cv2.resize(leader_picture, (display_human_width, display_human_height))
+    
     #描画領域の指定
     picture_height = leader_picture.shape[0]
     picture_width = leader_picture.shape[1]
@@ -171,6 +175,9 @@ def display_instraction_players(leader_picture: np.ndarray, leader_id: int) -> n
     cv2_putText(instraction_Img, 'Start!  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
     
     #指示画面の作成
+
+    #表示するポーズ画像のサイズ調整
+    leader_picture = cv2.resize(leader_picture, (display_human_width, display_human_height))
     
     #描画領域の指定
     picture_height = leader_picture.shape[0]
@@ -209,8 +216,8 @@ def display_result(player_pictures: np.ndarray, leader_id: int, players_id: List
     #結果表示画面の作成
     player_num = len(player_pictures)
     #縮尺
-    small_width = int(human_width * 0.8)
-    small_hight = int(human_height * 0.8)
+    small_width = display_human_width
+    small_hight = display_human_height
 
     area_Xstarts = []
     area_Xends = []
@@ -227,8 +234,8 @@ def display_result(player_pictures: np.ndarray, leader_id: int, players_id: List
         result_Img[area_Ystart:area_Yend, area_Xstarts[j]:area_Xends[j]] = img.copy()
         result_Img = cv2.rectangle(result_Img, (area_Xstarts[j], area_Ystart), (area_Xends[j], area_Yend), player_color[players_id[j]], thickness=4)
         txt_X = int((area_Xstarts[j] + area_Xends[j])/2)
-        txt_Y = int(area_Yend + 50)
-        cv2_putText(result_Img, '{:.2f}'.format(similarities[j]), (txt_X, txt_Y), 50, (0,0,0), 2)
+        txt_Y = int(area_Yend + 80)
+        cv2_putText(result_Img, '{:.2f}'.format(similarities[j]), (txt_X, txt_Y), 80, (0,0,0), 2)
 
     #型変換
     result_Img = result_Img.astype('uint8')
@@ -283,20 +290,21 @@ def display_final_result(face_Imgs: List[np.ndarray], similarities: List) -> np.
 
         #描画領域の指定
         separate_width = Window_width / (people_num + 1)
-        x_offset=int((i+1)*separate_width - face_width/2)
-        y_offset=int(Window_height/2 - face_height/2)
+        x_offset=int((i+1)*separate_width - display_face_width/2)
+        y_offset=int(Window_height/2 - display_face_height/2)
         resultImg[y_offset:y_offset+img.shape[0], x_offset:x_offset+img.shape[1]] = img.copy()
         txt = "Player" + str(int(i + 1))
-        cv2.putText(resultImg, txt, (x_offset, y_offset - 20), cv2.FONT_HERSHEY_SIMPLEX, 1.75, player_color[i], 3, cv2.LINE_AA)
+        #cv2.putText(resultImg, txt, (x_offset, y_offset - 20), cv2.FONT_HERSHEY_SIMPLEX, 1.75, player_color[i], 3, cv2.LINE_AA)
+        cv2_putText(resultImg, txt, (int(x_offset + display_face_width/2), int(y_offset - 60)), 100, player_color[i], 2)
         if (people_num -1) == 1: 
             average_sim = similarities[i][0]
         elif (people_num -1) > 1:
             average_sim = sum(similarities[i]) / len(similarities[i])
         final_similarities.append(average_sim)
         txt_score = '{:.2f}'.format(final_similarities[i])
-        score_X = int(x_offset + face_width/2)
-        score_Y = int(y_offset+face_height + 60)
-        cv2_putText(resultImg, txt_score, (score_X, score_Y), 60, (0,0,0), 2)
+        score_X = int(x_offset + display_face_width/2)
+        score_Y = int(y_offset + display_face_height + 80)
+        cv2_putText(resultImg, txt_score, (score_X, score_Y), 80, (0,0,0), 2)
         #cv2.putText(resultImg, txt_score, (score_X, y_offset+img.shape[0]), cv2.FONT_HERSHEY_SIMPLEX, 1.75, player_color[i], 3, cv2.LINE_AA)
         
     #型変換
