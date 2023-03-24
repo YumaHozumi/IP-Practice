@@ -7,6 +7,7 @@ from typing import List, Tuple
 from modules.vector_functions import correct_vectors
 from modules.draw_function import draw_vectors_0, draw_vectors, draw_result
 from modules.regist_functions import register
+from modules.display_functions import display_title
 from modules.display_functions import display_registered_playeres, display_result, display_change, display_final_result
 from modules.recognition_pose import get_humanPicture
 from modules.calculation import compare_pose, calc_multiSimilarity
@@ -86,8 +87,11 @@ if __name__ == '__main__':
         cv2.imshow('Camera 1',display_frame)
         #cv2.moveWindow("Camera 1", 200,40)
 
-        
+
         if cv2.waitKey(10) == 0x0d: 
+            #タイトルを表示
+            display_title()
+
             # Enterキーを押すとプレイヤー登録開始
             face_Imgs, display_face_Imgs = register(capture, predictor)
 
