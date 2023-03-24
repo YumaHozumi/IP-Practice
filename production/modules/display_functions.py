@@ -6,7 +6,7 @@ from .functions import get_draw_info, create_connected
 from .settings import SCALE_UP, Result_X, Result_Y
 from .display_settings import player_color
 from .area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, face_width, face_height, Window_width, Window_height
-from .area_settings import human_width, human_height, display_face_width, display_face_height
+from .area_settings import human_width, human_height, display_face_width, display_face_height, display_human_height, display_human_width
 from pathlib import Path
 
 whiteboard = 255 * np.ones([Window_height, Window_width, 3])
@@ -136,6 +136,9 @@ def display_check_leader(leader_picture: np.ndarray, leader_id: int) -> np.ndarr
     
     #ポーズ確認画面の作成
     
+    #表示するポーズ画像のサイズ調整
+    leader_picture = cv2.resize(leader_picture, (display_human_width, display_human_height))
+    
     #描画領域の指定
     picture_height = leader_picture.shape[0]
     picture_width = leader_picture.shape[1]
@@ -172,6 +175,9 @@ def display_instraction_players(leader_picture: np.ndarray, leader_id: int) -> n
     cv2_putText(instraction_Img, 'Start!  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
     
     #指示画面の作成
+
+    #表示するポーズ画像のサイズ調整
+    leader_picture = cv2.resize(leader_picture, (display_human_width, display_human_height))
     
     #描画領域の指定
     picture_height = leader_picture.shape[0]
