@@ -216,8 +216,8 @@ def display_result(player_pictures: np.ndarray, leader_id: int, players_id: List
     #結果表示画面の作成
     player_num = len(player_pictures)
     #縮尺
-    small_width = int(human_width * 0.8)
-    small_hight = int(human_height * 0.8)
+    small_width = display_human_width
+    small_hight = display_human_height
 
     area_Xstarts = []
     area_Xends = []
@@ -234,8 +234,8 @@ def display_result(player_pictures: np.ndarray, leader_id: int, players_id: List
         result_Img[area_Ystart:area_Yend, area_Xstarts[j]:area_Xends[j]] = img.copy()
         result_Img = cv2.rectangle(result_Img, (area_Xstarts[j], area_Ystart), (area_Xends[j], area_Yend), player_color[players_id[j]], thickness=4)
         txt_X = int((area_Xstarts[j] + area_Xends[j])/2)
-        txt_Y = int(area_Yend + 50)
-        cv2_putText(result_Img, '{:.2f}'.format(similarities[j]), (txt_X, txt_Y), 50, (0,0,0), 2)
+        txt_Y = int(area_Yend + 80)
+        cv2_putText(result_Img, '{:.2f}'.format(similarities[j]), (txt_X, txt_Y), 80, (0,0,0), 2)
 
     #型変換
     result_Img = result_Img.astype('uint8')
