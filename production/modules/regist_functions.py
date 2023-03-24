@@ -27,7 +27,7 @@ def register(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predicto
         #登録する顔のリストを得る
         face_Imgs, display_face_Imgs = capture_registerArea(capture, predictor)
         #登録結果の描画(一応登録者一覧画面をもらってるが、今のところ再利用する予定なし)
-        result = display_registered_playeres(face_Imgs)
+        result = display_registered_playeres(display_face_Imgs)
 
         while True: 
             #キーボード入力を受け取る
@@ -111,8 +111,8 @@ def capture_registerArea(capture: cv2.VideoCapture, predictor: openpifpaf.predic
             key = 0
 
     #Enter押下時の画像から顔領域を抽出し、表示する
-    face_Imgs: List[np.ndarray] = regist_faceImg(register_frame, predictions, registable_label)
-    return face_Imgs
+    face_Imgs, display_faceImgs = regist_faceImg(register_frame, predictions, registable_label)
+    return face_Imgs, display_faceImgs
 
 
 def registerable_check(landmarks: np.ndarray) -> np.ndarray:
@@ -196,4 +196,4 @@ def regist_faceImg(register_frame: np.ndarray, landmarks: np.ndarray, label: np.
 
     #print(type(faceImgs))
     #print(type(faceImgs[0]))
-    return faceImgs, display_face_frame
+    return faceImgs, display_faceImgs
