@@ -7,7 +7,7 @@ from .draw_function import draw_peopleNum
 from .display_functions import display_registered_playeres
 from .settings import SCALE_UP, Result_X, Result_Y 
 from .area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, face_width, face_height
-from .area_settings import Window_width, Window_height
+from .area_settings import Window_width, Window_height, display_face_width, display_face_height
 
 def register(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predictor) -> List[np.ndarray]:
     """プレイヤーを登録する
@@ -25,7 +25,7 @@ def register(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predicto
     #プレイヤーの登録が終了するまで登録作業を繰り返す
     while not register_finished:
         #登録する顔のリストを得る
-        face_Imgs = capture_registerArea(capture, predictor)
+        face_Imgs, display_face_Imgs = capture_registerArea(capture, predictor)
         #登録結果の描画(一応登録者一覧画面をもらってるが、今のところ再利用する予定なし)
         result = display_registered_playeres(face_Imgs)
 
@@ -151,6 +151,7 @@ def regist_faceImg(register_frame: np.ndarray, landmarks: np.ndarray, label: np.
     """
 
     faceImgs: List[np.ndarray] = []
+    display_faceImgs: List[np.ndarray] = []
 
     for num in range(len(landmarks)):
         parts = landmarks[num]
@@ -188,9 +189,11 @@ def regist_faceImg(register_frame: np.ndarray, landmarks: np.ndarray, label: np.
             #サイズ調整
             face_frame = cv2.resize(face_frame, (face_width, face_height))
             #print(face_frame.shape)
+            display_face_frame = cv2.resize(face_frame, (display_face_width, display_face_height))
 
             faceImgs.append(face_frame)
+            display_faceImgs.append(display_face_frame)
 
     #print(type(faceImgs))
     #print(type(faceImgs[0]))
-    return faceImgs
+    return faceImgs, display_face_frame
