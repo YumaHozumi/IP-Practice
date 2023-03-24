@@ -284,20 +284,21 @@ def display_final_result(face_Imgs: List[np.ndarray], similarities: List) -> np.
 
         #描画領域の指定
         separate_width = Window_width / (people_num + 1)
-        x_offset=int((i+1)*separate_width - face_width/2)
-        y_offset=int(Window_height/2 - face_height/2)
+        x_offset=int((i+1)*separate_width - display_face_width/2)
+        y_offset=int(Window_height/2 - display_face_height/2)
         resultImg[y_offset:y_offset+img.shape[0], x_offset:x_offset+img.shape[1]] = img.copy()
         txt = "Player" + str(int(i + 1))
-        cv2.putText(resultImg, txt, (x_offset, y_offset - 20), cv2.FONT_HERSHEY_SIMPLEX, 1.75, player_color[i], 3, cv2.LINE_AA)
+        #cv2.putText(resultImg, txt, (x_offset, y_offset - 20), cv2.FONT_HERSHEY_SIMPLEX, 1.75, player_color[i], 3, cv2.LINE_AA)
+        cv2_putText(resultImg, txt, (int(x_offset + display_face_width/2), int(y_offset - 60)), 100, player_color[i], 2)
         if (people_num -1) == 1: 
             average_sim = similarities[i][0]
         elif (people_num -1) > 1:
             average_sim = sum(similarities[i]) / len(similarities[i])
         final_similarities.append(average_sim)
         txt_score = '{:.2f}'.format(final_similarities[i])
-        score_X = int(x_offset + face_width/2)
-        score_Y = int(y_offset+face_height + 60)
-        cv2_putText(resultImg, txt_score, (score_X, score_Y), 60, (0,0,0), 2)
+        score_X = int(x_offset + display_face_width/2)
+        score_Y = int(y_offset + display_face_height + 80)
+        cv2_putText(resultImg, txt_score, (score_X, score_Y), 80, (0,0,0), 2)
         #cv2.putText(resultImg, txt_score, (score_X, y_offset+img.shape[0]), cv2.FONT_HERSHEY_SIMPLEX, 1.75, player_color[i], 3, cv2.LINE_AA)
         
     #型変換

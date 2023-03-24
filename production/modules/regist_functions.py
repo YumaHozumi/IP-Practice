@@ -41,7 +41,7 @@ def register(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predicto
             elif key == 127:
                 break
     
-    return face_Imgs
+    return face_Imgs, display_face_Imgs
 
 def capture_registerArea(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predictor) -> List[np.ndarray]:
     """登録領域を撮影し、顔画像を抽出する
