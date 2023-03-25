@@ -7,7 +7,7 @@ from typing import List, Tuple
 from modules.vector_functions import correct_vectors
 from modules.draw_function import draw_vectors_0, draw_vectors, draw_result
 from modules.regist_functions import register
-from modules.display_functions import display_title, display_rule, display_gameNum
+from modules.display_functions import display_title, display_rule, display_gameNum, display_finalMessage
 from modules.display_functions import display_registered_playeres, display_result, display_change, display_final_result
 from modules.recognition_pose import get_humanPicture
 from modules.calculation import compare_pose, calc_multiSimilarity
@@ -138,14 +138,17 @@ if __name__ == '__main__':
                         # Enterキーを押すと次へ
                         if cv2.waitKey(10) == 0x0d:
                             break
-            break
 
-    display_final_result(display_face_Imgs, all_similarities)
-    while True:
-        # Enterキーを押すと終了
-        if cv2.waitKey(10) == 0x0d:
-            break
-    print(all_similarities)
+            #総合結果を表示
+            display_final_result(display_face_Imgs, all_similarities)
+            while True:
+                # Enterキーを押すと終了
+                if cv2.waitKey(10) == 0x0d:
+                    break
+            #最後のメッセージを表示
+            display_finalMessage()
+
+    #ラグを減らすために、プログラムはCtrl+Cでのみ止まるように        
     #print(type(face_Imgs))
     capture.release()
     cv2.destroyAllWindows()

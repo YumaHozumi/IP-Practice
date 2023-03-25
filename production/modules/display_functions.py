@@ -431,6 +431,17 @@ def display_final_result(face_Imgs: List[np.ndarray], similarities: List) -> np.
 
     return resultImg
 
+def display_finalMessage():
+    """終了のメッセージを表示する
+    """
+    message = cv2.imread('./modules/pictures/FinalMessage.bmp', cv2.IMREAD_COLOR)
+    message = cv2.resize(message, (Window_width, Window_height))
+    #終了のメッセージを表示する
+    cv2.imshow('Camera 1',message) 
+    while True:
+        if cv2.waitKey(10) == 0x0d: break
+
+
 font_dir = Path(__file__).resolve().parent / 'arial-unicode-ms.ttf'
 def cv2_putText(img, text, org, fontScale, color, mode=0, fontFace = str(font_dir)):
     """日本語にも対応したputText
