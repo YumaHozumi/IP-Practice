@@ -2,6 +2,18 @@ import numpy as np
 from .vector_functions import convert_simpleVectors, normalize_vectors
 from .settings import score_perfect, strict_weight, scale_weight, bias, score_weight
 
+def my_index_multi(l, x):
+    """リストl内で値がxである要素のインデックスの集合を返す
+
+    Args:
+        l (_type_): 探索対象のリスト
+        x (_type_): インデックスを得たい要素の値
+
+    Returns:
+        _type_: リストl内で値がxである要素のインデックスの集合
+    """
+    return [i for i, _x in enumerate(l) if _x == x]
+
 def compare_pose(vec1: np.ndarray, vec2: np.ndarray) -> float:
     """2人の姿勢の類似度を求める
 
