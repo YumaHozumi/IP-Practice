@@ -8,12 +8,26 @@ from typing import List, Tuple
 from .vector_functions import correct_vectors
 from .draw_function import draw_vectors, draw_vectors_0, draw_result
 from .regist_functions import register
-from .display_functions import display_registered_playeres, display_check_leader, display_instraction_players
+from .display_functions import display_registered_playeres, display_check_leader, display_instraction_players, cv2_putText
 from .display_functions import display_instraction_leader, display_playersRecognitionError, display_leaderRecognitionError 
 from .calculation import compare_pose, calc_multiSimilarity
 from .settings import SCALE_UP, Capture_Width, Capture_Height
 from .display_settings import player_color
 from .area_settings import Window_width, Window_height, human_width, human_height, face_width, face_height
+
+
+
+def show_message(frame: np.ndarray, message: str):
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    font_scale = 1
+    thickness = 2
+    height, width = frame.shape[:2]
+
+    text_width, text_height = cv2.getTextSize(message, font, font_scale, thickness)[0]
+
+    text_x = int((width - text_width) / 2)
+    text_y = height - int(text_height * 2.5)
+    cv2_putText(frame, message, (text_x, text_y), 80, (0, 255, 0), 2)
 
 def countdown(frame, count):
     font = cv2.FONT_HERSHEY_SIMPLEX
@@ -171,14 +185,18 @@ def capture_leader(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], leade
             remaining_time = 3 - int(elapsed_time)
             if remaining_time > 0:
                 countdown(annotated_image, remaining_time)
+                show_message(annotated_image, "ポーズスタート！")
             else:
                 count = None
                 break
+        else:
+            show_message(annotated_image, "枠内に立ってください")
 
         if cv2.waitKey(10) == 0x0d:
             if count is None:
                 count = 3
                 start_time = time.time()
+
 
         cv2.imshow('Camera 1',annotated_image)
         #cv2.moveWindow("Camera 1", 200,40)
@@ -256,6 +274,7 @@ def capture_players(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], play
 
     count = None
     start_time = None
+    
 
     while capture.isOpened():
         #success: 画像の取得が成功したか
@@ -287,9 +306,14 @@ def capture_players(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], play
             remaining_time = 3 - int(elapsed_time)
             if remaining_time > 0:
                 countdown(annotated_image, remaining_time)
+                show_message(annotated_image, "ポーズスタート！")
             else:
                 count = None
                 break
+        else:
+            show_message(annotated_image, "枠内に立ってください")
+
+        
 
         cv2.imshow('Camera 1',annotated_image)
         #cv2.moveWindow("Camera 1", 200,40)
