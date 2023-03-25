@@ -5,6 +5,7 @@ import time
 from typing import List, Tuple
 from PIL import Image, ImageDraw, ImageFont
 from .functions import get_draw_info, create_connected
+from .calculation import my_index_multi
 from .settings import SCALE_UP, Result_X, Result_Y
 from .display_settings import player_color
 from .area_settings import X_LIMIT_START, Y_LIMIT_START, X_LIMIT_END, Y_LIMIT_END, face_width, face_height, Window_width, Window_height
@@ -72,8 +73,11 @@ def display_registered_playeres(face_Imgs: List[np.ndarray]) -> np.ndarray:
 
         #描画領域の指定
         separate_width = Window_width / (people_num + 1)
-        x_offset=int((i+1)*separate_width - display_face_width/2)
+        #x_offset=int((i+1)*separate_width - display_face_width/2)
+        #y_offset=int(Window_height/2 - display_face_height/2)
+        x_offset=int(((2*i+1)/people_num * Window_width - display_face_width)/2)
         y_offset=int(Window_height/2 - display_face_height/2)
+
         playeresImg[y_offset:y_offset+img.shape[0], x_offset:x_offset+img.shape[1]] = img.copy()
         txt = "Player" + str(int(i + 1))
         #cv2.putText(playeresImg, txt, (x_offset, y_offset - 20), cv2.FONT_HERSHEY_SIMPLEX, 1.75, player_color[i], 3, cv2.LINE_AA)
@@ -407,8 +411,11 @@ def display_final_result(face_Imgs: List[np.ndarray], similarities: List) -> np.
 
         #描画領域の指定
         separate_width = Window_width / (people_num + 1)
-        x_offset=int((i+1)*separate_width - display_face_width/2)
+        #x_offset=int((i+1)*separate_width - display_face_width/2)
+        #y_offset=int(Window_height/2 - display_face_height/2)
+        x_offset=int(((2*i+1)/people_num * Window_width - display_face_width)/2)
         y_offset=int(Window_height/2 - display_face_height/2)
+
         resultImg[y_offset:y_offset+img.shape[0], x_offset:x_offset+img.shape[1]] = img.copy()
         txt = "Player" + str(int(i + 1))
         #cv2.putText(resultImg, txt, (x_offset, y_offset - 20), cv2.FONT_HERSHEY_SIMPLEX, 1.75, player_color[i], 3, cv2.LINE_AA)
@@ -424,12 +431,50 @@ def display_final_result(face_Imgs: List[np.ndarray], similarities: List) -> np.
         cv2_putText(resultImg, txt_score, (score_X, score_Y), 80, (0,0,0), 2)
         #cv2.putText(resultImg, txt_score, (score_X, y_offset+img.shape[0]), cv2.FONT_HERSHEY_SIMPLEX, 1.75, player_color[i], 3, cv2.LINE_AA)
         
+    #print(final_similarities)
+    #print(my_index_multi(final_similarities, max(final_similarities)))
+
+    #顔と同じ幅で王冠、葉を表示
+    crown = cv2.imread('./modules/pictures/crown.png', -1)  # -1を付けることでアルファチャンネルも読んでくれるらしい。
+    crown_height, crown_width, _ = crown.shape
+    print(crown.shape)
+    crown = cv2.resize(crown, (display_face_width, int(crown_height * display_face_width /crown_width)))
+    print(crown.shape)
+    crown_height, crown_width, _ = crown.shape
+
+    leaf = cv2.imread('./modules/pictures/Leaf.png', -1)  # -1を付けることでアルファチャンネルも読んでくれるらしい。
+    leaf_height, leaf_width, _ = leaf.shape
+    leaf = cv2.resize(leaf, (display_face_width, int(leaf_height * display_face_width /leaf_width)))
+    leaf_height, leaf_width, _ = leaf.shape
+
+
+    max_indexes = my_index_multi(final_similarities, max(final_similarities))
+    for max_index in max_indexes:
+        #separate_width = Window_width / (people_num + 1)
+        #x = int((max_index + 1)*separate_width - display_face_width/2) 
+        x = int(((2*max_index+1)/people_num * Window_width - display_face_width)/2)
+        crown_y = int(Window_height/2 - display_face_height/2) - crown_height - 90
+        leaf_y = int(Window_height/2 - display_face_height/2 + display_face_height + 80)
+        merge_images(resultImg, crown, x, crown_y)
+        merge_images(resultImg, leaf, x, leaf_y)
+    
     #型変換
     resultImg = resultImg.astype('uint8')
 
     cv2.imshow('Camera 1',resultImg) #認識した顔の画像を表示
 
     return resultImg
+
+def display_finalMessage():
+    """終了のメッセージを表示する
+    """
+    message = cv2.imread('./modules/pictures/FinalMessage.bmp', cv2.IMREAD_COLOR)
+    message = cv2.resize(message, (Window_width, Window_height))
+    #終了のメッセージを表示する
+    cv2.imshow('Camera 1',message) 
+    while True:
+        if cv2.waitKey(10) == 0x0d: break
+
 
 font_dir = Path(__file__).resolve().parent / 'arial-unicode-ms.ttf'
 def cv2_putText(img, text, org, fontScale, color, mode=0, fontFace = str(font_dir)):
@@ -489,3 +534,18 @@ def cv2_putText(img, text, org, fontScale, color, mode=0, fontFace = str(font_di
     img[y1:y2, x1:x2] = text_area[y1-y0:y2-y0, x1-x0:x2-x0]
 
     return img
+
+def merge_images(bg, fg_alpha, s_x, s_y):
+    alpha = fg_alpha[:,:,3]  # ①アルファチャンネルだけ抜き出す(要は2値のマスク画像)
+    alpha = cv2.cvtColor(alpha, cv2.COLOR_GRAY2BGR) # grayをBGRに
+    alpha = alpha / 255.0    # 0.0〜1.0の値に変換
+
+    fg = fg_alpha[:,:,:3]
+
+    f_h, f_w, _ = fg.shape # アルファ画像の高さと幅を取得
+    b_h, b_w, _ = bg.shape # 背景画像の高さを幅を取得
+
+    bg[s_y:f_h+s_y, s_x:f_w+s_x] = (bg[s_y:f_h+s_y, s_x:f_w+s_x] * (1.0 - alpha)).astype('uint8') # ②アルファ以外の部分を黒で合成
+    bg[s_y:f_h+s_y, s_x:f_w+s_x] = (bg[s_y:f_h+s_y, s_x:f_w+s_x] + (fg * alpha)).astype('uint8')  # ③合成
+
+    return bg

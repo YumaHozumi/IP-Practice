@@ -2,6 +2,18 @@ import numpy as np
 from .vector_functions import convert_simpleVectors, normalize_vectors
 from .settings import score_perfect, strict_weight, scale_weight, bias, score_weight
 
+def my_index_multi(l, x):
+    """リストl内で値がxである要素のインデックスの集合を返す
+
+    Args:
+        l (_type_): 探索対象のリスト
+        x (_type_): インデックスを得たい要素の値
+
+    Returns:
+        _type_: リストl内で値がxである要素のインデックスの集合
+    """
+    return [i for i, _x in enumerate(l) if _x == x]
+
 def compare_pose(vec1: np.ndarray, vec2: np.ndarray) -> float:
     """2人の姿勢の類似度を求める
 
@@ -34,6 +46,69 @@ def compare_pose(vec1: np.ndarray, vec2: np.ndarray) -> float:
     
 
     return calculate_score(xy_vectors_1, xy_vectors_2, use_label_mixed)
+
+def compare_pose_toGame(vec1: np.ndarray, vec2: np.ndarray) -> float:
+    """2人の姿勢の類似度を求める
+
+    Args:
+        vec1 (np.ndarray): 1人目のベクトル集合
+        vec2 (np.ndarray): 2人目のベクトル集合
+
+    Returns:
+        float: 2人の姿勢の類似度
+    """
+
+    normalized_vec1 = normalize_vectors(convert_simpleVectors(vec1))
+    xy_vectors_1 = normalized_vec1[:, :2] #xy成分だけ取り出す
+    use_label_1 = normalized_vec1[:, 2] #ラベルを取り出す
+
+    normalized_vec2 = normalize_vectors(convert_simpleVectors(vec2))
+    xy_vectors_2 = normalized_vec2[:, :2] #xy成分だけ取り出す
+    use_label_2 = normalized_vec2[:, 2] #ラベルを取り出す
+
+    return calculate_score_toGame(xy_vectors_1, xy_vectors_2, use_label_1, use_label_2)
+
+def calculate_score_toGame(xy_vectors_1: np.ndarray, xy_vectors_2: np.ndarray, use_label_1: np.ndarray, use_label_2: np.ndarray) -> float:
+    """類似度計算を行う(comparepose経由で呼び出す前提)
+
+    Args:
+        xy_vectors_1 (np.ndarray): 1人目のベクトルデータ
+        xy_vectors_2 (np.ndarray): 2人目のベクトルデータ
+        use_label_1 (np.ndarray): 1人目の検出・未検出のラベル
+        use_label_2 (np.ndarray): 2人目の検出・未検出のラベル
+
+    Returns:
+        float: 類似度
+    """
+
+    use_label_mixed: np.ndarray = use_label_1 * use_label_2 #どちらも検出できたベクトルを調べる
+
+    #お手本では検出できていたのに、真似では検出できなかったベクトル(0とする)の数を数える
+    miss_label = np.ones(use_label_1.size)
+    for i in range(miss_label.size):
+        if (use_label_1[i] == 1 and use_label_2[i] == 0):
+            miss_label[i] = 0
+    print(miss_label)
+
+    #内積を計算
+    cos: np.ndarray = calculate_cos(xy_vectors_1, xy_vectors_2) 
+
+    #コサイン値に重みづけ
+    use_cos = cos * strict_weight[1]
+    #指数関数化
+    exp_cos = np.exp(use_cos)
+    vector_points = score_weight * (scale_weight * exp_cos + bias)
+
+    #検出できたベクトルのみスコアをカウントする
+    sum_points = np.sum(vector_points * use_label_mixed)
+    
+    #完全一致の場合のスコアを算出
+    score_whole = np.sum(score_perfect * use_label_mixed)
+
+    # ペナルティを加算
+    score_whole += calc_penalty(miss_label)
+
+    return sum_points / score_whole
 
 
 def calculate_score(xy_vectors_1: np.ndarray, xy_vectors_2: np.ndarray, label: np.ndarray) -> float:

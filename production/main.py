@@ -7,10 +7,10 @@ from typing import List, Tuple
 from modules.vector_functions import correct_vectors
 from modules.draw_function import draw_vectors_0, draw_vectors, draw_result
 from modules.regist_functions import register
-from modules.display_functions import display_title, display_rule, display_gameNum
+from modules.display_functions import display_title, display_rule, display_gameNum, display_finalMessage, cv2_putText
 from modules.display_functions import display_registered_playeres, display_result, display_change, display_final_result
 from modules.recognition_pose import get_humanPicture
-from modules.calculation import compare_pose, calc_multiSimilarity
+from modules.calculation import compare_pose, calc_multiSimilarity, compare_pose_toGame
 from modules.settings import SCALE_UP, Capture
 from modules.area_settings import Window_width, Window_height
 import tkinter as tk
@@ -45,6 +45,10 @@ if __name__ == '__main__':
 
     print("Start System...")
 
+    #待機画面で表示するテキスト
+    over_text = "プレイヤー待機中..."
+    under_text = "Press Enter To Start"
+
 
     while capture.isOpened():
         read_video: Tuple[bool, np.ndarray] = capture.read()
@@ -65,6 +69,8 @@ if __name__ == '__main__':
         if len(predictions) == 0: 
             annotated_image = cv2.flip(annotated_image, 1)
             display_frame = cv2.resize(annotated_image, (Window_width, Window_height))
+            display_frame = cv2_putText(display_frame, over_text, (int(Window_width/2), 80), 100, (0,255,0), 2)
+            display_frame = cv2_putText(display_frame, under_text, (int(Window_width/2), Window_height - 100), 100, (0,255,0), 2)
             cv2.imshow('Camera 1',display_frame)
             
             # ESCキーを押すと終了
@@ -84,6 +90,8 @@ if __name__ == '__main__':
 
         annotated_image = cv2.flip(annotated_image, 1)
         display_frame = cv2.resize(annotated_image, (Window_width, Window_height))
+        display_frame = cv2_putText(display_frame, over_text, (int(Window_width/2), 80), 100, (0,255,0), 2)
+        display_frame = cv2_putText(display_frame, under_text, (int(Window_width/2), Window_height - 100), 100, (0,255,0), 2)
         cv2.imshow('Camera 1',display_frame)
         #cv2.moveWindow("Camera 1", 200,40)
 
@@ -121,7 +129,7 @@ if __name__ == '__main__':
                 #以降で、類似度の計算・結果の表示
                 similarities = []
                 for j in range(len(players_vectors)):
-                    similarity = compare_pose(leader_vectors, players_vectors[j]) * 100
+                    similarity = compare_pose_toGame(leader_vectors, players_vectors[j]) * 100
                     similarities.append(similarity)
                     all_similarities[players_id[j]].append(similarity)
                 
@@ -138,14 +146,17 @@ if __name__ == '__main__':
                         # Enterキーを押すと次へ
                         if cv2.waitKey(10) == 0x0d:
                             break
-            break
 
-    display_final_result(display_face_Imgs, all_similarities)
-    while True:
-        # Enterキーを押すと終了
-        if cv2.waitKey(10) == 0x0d:
-            break
-    print(all_similarities)
+            #総合結果を表示
+            display_final_result(display_face_Imgs, all_similarities)
+            while True:
+                # Enterキーを押すと終了
+                if cv2.waitKey(10) == 0x0d:
+                    break
+            #最後のメッセージを表示
+            display_finalMessage()
+
+    #ラグを減らすために、プログラムはCtrl+Cでのみ止まるように        
     #print(type(face_Imgs))
     capture.release()
     cv2.destroyAllWindows()
