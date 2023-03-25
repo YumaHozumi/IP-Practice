@@ -10,7 +10,7 @@ from modules.regist_functions import register
 from modules.display_functions import display_title, display_rule, display_gameNum, display_finalMessage, cv2_putText
 from modules.display_functions import display_registered_playeres, display_result, display_change, display_final_result
 from modules.recognition_pose import get_humanPicture
-from modules.calculation import compare_pose, calc_multiSimilarity
+from modules.calculation import compare_pose, calc_multiSimilarity, compare_pose_toGame
 from modules.settings import SCALE_UP, Capture
 from modules.area_settings import Window_width, Window_height
 import tkinter as tk
@@ -129,7 +129,7 @@ if __name__ == '__main__':
                 #以降で、類似度の計算・結果の表示
                 similarities = []
                 for j in range(len(players_vectors)):
-                    similarity = compare_pose(leader_vectors, players_vectors[j]) * 100
+                    similarity = compare_pose_toGame(leader_vectors, players_vectors[j]) * 100
                     similarities.append(similarity)
                     all_similarities[players_id[j]].append(similarity)
                 
