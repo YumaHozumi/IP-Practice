@@ -14,20 +14,42 @@ from pathlib import Path
 whiteboard = 255 * np.ones([Window_height, Window_width, 3])
 
 def display_title():
-    """タイトルを表示する
+    """タイトルやデモの概要等を表示する
     """
 
     #print(os.getcwd()) #カレントディレクトリの確認 -> main.py実行時、productionから相対パスで指定すればOK
+    #タイトル画像の用意
     title = cv2.imread('./modules/pictures/Title.bmp', cv2.IMREAD_COLOR )
     title = cv2.resize(title, (Window_width, Window_height))
+    #ガイダンス画像の用意
+    guidance = cv2.imread('./modules/pictures/guidance.bmp', cv2.IMREAD_COLOR )
+    guidance = cv2.resize(guidance, (Window_width, Window_height))
+    #ゲーム説明画像の用意
+    game_abstract = cv2.imread('./modules/pictures/Game_abstract.bmp', cv2.IMREAD_COLOR )
+    game_abstract = cv2.resize(game_abstract, (Window_width, Window_height))
+
 
     #タイトルを表示
     cv2.imshow('Camera 1', title)
-
     while True:
         key = cv2.waitKey(10)
         if key == 0x0d: 
             break
+
+    #ガイダンスを表示
+    cv2.imshow('Camera 1', guidance)
+    while True:
+        key = cv2.waitKey(10)
+        if key == 0x0d: 
+            break
+
+    #ゲーム説明を表示
+    cv2.imshow('Camera 1', game_abstract)
+    while True:
+        key = cv2.waitKey(10)
+        if key == 0x0d: 
+            break
+
     return
 
 
