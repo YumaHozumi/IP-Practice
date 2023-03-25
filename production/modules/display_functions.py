@@ -380,7 +380,19 @@ def display_final_result(face_Imgs: List[np.ndarray], similarities: List) -> np.
     Returns:
         np.ndarray: 一覧を表示している画像
     """
-    resultImg = whiteboard.copy() #背景の設定
+
+    #背景の設定
+    result_wait = cv2.imread('./modules/pictures/AllGame_finish.bmp', cv2.IMREAD_COLOR)
+    result_wait = cv2.resize(result_wait, (Window_width, Window_height))
+
+    #「結果発表！」とバーンと出す
+    cv2.imshow('Camera 1',result_wait) 
+    while True:
+        if cv2.waitKey(10) == 0x0d: break
+
+    #背景の設定
+    resultImg = cv2.imread('./modules/pictures/Final_Result.bmp', cv2.IMREAD_COLOR)
+    resultImg = cv2.resize(resultImg, (Window_width, Window_height))
 
     #画面の説明の表示
     cv2_putText(resultImg, '最終結果', (20, 80), 80, (0,0,0))
