@@ -7,7 +7,7 @@ from typing import List, Tuple
 from modules.vector_functions import correct_vectors
 from modules.draw_function import draw_vectors_0, draw_vectors, draw_result
 from modules.regist_functions import register
-from modules.display_functions import display_title, display_rule
+from modules.display_functions import display_title, display_rule, display_gameNum
 from modules.display_functions import display_registered_playeres, display_result, display_change, display_final_result
 from modules.recognition_pose import get_humanPicture
 from modules.calculation import compare_pose, calc_multiSimilarity
@@ -105,6 +105,9 @@ if __name__ == '__main__':
 
             #ゲーム開始
             for leader_id in range(playerNum):
+                #何ゲーム目かを表示
+                display_gameNum(leader_id)
+
                 #playersのid(インデックス)を格納したリストを作成する
                 players_id:List = []
                 for i in range(playerNum):

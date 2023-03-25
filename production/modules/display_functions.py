@@ -109,6 +109,26 @@ def display_rule():
         if cv2.waitKey(10) == 0x0d: 
             break
 
+def display_gameNum(gameNum: int):
+    """何ゲーム目かを表示
+
+    Args:
+        gameNum (int): 何ゲーム目か(0スタート)
+    """
+    #背景の設定
+    display_frame = cv2.imread('./modules/pictures/SimpleBG.bmp', cv2.IMREAD_COLOR )
+    display_frame = cv2.resize(display_frame, (Window_width, Window_height))
+
+    gameNum += 1 #1スタートに
+    txt = str(gameNum) + "ゲーム目　スタート！"
+    cv2_putText(display_frame, txt, (int(Window_width/2), int(Window_height/2)), 100, (255,0,0), 2)
+
+    #何ゲーム目かを表示
+    cv2.imshow('Camera 1', display_frame)
+    while True:
+        if cv2.waitKey(10) == 0x0d: 
+            break
+
 def display_instraction_leader(leader_id: int) -> np.ndarray:
     """leader役のプレイヤーへの指示を表示
 
@@ -118,14 +138,16 @@ def display_instraction_leader(leader_id: int) -> np.ndarray:
     Returns:
         np.ndarray: 確認画面
     """
-    
-    instraction_Img = whiteboard.copy() #背景の設定
+
+    #背景の設定
+    instraction_Img = cv2.imread('./modules/pictures/Leader_instruction.bmp', cv2.IMREAD_COLOR )
+    instraction_Img = cv2.resize(instraction_Img, (Window_width, Window_height))
 
     #画面の説明の表示
     instraction_message: str = 'Player' + str(leader_id + 1) + 'さんがお手本役です。\n'
-    instraction_message += '次の画面で表示される枠内で\nお手本になるポーズをとってください'
-    cv2_putText(instraction_Img, instraction_message, (int(Window_width/2), int(Window_height/2)), 60, (0,0,0), 2)
-    cv2_putText(instraction_Img, 'Start!  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+    instraction_message += '次の画面で表示される枠内で\nお手本になるポーズをとってください。'
+    cv2_putText(instraction_Img, instraction_message, (int(Window_width/2), int(Window_height/2)), 90, (0,0,0), 2)
+    #cv2_putText(instraction_Img, 'Start!  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
     
     #型変換
     instraction_Img = instraction_Img.astype('uint8')
