@@ -163,12 +163,14 @@ def display_leaderRecognitionError() -> np.ndarray:
         np.ndarray: メッセージ表示画面
     """
     
-    error_Img = whiteboard.copy() #背景の設定
+    #背景の設定
+    error_Img = cv2.imread('./modules/pictures/Error.bmp', cv2.IMREAD_COLOR )
+    error_Img = cv2.resize(error_Img, (Window_width, Window_height))
 
     #画面の説明の表示
     errorMessage: str = '認識エラーが発生しました。\nもう一度行います。'
-    cv2_putText(error_Img, errorMessage, (int(Window_width/2), int(Window_height/2)), 80, (0,0,0), 2)
-    cv2_putText(error_Img, '次へ  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+    #cv2_putText(error_Img, errorMessage, (int(Window_width/2), int(Window_height/2)), 80, (0,0,0), 2)
+    #cv2_putText(error_Img, '次へ  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
 
     #型変換
     error_Img = error_Img.astype('uint8')
@@ -178,25 +180,27 @@ def display_leaderRecognitionError() -> np.ndarray:
     return error_Img
 
 def display_change() -> np.ndarray:
-    """leaderを認識できなかったため再度playerの撮影を行うメッセージの表示を行う
+    """お手本役交代のメッセージを表示
 
     Returns:
         np.ndarray: メッセージ表示画面
     """
-    
-    error_Img = whiteboard.copy() #背景の設定
+
+    #背景の設定
+    change_Img = cv2.imread('./modules/pictures/Change_Leader.bmp', cv2.IMREAD_COLOR )
+    change_Img = cv2.resize(change_Img, (Window_width, Window_height))
 
     #画面の説明の表示
-    errorMessage: str = '見本役を交代します'
-    cv2_putText(error_Img, errorMessage, (int(Window_width/2), int(Window_height/2)), 80, (0,0,0), 2)
-    cv2_putText(error_Img, '次へ  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+    #errorMessage: str = '見本役を交代します'
+    #cv2_putText(error_Img, errorMessage, (int(Window_width/2), int(Window_height/2)), 80, (0,0,0), 2)
+    #cv2_putText(error_Img, '次へ  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
 
     #型変換
-    error_Img = error_Img.astype('uint8')
+    change_Img = change_Img.astype('uint8')
     #確認画面を表示
-    cv2.imshow('Camera 1',error_Img) 
+    cv2.imshow('Camera 1',change_Img) 
 
-    return error_Img
+    return change_Img
 
 def display_check_leader(leader_picture: np.ndarray, leader_id: int) -> np.ndarray:
     """leader役のプレイヤーにポーズの確認をとる画面を表示
@@ -209,13 +213,15 @@ def display_check_leader(leader_picture: np.ndarray, leader_id: int) -> np.ndarr
         np.ndarray: 確認画面
     """
     
-    check_Img = whiteboard.copy() #背景の設定
+    #背景の設定
+    check_Img = cv2.imread('./modules/pictures/Check_LeaderPose.bmp', cv2.IMREAD_COLOR )
+    check_Img = cv2.resize(check_Img, (Window_width, Window_height))
 
     #画面の説明の表示
-    page_about: str = 'プレイヤー' + str(leader_id + 1) + 'さんのお手本ポーズ'
-    cv2_putText(check_Img, page_about, (20, 80), 80, (0,0,0))
-    cv2_putText(check_Img, '　OK!　  > Enter', (int(Window_width * 0.7), Window_height - 50), 40, (0,0,0))
-    cv2_putText(check_Img, 'やり直す > Delete', (int(Window_width * 0.7), Window_height - 10), 40, (0,0,0))
+    #page_about: str = 'プレイヤー' + str(leader_id + 1) + 'さんのお手本ポーズ'
+    #cv2_putText(check_Img, page_about, (20, 80), 80, (0,0,0))
+    #cv2_putText(check_Img, '　OK!　  > Enter', (int(Window_width * 0.7), Window_height - 50), 40, (0,0,0))
+    #cv2_putText(check_Img, 'やり直す > Delete', (int(Window_width * 0.7), Window_height - 10), 40, (0,0,0))
     
     #ポーズ確認画面の作成
     
@@ -226,7 +232,7 @@ def display_check_leader(leader_picture: np.ndarray, leader_id: int) -> np.ndarr
     picture_height = leader_picture.shape[0]
     picture_width = leader_picture.shape[1]
     x_offset=int(Window_width/2 - picture_width/2)
-    y_offset=int(Window_height/2 - picture_height/2)
+    y_offset=int(Window_height/2 - picture_height/2 + 50)
     check_Img[y_offset:y_offset+picture_height, x_offset:x_offset+picture_width] = leader_picture.copy()
     txt = "Player" + str(leader_id + 1)
     #プレイヤー番号の表示
@@ -250,12 +256,14 @@ def display_instraction_players(leader_picture: np.ndarray, leader_id: int) -> n
         np.ndarray: 確認画面
     """
     
-    instraction_Img = whiteboard.copy() #背景の設定
+    #背景の設定
+    instraction_Img = cv2.imread('./modules/pictures/Remember_Pose.bmp', cv2.IMREAD_COLOR )
+    instraction_Img = cv2.resize(instraction_Img, (Window_width, Window_height))
 
     #画面の説明の表示
     page_about: str = 'このポーズをよく覚えてください。'
-    cv2_putText(instraction_Img, page_about, (20, 80), 80, (0,0,0))
-    cv2_putText(instraction_Img, 'Start!  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+    #cv2_putText(instraction_Img, page_about, (20, 80), 80, (0,0,0))
+    #cv2_putText(instraction_Img, 'Start!  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
     
     #指示画面の作成
 
@@ -266,7 +274,7 @@ def display_instraction_players(leader_picture: np.ndarray, leader_id: int) -> n
     picture_height = leader_picture.shape[0]
     picture_width = leader_picture.shape[1]
     x_offset=int(Window_width/2 - picture_width/2)
-    y_offset=int(Window_height/2 - picture_height/2)
+    y_offset=int(Window_height/2 - picture_height/2 + 50)
     instraction_Img[y_offset:y_offset+picture_height, x_offset:x_offset+picture_width] = leader_picture.copy()
 
     #型変換
@@ -289,12 +297,24 @@ def display_result(player_pictures: np.ndarray, leader_id: int, players_id: List
         np.ndarray: 結果表示画面
     """
     
-    result_Img = whiteboard.copy() #背景の設定
+    #背景の設定
+    result_wait = cv2.imread('./modules/pictures/SimpleBG.bmp', cv2.IMREAD_COLOR )
+    result_wait = cv2.resize(result_wait, (Window_width, Window_height))
 
     #画面の説明の表示
     message: str = 'ゲーム' + str(leader_id + 1) + "の結果発表!"
-    cv2_putText(result_Img, message, (20, 80), 80, (0,0,0))
-    cv2_putText(result_Img, '次へ  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+    cv2_putText(result_wait, message, (int(Window_width/2), int(Window_height/2)), 90, (255,0,0), 2)
+    #cv2_putText(result_Img, '次へ  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+
+    #「結果発表！」とバーンと出す
+    cv2.imshow('Camera 1',result_wait) 
+    while True:
+        if cv2.waitKey(10) == 0x0d: break
+
+    
+    #背景の設定
+    result_Img = cv2.imread('./modules/pictures/ResultBG.bmp', cv2.IMREAD_COLOR )
+    result_Img = cv2.resize(result_Img, (Window_width, Window_height))
     
     #結果表示画面の作成
     player_num = len(player_pictures)
@@ -334,12 +354,14 @@ def display_playersRecognitionError() -> np.ndarray:
         np.ndarray: メッセージ表示画面
     """
     
-    error_Img = whiteboard.copy() #背景の設定
+    #背景の設定
+    error_Img = cv2.imread('./modules/pictures/Error.bmp', cv2.IMREAD_COLOR )
+    error_Img = cv2.resize(error_Img, (Window_width, Window_height))
 
     #画面の説明の表示
-    errorMessage: str = '認識エラーが発生しました。\nもう一度行います。'
-    cv2_putText(error_Img, errorMessage, (int(Window_width/2), int(Window_height/2)), 80, (0,0,0), 2)
-    cv2_putText(error_Img, '次へ  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
+    #errorMessage: str = '認識エラーが発生しました。\nもう一度行います。'
+    #cv2_putText(error_Img, errorMessage, (int(Window_width/2), int(Window_height/2)), 80, (0,0,0), 2)
+    #cv2_putText(error_Img, '次へ  > Enter', (int(Window_width * 0.8), Window_height - 10), 40, (0,0,0))
 
     #型変換
     error_Img = error_Img.astype('uint8')
