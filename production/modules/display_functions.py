@@ -86,6 +86,29 @@ def display_registered_playeres(face_Imgs: List[np.ndarray]) -> np.ndarray:
 
     return playeresImg
 
+def display_rule():
+    """ゲームのルールを表示する
+    """
+
+    #Lead役の概要説明画像の用意
+    leader_rule = cv2.imread('./modules/pictures/Leader_abstract.bmp', cv2.IMREAD_COLOR )
+    leader_rule = cv2.resize(leader_rule, (Window_width, Window_height))
+    #ガイダンス画像の用意
+    player_rule = cv2.imread('./modules/pictures/Player_abstract.bmp', cv2.IMREAD_COLOR )
+    player_rule = cv2.resize(player_rule, (Window_width, Window_height))
+
+    #タイトルを表示
+    cv2.imshow('Camera 1', leader_rule)
+    while True:
+        if cv2.waitKey(10) == 0x0d: 
+            break
+
+    #ガイダンスを表示
+    cv2.imshow('Camera 1', player_rule)
+    while True:
+        if cv2.waitKey(10) == 0x0d: 
+            break
+
 def display_instraction_leader(leader_id: int) -> np.ndarray:
     """leader役のプレイヤーへの指示を表示
 
