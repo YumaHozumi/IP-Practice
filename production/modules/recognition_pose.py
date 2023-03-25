@@ -299,6 +299,7 @@ def capture_players(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], play
         annotated_image = cv2.resize(annotated_image, (Capture_Width, Capture_Height))
         #登録をおこなう領域を指定
 
+        """
         for k in range(playerNum):
             #認識領域を表示
             #領域の枠は、スクリーン上で左からプレイヤー番号の若い順になっている(色んなパーティゲームと揃えた)
@@ -307,20 +308,44 @@ def capture_players(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], play
             annotated_image[face_Ystart:face_Yend, face_Xstarts[k]:face_Xends[k]] = faces[playerNum -1 -k].copy()
             
         annotated_image = cv2.flip(annotated_image, 1)
+        """
 
         # カウントダウンの表示
         if start_time is not None:
             elapsed_time = time.time() - start_time
 
             if elapsed_time < 2:
+                for k in range(playerNum):
+                    #認識領域を表示
+                    #領域の枠は、スクリーン上で左からプレイヤー番号の若い順になっている(色んなパーティゲームと揃えた)
+                    annotated_image = cv2.rectangle(annotated_image, (area_Xstarts[k], area_Ystart), (area_Xends[k], area_Yend), player_color[players_id[playerNum -1 -k]], thickness=2)
+                    #顔画像を表示
+                    annotated_image[face_Ystart:face_Yend, face_Xstarts[k]:face_Xends[k]] = faces[playerNum -1 -k].copy()
+                    
+                annotated_image = cv2.flip(annotated_image, 1)
                 show_message(annotated_image, "ポーズスタート！")
+
             else:
                 remaining_time = 3 - int(elapsed_time - 2)  # 2秒経過後にカウントダウンを開始
                 if remaining_time > 0:
+                    for k in range(playerNum):
+                        #認識領域を表示
+                        #領域の枠は、スクリーン上で左からプレイヤー番号の若い順になっている(色んなパーティゲームと揃えた)
+                        annotated_image = cv2.rectangle(annotated_image, (area_Xstarts[k], area_Ystart), (area_Xends[k], area_Yend), player_color[players_id[playerNum -1 -k]], thickness=2)
+                        
+                    annotated_image = cv2.flip(annotated_image, 1)
                     countdown(annotated_image, remaining_time)
                 else:
                     break
         else:
+            for k in range(playerNum):
+                #認識領域を表示
+                #領域の枠は、スクリーン上で左からプレイヤー番号の若い順になっている(色んなパーティゲームと揃えた)
+                annotated_image = cv2.rectangle(annotated_image, (area_Xstarts[k], area_Ystart), (area_Xends[k], area_Yend), player_color[players_id[playerNum -1 -k]], thickness=2)
+                #顔画像を表示
+                annotated_image[face_Ystart:face_Yend, face_Xstarts[k]:face_Xends[k]] = faces[playerNum -1 -k].copy()
+                
+            annotated_image = cv2.flip(annotated_image, 1)
             show_message(annotated_image, "枠内に立ってください")
 
         cv2.imshow('Camera 1', annotated_image)
