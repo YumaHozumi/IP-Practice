@@ -38,8 +38,16 @@ def countdown(frame, count):
     #y = int((height + text_size[1]) / 2)
     x = int(width / 2)
     y = int(text_size[1] + 20)
+
+    #タイマー部分の背景を設定
+    y_start = y - 70
+    y_end = y + 70
+    x_start = x - 70
+    x_end = x + 70
+    frame[y_start:y_end, x_start:x_end, :] = 255
+    
     #cv2.putText(frame, text, (x, y), font, font_scale, (0, 255, 0), font_thickness, cv2.LINE_AA)
-    cv2_putText(frame, text, (x, y), 80, (0,255,0), 2)
+    cv2_putText(frame, text, (x, y-20), 150, (0,0,0), 2)
 
 def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predictor, face_Imgs: List[np.ndarray], players_id: List[int], leader_Id: int) -> List[np.ndarray]:
     """leaderとplayerの写真と姿勢推定の結果を取得する
