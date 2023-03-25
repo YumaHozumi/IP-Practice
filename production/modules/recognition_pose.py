@@ -23,7 +23,7 @@ def show_message(frame: np.ndarray, message: str):
 
     text_width, text_height = cv2.getTextSize(message, font, font_scale, thickness)[0]
 
-    text_x = int((width - text_width) / 2)
+    text_x = int(width / 2)
     text_y = height - int(text_height * 2.5)
     cv2_putText(frame, message, (text_x, text_y), 80, (0, 255, 0), 2)
 
