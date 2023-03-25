@@ -15,8 +15,6 @@ from .settings import SCALE_UP, Capture_Width, Capture_Height
 from .display_settings import player_color
 from .area_settings import Window_width, Window_height, human_width, human_height, face_width, face_height
 
-
-
 def show_message(frame: np.ndarray, message: str):
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_scale = 1
@@ -157,7 +155,6 @@ def capture_leader(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], leade
     count = None
     start_time = None
 
-
     while capture.isOpened():
         #success: 画像の取得が成功したか
         #frame: RGBの値を持っている3次元の配列データ ex) サイズ (480, 640, 3) 高さ、幅、色チャネル
@@ -180,33 +177,25 @@ def capture_leader(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], leade
         annotated_image = cv2.flip(annotated_image, 1)
 
         # カウントダウンの表示
-        if count is not None:
+        if start_time is not None:
             elapsed_time = time.time() - start_time
-            remaining_time = 3 - int(elapsed_time)
-            if remaining_time > 0:
-                countdown(annotated_image, remaining_time)
+
+            if elapsed_time < 2:
                 show_message(annotated_image, "ポーズスタート！")
             else:
-                count = None
-                break
+                remaining_time = 3 - int(elapsed_time - 2)  # 2秒経過後にカウントダウンを開始
+                if remaining_time > 0:
+                    countdown(annotated_image, remaining_time)
+                else:
+                    break
         else:
             show_message(annotated_image, "枠内に立ってください")
 
-        if cv2.waitKey(10) == 0x0d:
-            if count is None:
-                count = 3
-                start_time = time.time()
+        cv2.imshow('Camera 1', annotated_image)
 
-
-        cv2.imshow('Camera 1',annotated_image)
-        #cv2.moveWindow("Camera 1", 200,40)
-
-
-        # Enterキーを押したら画像の読み込みを終了
-        # if cv2.waitKey(10) == 0x0d:
-        #     print('Enter pressed. Saving ...')
-        #     break
-
+        key = cv2.waitKey(10)
+        if key == 0x0d and start_time is None:
+            start_time = time.time()
     #Enter押下時のスクショを返す
     return cv2.resize(frame, (Capture_Width, Capture_Height))
 
@@ -301,27 +290,25 @@ def capture_players(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], play
         annotated_image = cv2.flip(annotated_image, 1)
 
         # カウントダウンの表示
-        if count is not None:
+        if start_time is not None:
             elapsed_time = time.time() - start_time
-            remaining_time = 3 - int(elapsed_time)
-            if remaining_time > 0:
-                countdown(annotated_image, remaining_time)
+
+            if elapsed_time < 2:
                 show_message(annotated_image, "ポーズスタート！")
             else:
-                count = None
-                break
+                remaining_time = 3 - int(elapsed_time - 2)  # 2秒経過後にカウントダウンを開始
+                if remaining_time > 0:
+                    countdown(annotated_image, remaining_time)
+                else:
+                    break
         else:
             show_message(annotated_image, "枠内に立ってください")
 
-        
+        cv2.imshow('Camera 1', annotated_image)
 
-        cv2.imshow('Camera 1',annotated_image)
-        #cv2.moveWindow("Camera 1", 200,40)
-        if cv2.waitKey(10) == 0x0d:
-            if count is None:
-                count = 3
-                start_time = time.time()
-                
+        key = cv2.waitKey(10)
+        if key == 0x0d and start_time is None:
+            start_time = time.time()
 
     #Enter押下時のスクショを返す
     #return cv2.flip(frame, 1)
