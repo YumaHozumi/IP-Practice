@@ -1,14 +1,25 @@
 import cv2
 import numpy as np
 from typing import List, Tuple
+import platform
 
 #キャプチャーの用意
-Capture = cv2.VideoCapture(0)
+if platform.system() == 'Windows':
+    # Windows用の処理
+    Capture = cv2.VideoCapture(0 + cv2.CAP_DSHOW) 
+else:
+    # macOS用の処理
+    Capture = cv2.VideoCapture(0 + cv2.CAP_AVFOUNDATION)
+
+
+Capture.set(cv2.CAP_PROP_FRAME_WIDTH, 1980)
+Capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 
 #入力画像の解像度を取得
 Capture_Width = int(Capture.get(cv2.CAP_PROP_FRAME_WIDTH))
 Capture_Height = int(Capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
+print(f"{Capture_Width}x{Capture_Height}")
 #画面の縮尺
 SCALE_UP = 4
 
