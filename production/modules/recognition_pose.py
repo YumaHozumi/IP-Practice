@@ -115,7 +115,7 @@ def get_humanPicture(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.
             if len(player_pose) > 0:
                 players_vectors.append(correct_vectors(player_pose, 0))
             else:
-                players_complete = False #1人も検出されない画像があった場合、再度撮影を行う
+                players_complete = False #1人でも検出されない画像があった場合、再度撮影を行う
                 display_playersRecognitionError()
                 while True:
                     # Enterキーを押すと次に進む
