@@ -194,7 +194,7 @@ def capture_leader(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], leade
                 annotated_image = cv2.flip(annotated_image, 1)
                 show_message(annotated_image, "ポーズスタート！")
             else:
-                remaining_time = 3 - int(elapsed_time - 2)  # 2秒経過後にカウントダウンを開始
+                remaining_time = 5 - int(elapsed_time - 2)  # 2秒経過後にカウントダウンを開始
                 if remaining_time > 0:
                     #型変換
                     annotated_image = annotated_image.astype('uint8')
@@ -326,7 +326,7 @@ def capture_players(capture: cv2.VideoCapture, face_Imgs: List[np.ndarray], play
                 show_message(annotated_image, "ポーズスタート！")
 
             else:
-                remaining_time = 3 - int(elapsed_time - 2)  # 2秒経過後にカウントダウンを開始
+                remaining_time = 5 - int(elapsed_time - 2)  # 2秒経過後にカウントダウンを開始
                 if remaining_time > 0:
                     for k in range(playerNum):
                         #認識領域を表示
