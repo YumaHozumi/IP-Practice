@@ -32,22 +32,19 @@ def display_title():
     #タイトルを表示
     cv2.imshow('Camera 1', title)
     while True:
-        key = cv2.waitKey(10)
-        if key == 0x0d: 
+        if cv2.waitKey(10) == 0x0d: 
             break
 
     #ガイダンスを表示
     cv2.imshow('Camera 1', guidance)
     while True:
-        key = cv2.waitKey(10)
-        if key == 0x0d: 
+        if cv2.waitKey(10) == 0x0d: 
             break
 
     #ゲーム説明を表示
     cv2.imshow('Camera 1', game_abstract)
     while True:
-        key = cv2.waitKey(10)
-        if key == 0x0d: 
+        if cv2.waitKey(10) == 0x0d: 
             break
 
     return
@@ -63,12 +60,10 @@ def display_registered_playeres(face_Imgs: List[np.ndarray]) -> np.ndarray:
     Returns:
         np.ndarray: 一覧を表示している画像
     """
-    playeresImg = whiteboard.copy() #背景の設定
 
-    #画面の説明の表示
-    cv2_putText(playeresImg, 'プレイヤー一覧', (20, 80), 80, (0,0,0))
-    cv2_putText(playeresImg, '　OK!　  > Enter', (int(Window_width * 0.7), Window_height - 50), 40, (0,0,0))
-    cv2_putText(playeresImg, 'やり直す > Delete', (int(Window_width * 0.7), Window_height - 10), 40, (0,0,0))
+    #背景の設定
+    playeresImg = cv2.imread('./modules/pictures/Registerd_players.bmp', cv2.IMREAD_COLOR )
+    playeresImg = cv2.resize(playeresImg, (Window_width, Window_height)) 
     
     #登録結果表示画面の作成
     people_num = len(face_Imgs)

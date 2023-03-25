@@ -20,10 +20,21 @@ def register(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predicto
         List[np.ndarray]: 登録した顔画像のリスト
     """
 
+    #プレイヤー登録の指示を表示
+    #指示画像の用意
+    register_inst = cv2.imread('./modules/pictures/Register_instruction.bmp', cv2.IMREAD_COLOR )
+    register_inst = cv2.resize(register_inst, (Window_width, Window_height))
+
     register_finished: bool = False #登録が完了したかどうか
 
     #プレイヤーの登録が終了するまで登録作業を繰り返す
     while not register_finished:
+        #指示を表示
+        cv2.imshow('Camera 1', register_inst)
+        while True:
+            if cv2.waitKey(10) == 0x0d: 
+                break
+            
         #登録する顔のリストを得る
         face_Imgs, display_face_Imgs = capture_registerArea(capture, predictor)
         #登録結果の描画(一応登録者一覧画面をもらってるが、今のところ再利用する予定なし)
@@ -40,6 +51,9 @@ def register(capture: cv2.VideoCapture, predictor: openpifpaf.predictor.Predicto
             #Deleteを押すと登録をやり直し
             elif key == 127:
                 break
+
+    finish_message = cv2.imread('./modules/pictures/Register_finish.bmp', cv2.IMREAD_COLOR )
+    finish_message = cv2.resize(finish_message, (Window_width, Window_height))
     
     return face_Imgs, display_face_Imgs
 
