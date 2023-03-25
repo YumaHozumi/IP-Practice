@@ -425,10 +425,10 @@ def display_final_result(face_Imgs: List[np.ndarray], similarities: List) -> np.
         cv2_putText(resultImg, txt_score, (score_X, score_Y), 80, (0,0,0), 2)
         #cv2.putText(resultImg, txt_score, (score_X, y_offset+img.shape[0]), cv2.FONT_HERSHEY_SIMPLEX, 1.75, player_color[i], 3, cv2.LINE_AA)
         
-    print(final_similarities)
-    print(my_index_multi(final_similarities, max(final_similarities)))
+    #print(final_similarities)
+    #print(my_index_multi(final_similarities, max(final_similarities)))
 
-    #顔と同じ幅で王冠を表示
+    #顔と同じ幅で王冠、葉を表示
     crown = cv2.imread('./modules/pictures/crown.png', -1)  # -1を付けることでアルファチャンネルも読んでくれるらしい。
     crown_height, crown_width, _ = crown.shape
     print(crown.shape)
@@ -436,12 +436,20 @@ def display_final_result(face_Imgs: List[np.ndarray], similarities: List) -> np.
     print(crown.shape)
     crown_height, crown_width, _ = crown.shape
 
+    leaf = cv2.imread('./modules/pictures/Leaf.png', -1)  # -1を付けることでアルファチャンネルも読んでくれるらしい。
+    leaf_height, leaf_width, _ = leaf.shape
+    leaf = cv2.resize(leaf, (display_face_width, int(leaf_height * display_face_width /leaf_width)))
+    leaf_height, leaf_width, _ = leaf.shape
+
+
     max_indexes = my_index_multi(final_similarities, max(final_similarities))
     for max_index in max_indexes:
         separate_width = Window_width / (people_num + 1)
         x = int((max_index + 1)*separate_width - display_face_width/2) 
         crown_y = int(Window_height/2 - display_face_height/2) - crown_height - 90
+        leaf_y = int(Window_height/2 - display_face_height/2 + display_face_height + 80)
         merge_images(resultImg, crown, x, crown_y)
+        merge_images(resultImg, leaf, x, leaf_y)
     
     #型変換
     resultImg = resultImg.astype('uint8')
